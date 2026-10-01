@@ -1,0 +1,7 @@
+# REAKT project-level Codex configuration
+#
+# This project configuration is loaded only when the repository is trusted.
+# Keep this file limited to repository-specific Codex configuration.
+
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"
