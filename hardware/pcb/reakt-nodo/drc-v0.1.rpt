@@ -1,0 +1,59 @@
+** Drc report for reakt-nodo.kicad_pcb **
+** Created on 2026-10-09T09:43:54-0300 **
+
+** Found 14 DRC violations **
+[silk_edge_clearance]: Serigrafía recortada por el borde de la placa
+    Regla: board setup constraints silk; warning
+    @(0,0000 mm, 0,0000 mm): Rectángulo en Edge.Cuts
+    @(49,0000 mm, 11,0000 mm): PCB text 'ANTENNA KEEP-OUT TO BE MEASURED' on f.silkscreen
+[lib_footprint_issues]: The current configuration does not include the footprint library 'REAKT'.
+    Anulación local; warning
+    @(12,0000 mm, 15,0000 mm): Huella J_ESP32
+[lib_footprint_mismatch]: La huella 'PinHeader_1x02_P2.54mm_Vertical' no coincide con la copia en la biblioteca 'Connector_PinHeader_2.54mm'.
+    Anulación local; warning
+    @(52,0000 mm, 20,0000 mm): Huella J_IMPACT
+[lib_footprint_mismatch]: La huella 'PinHeader_1x03_P2.54mm_Vertical' no coincide con la copia en la biblioteca 'Connector_PinHeader_2.54mm'.
+    Anulación local; warning
+    @(52,0000 mm, 32,0000 mm): Huella J_RGB
+[lib_footprint_mismatch]: La huella 'PinHeader_1x02_P2.54mm_Vertical' no coincide con la copia en la biblioteca 'Connector_PinHeader_2.54mm'.
+    Anulación local; warning
+    @(52,0000 mm, 45,0000 mm): Huella J_BAT
+[lib_footprint_mismatch]: La huella 'TestPoint_Plated_Hole_D2.0mm' no coincide con la copia en la biblioteca 'TestPoint'.
+    Anulación local; warning
+    @(45,0000 mm, 60,0000 mm): Huella TP_GND
+[lib_footprint_mismatch]: La huella 'TestPoint_Plated_Hole_D2.0mm' no coincide con la copia en la biblioteca 'TestPoint'.
+    Anulación local; warning
+    @(51,0000 mm, 60,0000 mm): Huella TP_3V3
+[lib_footprint_mismatch]: La huella 'TestPoint_Plated_Hole_D2.0mm' no coincide con la copia en la biblioteca 'TestPoint'.
+    Anulación local; warning
+    @(57,0000 mm, 60,0000 mm): Huella TP_5V
+[silk_overlap]: Solapamiento de serigrafía
+    Regla: board setup constraints silk; warning
+    @(49,0000 mm, 11,0000 mm): PCB text 'ANTENNA KEEP-OUT TO BE MEASURED' on f.silkscreen
+    @(10,5000 mm, 13,5000 mm): Rectángulo en f.silkscreen
+[silk_overlap]: Solapamiento de serigrafía
+    Regla: board setup constraints silk; warning
+    @(52,0000 mm, 29,8000 mm): Reference field of J_RGB
+    @(50,5000 mm, 30,5000 mm): Rectángulo en f.silkscreen
+[silk_overlap]: Solapamiento de serigrafía
+    Regla: board setup constraints silk; warning
+    @(50,5000 mm, 43,5000 mm): Rectángulo en f.silkscreen
+    @(52,0000 mm, 42,8000 mm): Reference field of J_BAT
+[silk_overlap]: Solapamiento de serigrafía
+    Regla: board setup constraints silk; warning
+    @(29,5000 mm, 12,8000 mm): Reference field of J_ESP32
+    @(10,5000 mm, 13,5000 mm): Rectángulo en f.silkscreen
+[silk_overlap]: Solapamiento de serigrafía
+    Regla: board setup constraints silk; warning
+    @(49,0000 mm, 11,0000 mm): PCB text 'ANTENNA KEEP-OUT TO BE MEASURED' on f.silkscreen
+    @(32,5000 mm, 3,0000 mm): PCB text 'REAKT NODE CARRIER V0.1 - PRELIMINARY / TBD HARDWARE' on f.silkscreen
+[silk_overlap]: Solapamiento de serigrafía
+    Regla: board setup constraints silk; warning
+    @(49,0000 mm, 11,0000 mm): PCB text 'ANTENNA KEEP-OUT TO BE MEASURED' on f.silkscreen
+    @(52,0000 mm, 17,8000 mm): Reference field of J_IMPACT
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **

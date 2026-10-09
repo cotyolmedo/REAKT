@@ -35,8 +35,8 @@ The project should be advanced in demonstrable stages.
 
 ## Phase 3 - Flutter
 
-- [ ] project structure
-- [ ] initial UI
+- [x] project structure
+- [x] initial UI
 - [ ] gateway connection
 - [ ] command transmission
 - [ ] event reception
@@ -83,6 +83,12 @@ The selected first mode must be explicitly decided.
 - [ ] enclosure
 - [ ] PCB
 - [ ] documentation
+
+### PCB V0.1 note (2026-10-09)
+
+- [x] provisional editable carrier layout created under `hardware/pcb/reakt-nodo/`
+- [ ] identify and measure real ESP32, TP4056, battery, connectors and LED
+- [ ] schematic, ERC, final footprints, routing, DRC and 3D verification
 
 ## Phase 8 - Exhibition
 

@@ -4,6 +4,7 @@
 Avanzar desde componentes aislados hacia la integración. Ninguna prueba se considera aprobada sin evidencia registrada.
 
 ## 1. ESP32 ↔ ESP32 (ESP-NOW)
+- [ ] Compilar `firmware1/gateway/REAKT_Gateway/REAKT_Gateway.ino` y `firmware1/nodes/REAKT_Node/REAKT_Node.ino` para la placa ESP32 real y registrar versión del core.
 - Inicialización y registro de peers.
 - Envío y recepción en ambos sentidos.
 - Prueba con un nodo y después con cinco.
@@ -11,6 +12,7 @@ Avanzar desde componentes aislados hacia la integración. Ninguna prueba se cons
 - Convivencia del enlace gateway↔app con ESP-NOW, incluida política de canal.
 
 ## 2. Pulsador NA
+- [ ] Verificar en hardware el GPIO configurado antes de habilitar `BUTTON_GPIO`.
 - Reposo abierto y cierre correcto; polaridad lógica documentada.
 - Detección de un solo evento por pulsación.
 - Antirrebote, liberación y rearme.

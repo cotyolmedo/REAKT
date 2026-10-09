@@ -14,7 +14,7 @@ Arquitectura actualizada en documentación. No se presume que el hardware nuevo 
 - [ ] Revisar alimentación, reguladores y protección.
 - [ ] Ensayar un nodo ESP32 con pulsador y WS2812B.
 - [ ] Compilar firmware gateway para placa real.
-- [ ] Implementar firmware de nodos ESP32.
+- [x] Crear estructura inicial de firmware de nodos ESP32 (sin protocolo v1 ni GPIO finales).
 - [ ] Verificar ESP-NOW bidireccional con uno y cinco nodos.
 - [ ] Manejar pérdidas, timeouts y duplicados.
 

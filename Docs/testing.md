@@ -1,5 +1,12 @@
 # REAKT Testing Strategy
 
+## Verificación de la interfaz Flutter — 2026-10-09
+
+- Estado: UNVERIFIED.
+- Se revisó estáticamente la estructura de `app/`.
+- No fue posible ejecutar `flutter analyze` ni `flutter test` porque el SDK de Flutter no está disponible en este entorno.
+- Falta validar el renderizado en Android/iOS y conectar datos reales cuando se defina la interfaz app↔gateway.
+
 ## Testing philosophy
 
 Testing must progress from isolated components to complete system integration.
@@ -93,3 +100,15 @@ When a requirement depends on physical hardware:
 - store photo/video evidence when required by school documentation
 
 Codex must never fabricate physical test results.
+
+## Web REAKT — auditoría Apple
+
+- Se verificaron estáticamente los metadatos Apple, `viewport-fit=cover`, safe areas, navegación móvil y manifest de `REAKT_web.html` el 2026-10-09.
+- La verificación visual en Safari sobre iPhone/iPad y el modo Home Screen queda pendiente porque no hay dispositivo Apple disponible en este entorno.
+- El detalle de cada cambio está documentado en `cambios pagina.md`.
+
+## PCB V0.1 verification
+
+- KiCad 9 CLI DRC ran on `hardware/pcb/reakt-nodo/reakt-nodo.kicad_pcb` on 2026-10-09.
+- Result: file parsed; 0 unconnected pads; 14 silkscreen/library warnings; exit code 0 because violation exit mode was not requested.
+- ERC, schematic parity, fabrication review, 3D fit and physical tests: pending because the real component variants and power architecture are TBD.

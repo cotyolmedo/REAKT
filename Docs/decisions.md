@@ -2,6 +2,19 @@
 
 This file records significant decisions.
 
+## ADR-001 - Primer shell de interfaz Flutter
+
+Date: 2026-10-09
+Status: Accepted
+
+### Decision
+
+Se adopta una primera interfaz Flutter en `app/` con fondo oscuro, acento rojo REAKT, superficies redondeadas y navegación inferior, trasladando la jerarquía visual de `REAKT_web.html`. Los datos visibles son de demostración y los estados de gateway/backend permanecen pendientes.
+
+### Consequences
+
+La UI puede evolucionar sin comprometer el protocolo ni inventar una interfaz app↔gateway antes de definirla.
+
 ## Decision template
 
 ```md
@@ -114,3 +127,19 @@ Add an ADR whenever a significant choice changes:
 - hardware topology
 - security model
 - packet protocol
+
+---
+
+## ADR-005 - PCB V0.1 is a provisional node carrier
+
+Date: 2026-10-09
+
+Status: Provisional / blocked by physical measurements
+
+### Decision
+
+Create only an editable carrier layout for one node: hypothetical 65 x 75 mm outline, provisional 2x15 header reservation for the unidentified ESP32 board, conceptual impact/RGB/battery connectors, and service test points. Do not freeze the ESP32 footprint, battery path, regulator topology, connector series, mounting holes, RF keepout, or routing until the real parts are measured.
+
+### Evidence and consequences
+
+The KiCad 9 board is `hardware/pcb/reakt-nodo/reakt-nodo.kicad_pcb`. It is not fabrication-ready and has no schematic or electrical netlist. The KiCad CLI DRC completed with zero unconnected pads and warnings expected from provisional local footprints and silkscreen; this is not a clean DRC release.

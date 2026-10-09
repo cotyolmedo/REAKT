@@ -58,3 +58,10 @@ Carcasa hexagonal negra con tapa móvil amortiguada, iluminación perimetral y m
 ## ADR-009 — PCB aislada de cargas de impacto
 **Fecha:** 2026-10-08. **Estado:** aceptada.
 **Decisión:** pulsador sujeto al bastidor, tapa guiada con topes estructurales; placa y celda fuera del camino de fuerzas. **Validación:** pruebas mecánicas progresivas y continuidad eléctrica.
+
+## ADR-010 — Estructura inicial de firmware
+**Fecha:** 2026-10-09. **Estado:** en progreso.
+
+Se agregan sketches separados para gateway y nodo en `firmware1/`. El gateway encola tramas recibidas sin interpretarlas; el nodo concentra lectura, antirrebote y estados del pulsador. No se fijan GPIO, MAC, canal, cantidad de LED ni campos de paquete porque continúan TBD en la documentación vigente.
+
+**Validación pendiente:** compilación para la placa real, ensayo ESP-NOW y verificación física de pulsador y WS2812B.
