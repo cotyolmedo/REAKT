@@ -208,3 +208,20 @@ exitoso), PROBADO (check ejecutado), PENDIENTE DE HARDWARE, BLOQUEADO (externo).
   privadas ni patrones de tokens. git diff --cached --check aprobado.
 - El usuario autorizó esta publicación; los siguientes cambios no adquieren permiso
   automático para push. El prompt conserva esta distinción.
+
+## 10. Colegio 23/10/2026
+
+Migración Supabase autorizada aplicada tras inspección compatible (versión remota
+20261023120712); metadata RLS/grants verificada. Gateway COM4 identificado por ROM,
+MAC 30:c6:f7:92:d0:9c, ESP32-D0WDQ6. No flash ni prueba radio. Configuración pública
+local ignorada y formulario Auth preparados. Registro/login requieren usuario.
+Detalle de comandos, bloqueos y alcance: [continuación](CONTINUACION-COLEGIO-2026-10-23.md).
+
+### Etapa software cerrada antes del armado
+
+Usuario completó registro; cuenta confirmada en servidor. Pruebas RLS reales con
+rol authenticated aprobadas y revertidas; otra identidad SQL sintética, sin segundo
+login real. Prueba HTTP pública aprobada. Salida LED digital implementada y compilada,
+nodo deshabilitado y gateway también compilados con core3.3.4. Analyze y17tests
+Flutter aprobados en copia con dependencias de SDK3.47.4; lock original intacto.
+Usuario armará circuito después. [Cierre y estimación MVP60%](CIERRE-SOFTWARE-2026-10-23.md).

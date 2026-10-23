@@ -136,3 +136,18 @@ PostgreSQL aislado, no contra Supabase remoto. El usuario autorizó expresamente
 aplicarla **tras inspección y si no hay conflictos**. No se ejecutó remotamente
 por ausencia del conector. Si hay conflictos, ajustar y volver a revisar el cambio.
 Las sesiones sin dueño se vinculan a la cuenta que inicia su sincronización.
+
+## ADR-015 — Alcance de banco simplificado y persistencia remota
+
+**Fecha:** 2026-10-23. **Estado:** alcance aceptado; validación física pendiente.
+El usuario autoriza un MVP en protoboard con pulsador y un LED para completar la
+cadena. WS2812B sigue siendo salida prevista ampliada; LED común requiere circuito
+y adaptación de firmware pendientes. No habilitar GPIO sin validación real.
+La migración de ADR-014 se aplicó al proyecto identificado, sin conflictos, con
+versión remota 20261023120712. Se verificaron RLS y permisos; no implica Auth,
+sincronización real ni hardware completos.
+
+Implementación posterior: nodo admite LED digital de polaridad configurable o
+WS2812B de cantidad configurable, conservando ENABLED=0 por defecto. Compiló
+variante digital/core3.3.4. Cuenta Auth confirmada y RLS remoto probado mediante
+transacción revertida; circuito y app Android físicos todavía pendientes.

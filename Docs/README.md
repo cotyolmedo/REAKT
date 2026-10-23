@@ -71,3 +71,5 @@ para APK/acceso remoto y para distinguir software de validación física.
 
 - [Resumen de entrega y referencia Git](RESUMEN-ENTREGA.md).
 - [Prompt para retomar desde la computadora del colegio](PROMPT-PARA-MANANA.md).
+- [Cierre software del23/10, verificación Supabase y estimación MVP](CIERRE-SOFTWARE-2026-10-23.md).
+- [Próximo armado en protoboard con LED común](MVP-PROTOBOARD.md).

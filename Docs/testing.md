@@ -167,3 +167,21 @@ archivo oficial verificado contra el índice Android instaló correctamente. No 
 cambiaron hashes esperados ni se desactivaron verificaciones. Las primeras pruebas
 widget de integración requerían avanzar fake microtasks entre IO real; harness
 corregido y suite completa aprobada. Los logs locales permanecen en build/.
+
+## Colegio 23/10/2026
+
+PROBADO: aplicación de migración remota, tres tablas RLS/nueve políticas,
+anon sin grants y authenticated sin DELETE; lectura autenticada sin filas propias.
+PROBADO: lectura MAC ROM del gateway COM4 (30:c6:f7:92:d0:9c).
+PENDIENTE: Auth/login real, upserts/aislamiento remoto con dos usuarios, GPIO/radio,
+LED, Android físico, diez sesiones y compilaciones en esta PC.
+Evidencia y diferencias de toolchain: [registro](CONTINUACION-COLEGIO-2026-10-23.md).
+
+### Cierre posterior de software
+
+Cuenta Auth confirmada y sesiones Auth presentes; smoke RLS remoto aprobado con
+datos sintéticos revertidos (cero filas restantes). Auth API HTTP200 y anon REST
+HTTP401. Analyze sin problemas y17tests aprobados en copia para Flutter3.47.4,
+sin modificar lock de referencia. Compilaron gateway/core3.3.4 y nodo LED digital
+y deshabilitado. No es prueba Android/radio/circuito.
+[Resultados, comandos y límites](CIERRE-SOFTWARE-2026-10-23.md).

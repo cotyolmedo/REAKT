@@ -1,8 +1,10 @@
-# Supabase REAKT — autorización condicional recibida; inspección remota pendiente
+# Supabase REAKT — esquema remoto aplicado y RLS verificado
 
-El conector Supabase no está disponible en esta sesión. No se consultó ni modificó
-el proyecto remoto, no se creó un usuario ni se verificó su configuración de Auth.
-No confundir el esquema propuesto con el estado real del proyecto `reakt`.
+Estado actualizado23/10/2026: conector operativo, migración aplicada tras inspección,
+cuenta de prueba confirmada y pruebas remotas RLS transaccionales aprobadas.
+La sincronización desde Android físico y un segundo login real siguen pendientes.
+Los apartados siguientes conservan el procedimiento y la evidencia histórica;
+el cierre actual está en [CIERRE-SOFTWARE](../Docs/CIERRE-SOFTWARE-2026-10-23.md).
 
 ## Cambio autorizado condicionalmente
 
@@ -51,3 +53,14 @@ la configuración y conectar acceso autorizado. No se inspeccionó esquema remot
 `inspect-readonly.sql` permite inspección metadata en SQL Editor sin escribir datos.
 Once tests PostgreSQL locales aprobaron, incluido ese script. No sustituyen una
 prueba Supabase real. La autorización condicional previa se mantiene vigente.
+
+## Actualización 23/10/2026
+
+El bloqueo anterior se resolvió: conector operativo y proyecto correcto inspeccionado.
+Aplicada migración exacta autorizada sin conflictos (20261023120712, reakt_mvp).
+RLS/grants verificados. Auth sin usuarios al inicio; falta registro/login real y
+pruebas de escritura/aislamiento. Configuración pública local app/supabase-public.json
+ignorada por Git. Formulario de banco: ejecutar `node tools/auth-local/server.mjs`
+desde la raíz y abrir http://127.0.0.1:8766. Introducir contraseña solo localmente.
+No se corrigieron advertencias de funciones preexistentes fuera del alcance autorizado.
+Ver [registro](../Docs/CONTINUACION-COLEGIO-2026-10-23.md).

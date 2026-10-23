@@ -46,3 +46,15 @@ Registrar separadamente comunicaciones sin LEDs y entrenamiento con estímulo re
 
 No anotar “reacción visual validada” sin LEDs, circuito verificado y referencia
 independiente. No anotar “nube probada” por haber escrito SQL o usado un simulador.
+
+## Registro inicial 23/10/2026
+
+COM4 CP210x: lectura ROM exitosa después de BOOT manual; ESP32-D0WDQ6 rev1,
+MAC 30:c6:f7:92:d0:9c. El usuario asignó esta placa como gateway. No cargada.
+Supabase: migración aplicada, metadata RLS verificada; Auth y cadena física pendientes.
+Ver [evidencia completa](CONTINUACION-COLEGIO-2026-10-23.md).
+
+Etapa software posterior: Auth confirmado, API/RLS probados; gateway y nodo digital/off
+compilados.17tests Flutter aprobados en copia de validación. Sin carga/radio/circuito.
+El usuario armará el circuito al terminar esta etapa. No completar casilleros físicos.
+[Cierre de etapa y guía de armado](CIERRE-SOFTWARE-2026-10-23.md).

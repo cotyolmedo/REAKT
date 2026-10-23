@@ -1,0 +1,36 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>REAKT · Auth de banco</title>
+<style>body{font:17px system-ui;background:#101014;color:#eee;max-width:620px;margin:8vh auto;padding:24px}input,button{font:inherit;padding:12px;margin:8px 0;box-sizing:border-box;width:100%;border-radius:8px}button{cursor:pointer;background:#c92532;color:white;border:0}pre{white-space:pre-wrap}small{color:#bbb}</style>
+<h1>REAKT · Conectar cuenta</h1><p>Registro y prueba de Supabase del proyecto REAKT. Ingresá la contraseña acá. No la envíes por chat.</p>
+<form id="auth"><label>Correo<input id="email" type="email" autocomplete="username" required></label><label>Contraseña<input id="password" type="password" autocomplete="current-password" minlength="8" required></label><button name="action" value="login">Iniciar sesión</button><button name="action" value="signup">Crear cuenta de prueba</button></form>
+<button id="logout" hidden>Cerrar sesión de banco</button><pre id="status" role="status">Cargando configuración pública…</pre><small>Si se solicita, confirmá el correo y volvé a iniciar sesión. Los tokens quedan solo en memoria de esta pestaña. Esta prueba no sincroniza entrenamientos físicos.</small>
+<script>
+let config, token;
+const status = document.querySelector('#status');
+const form = document.querySelector('#auth');
+const password = document.querySelector('#password');
+fetch('/config').then(r=>{if(!r.ok)throw Error('Configuración no disponible');return r.json()}).then(c=>{config=c;status.textContent='Listo. Proyecto: '+new URL(c.SUPABASE_URL).hostname}).catch(e=>status.textContent=e.message);
+form.addEventListener('submit',async e=>{
+  e.preventDefault(); if(!config)return;
+  const signup=e.submitter.value==='signup';
+  for(const b of form.querySelectorAll('button'))b.disabled=true;
+  try{
+    status.textContent=signup?'Creando cuenta…':'Autenticando…';
+    const response=await fetch(config.SUPABASE_URL+'/auth/v1/'+(signup?'signup':'token?grant_type=password'),{method:'POST',headers:{apikey:config.SUPABASE_ANON_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:document.querySelector('#email').value.trim(),password:password.value})});
+    const data=await response.json();password.value='';
+    if(!response.ok)throw Error(data.msg||data.message||data.error_description||'Auth rechazó la solicitud');
+    token=data.access_token;
+    if(!token){status.textContent='Registro recibido. Confirmá el correo y luego iniciá sesión.';return;}
+    const lines=['AUTH OK. Usuario: '+data.user.id];
+    for(const table of ['reakt_sessions','reakt_results','reakt_events']){
+      const r=await fetch(config.SUPABASE_URL+'/rest/v1/'+table+'?select=*&limit=1',{headers:{apikey:config.SUPABASE_ANON_KEY,Authorization:'Bearer '+token}});
+      if(!r.ok)throw Error('REST '+table+': HTTP '+r.status);
+      lines.push(table+': lectura autenticada OK');
+    }
+    status.textContent=lines.join('\n');document.querySelector('#logout').hidden=false;
+  }catch(err){status.textContent=err.message;}
+  finally{for(const b of form.querySelectorAll('button'))b.disabled=false;}
+});
+document.querySelector('#logout').onclick=async()=>{
+  try{const r=await fetch(config.SUPABASE_URL+'/auth/v1/logout',{method:'POST',headers:{apikey:config.SUPABASE_ANON_KEY,Authorization:'Bearer '+token}});if(!r.ok)throw Error('No se pudo cerrar la sesión remota');token=null;status.textContent='Sesión de banco cerrada.';document.querySelector('#logout').hidden=true;}catch(e){status.textContent=e.message;}
+};
+</script></html>
