@@ -250,10 +250,10 @@ class _TrainingPageState extends State<TrainingPage>
           ],
         ),
         actions: [
-          TextButton.icon(
+          IconButton(
             onPressed: () => navigate(1),
+            tooltip: link.connected ? 'Gateway conectada' : 'Gateway sin conexión',
             icon: Icon(link.connected ? Icons.wifi : Icons.wifi_off, size: 18),
-            label: Text(link.connected ? 'Conectado' : 'Sin conexión'),
           ),
         ],
       ),
