@@ -1,98 +1,71 @@
-# REAKT Architecture
+# Arquitectura REAKT
 
-## High-level system
+## Topología vigente
 
 ```text
-                ┌─────────────────────┐
-                │    Flutter App      │
-                │ UI + session logic  │
-                └──────────┬──────────┘
-                           │
-                           │ App ↔ Gateway
-                           ▼
-                ┌─────────────────────┐
-                │   ESP32 Gateway     │
-                │ coordination/routing│
-                └──────────┬──────────┘
-                           │
-                     ESP-NOW network
-                           │
-          ┌────────────────┼────────────────┐
-          ▼                ▼                ▼
-       ESP32-C3         ESP32-C3         ESP32-C3
-         Node             Node             Node
-          │
-          └──────────── ... up to 5 nodes
+Flutter (interfaz, sesiones y presentación)
+          ↕ interfaz App ↔ gateway (TBD)
+ESP32 central / gateway
+          ↕ ESP-NOW bidireccional
+  ┌───────┼────────┬────────┬────────┐
+ESP32-1 ESP32-2 ESP32-3 ESP32-4 ESP32-5
+  │       │        │        │        │
+Pulsador NA + salida WS2812B por nodo
 
-Supabase/PostgreSQL
-        ↑
-        │
-   persistent data
-        │
-   Flutter/backend
+Flutter o servicio autorizado ↔ Supabase/PostgreSQL
 ```
 
-## Components
+## Responsabilidades
 
-### Flutter application
+### Aplicación Flutter
 
-Responsibilities:
+- Configurar modos y sesiones.
+- Presentar estados y resultados.
+- Comunicarse con el gateway mediante una interfaz todavía `TBD`.
+- Acceder a Supabase con credenciales apropiadas para cliente; nunca con claves
+  privilegiadas embebidas.
 
-- user interface
-- training configuration
-- session control
-- visualization
-- result presentation
-- communication with the gateway
-- backend interaction where appropriate
+### Gateway ESP32
 
-### ESP32 Gateway
+- Recibir y validar comandos de la app.
+- Coordinar hasta cinco nodos.
+- Enviar órdenes y recibir eventos mediante ESP-NOW.
+- Gestionar direccionamiento, duplicados, timeouts y fallos cuando el protocolo
+  los defina.
+- Reenviar eventos o resultados hacia la app.
 
-Responsibilities:
+### Cinco nodos ESP32
 
-- receive commands from the application
-- coordinate training nodes
-- transmit commands over ESP-NOW
-- receive node events/results
-- aggregate/forward data
-- manage communication state
+- Leer un pulsador mecánico NA con antirrebote.
+- Controlar la salida visual WS2812B.
+- Mantener temporización y lógica local no bloqueantes.
+- Intercambiar órdenes, eventos y estado con el gateway.
 
-### ESP32-C3 nodes
+### Supabase/PostgreSQL
 
-Responsibilities:
+- Persistir usuarios, sesiones, resultados e historial según un esquema futuro.
+- Aplicar autenticación, autorización y RLS antes de uso productivo.
 
-- local sensor/input acquisition
-- local actuation
-- LED/light feedback
-- local timing
-- event generation
-- communication with gateway
+## Flujo previsto
 
-### Supabase
+1. La app configura una sesión y envía una orden al gateway.
+2. El gateway valida y distribuye órdenes a uno o varios nodos.
+3. Los nodos presentan estímulos y detectan pulsaciones.
+4. Los eventos vuelven al gateway y luego a la app.
+5. La app o un servicio autorizado persiste los resultados.
 
-Responsibilities:
+El reparto exacto del cálculo de métricas sigue `TBD`; no debe implementarse
+antes de definir referencias temporales y latencias.
 
-- persistent application data
-- users/session data as required
-- results/history
-- database-backed information required by the application
+## Restricciones
 
-## Architectural constraints
+- No hay Raspberry Pi en la arquitectura vigente.
+- El enlace gateway ↔ nodos usa ESP-NOW.
+- Todos los modos reutilizan un protocolo común.
+- El firmware productivo es no bloqueante.
+- El pulsador entrega una activación digital; no mide fuerza ni presión.
+- La política de canal, la interfaz App ↔ gateway y la sincronización temporal
+  siguen `TBD`.
+- PCB y carcasa son conceptos hasta completar mediciones y validación física.
 
-- No Raspberry Pi unless explicitly approved.
-- ESP-NOW is the intended gateway-node protocol.
-- The packet model should remain shared across training modes.
-- Firmware should be non-blocking.
-- Secrets must not be hardcoded.
-
-## Data-flow principle
-
-Commands should move from the application toward the gateway and then to nodes.
-
-Events/results should move from nodes to gateway and then to the application.
-
-Persistent data should be stored in Supabase according to the database design.
-
-## Architectural changes
-
-Any change to this architecture must be recorded in `docs/decisions.md`.
+Todo cambio a esta arquitectura debe registrarse en `Docs/decisions.md`.

@@ -46,6 +46,7 @@ struct NodeRuntime {
   uint64_t lastEventUs = 0;
   uint32_t receivedCommands = 0;
   uint32_t invalidCommands = 0;
+  uint32_t droppedCommands = 0;
   uint32_t failedTransmissions = 0;
 };
 
@@ -92,15 +93,10 @@ void registerButtonEvent(uint32_t nowMs) {
 }
 
 bool enqueueGatewayFrame(const esp_now_recv_info_t* info, const uint8_t* data, int length) {
-  if (info == nullptr || info->src_addr == nullptr || data == nullptr ||
-      length <= 0 || length > static_cast<int>(Config::MAX_ESPNOW_PAYLOAD)) {
-    return false;
-  }
-
-  portENTER_CRITICAL_ISR(&rxMux);
+  portENTER_CRITICAL(&rxMux);
   const uint8_t nextHead = (rxHead + 1) % Config::RX_QUEUE_CAPACITY;
   if (nextHead == rxTail) {
-    portEXIT_CRITICAL_ISR(&rxMux);
+    portEXIT_CRITICAL(&rxMux);
     return false;
   }
 
@@ -108,7 +104,7 @@ bool enqueueGatewayFrame(const esp_now_recv_info_t* info, const uint8_t* data, i
   memcpy(rxQueue[rxHead].data, data, static_cast<size_t>(length));
   rxQueue[rxHead].length = static_cast<uint16_t>(length);
   rxHead = nextHead;
-  portEXIT_CRITICAL_ISR(&rxMux);
+  portEXIT_CRITICAL(&rxMux);
   return true;
 }
 
@@ -157,8 +153,13 @@ bool initializeEspNow() {
   WiFi.disconnect();
   if (esp_now_init() != ESP_OK) return false;
   esp_now_register_recv_cb([](const esp_now_recv_info_t* info, const uint8_t* data, int length) {
-    if (!enqueueGatewayFrame(info, data, length)) {
+    if (info == nullptr || info->src_addr == nullptr || data == nullptr ||
+        length <= 0 || length > static_cast<int>(Config::MAX_ESPNOW_PAYLOAD)) {
       node.invalidCommands++;
+      return;
+    }
+    if (!enqueueGatewayFrame(info, data, length)) {
+      node.droppedCommands++;
       return;
     }
     node.receivedCommands++;

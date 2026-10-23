@@ -1,101 +1,82 @@
-# REAKT Roadmap
+# Hoja de ruta REAKT
 
-## Current phase
+## Estado actual
 
-Initial/incremental development.
+Fase inicial e incremental. Hay documentación, una interfaz Flutter de
+demostración, bases de firmware y artefactos PCB/CAD conceptuales. No existe aún
+un sistema integrado ni hardware vigente validado.
 
-The project should be advanced in demonstrable stages.
+## Fase 0 — Repositorio y documentación
 
-## Phase 0 - Repository and documentation
+- [x] Repositorio GitHub.
+- [x] Instrucciones de repositorio en `AGENTS.md`.
+- [x] Arquitectura vigente documentada.
+- [x] Cambio a cinco nodos ESP32 y pulsador NA documentado.
+- [x] Estructura duplicada consolidada en `Docs/` y `firmware/`.
+- [ ] Confirmar modelo exacto de placas, piezas y GPIO.
+- [ ] Confirmar con docentes si el pulsador cumple el requisito de sensor.
+- [ ] Finalizar protocolo v1 e interfaz App ↔ gateway.
 
-- [x] GitHub repository exists
-- [ ] Codex repository instructions installed
-- [ ] architecture documented
-- [ ] hardware inventory documented
-- [ ] protocol specification finalized
-- [ ] development workflow documented
+## Fase 1 — Gateway y nodos
 
-## Phase 1 - Gateway and nodes
+- [x] Base de firmware del gateway.
+- [x] Base de firmware común de nodo, con hardware deshabilitado mientras el
+  pinout sea `TBD`.
+- [ ] Compilar ambos sketches para la placa real y registrar el core.
+- [ ] Probar ESP-NOW bidireccional con un nodo.
+- [ ] Extender a cinco nodos.
+- [ ] Implementar y verificar pérdidas, timeouts, duplicados y recuperación.
+- [ ] Integrar pulsador y WS2812B tras cerrar esquemático y alimentación.
 
-- [ ] ESP32 gateway base firmware
-- [ ] ESP32-C3 node base firmware
-- [ ] ESP-NOW connection test
-- [ ] bidirectional communication
-- [ ] multiple-node communication
-- [ ] error/timeout handling
+## Fase 2 — Protocolo y temporización
 
-## Phase 2 - Global packet protocol
+- [ ] Definir versión, tipos, IDs, tamaños y serialización.
+- [ ] Definir secuencia, ACK/reintentos y deduplicación.
+- [ ] Definir referencia temporal, sincronización y latencia.
+- [ ] Probar compatibilidad gateway ↔ nodos ↔ app.
 
-- [ ] finalize packet types
-- [ ] finalize node ID
-- [ ] finalize mode representation
-- [ ] finalize timing representation
-- [ ] finalize payload
-- [ ] compatibility tests
+## Fase 3 — Flutter
 
-## Phase 3 - Flutter
+- [x] Estructura de proyecto.
+- [x] Interfaz inicial con datos de demostración.
+- [ ] Validar `flutter analyze`, pruebas y renderizado en dispositivos.
+- [ ] Definir e implementar conexión con el gateway.
+- [ ] Enviar comandos, recibir eventos y mostrar resultados reales.
+- [ ] Manejar desconexión y datos inválidos.
 
-- [x] project structure
-- [x] initial UI
-- [ ] gateway connection
-- [ ] command transmission
-- [ ] event reception
-- [ ] result display
+## Fase 4 — Supabase
 
-## Phase 4 - Supabase
+- [ ] Diseñar esquema y migraciones.
+- [ ] Definir autenticación y políticas RLS.
+- [ ] Persistir e historizar sesiones y resultados.
+- [ ] Probar autorización, restricciones y errores.
 
-- [ ] schema design
-- [ ] migrations
-- [ ] authentication if required
-- [ ] result persistence
-- [ ] historical data
-- [ ] security policies
+## Fase 5 — Primer modo completo
 
-## Phase 5 - First complete training mode
+- [ ] Elegir explícitamente un modo y métricas compatibles con entrada binaria.
+- [ ] Implementar el flujo App → gateway → nodo → gateway → App → Supabase.
+- [ ] Validar el modo extremo a extremo con evidencia.
 
-Implement one complete mode end-to-end before implementing all modes.
+## Fase 6 — Modos restantes
 
-Candidate modes:
+- [ ] Reutilizar la infraestructura global para los modos aprobados.
+- [ ] Validar comportamiento y métricas de cada modo.
 
-- memoria
-- agilidad
-- reflejos
-- velocidad
-- resistencia
-- precisión
-- coordinación
+## Fase 7 — Mecánica, PCB e integración
 
-The selected first mode must be explicitly decided.
+- [x] Carrier PCB V0.1 editable y conceptual.
+- [x] Modelo CAD conceptual editable.
+- [ ] Medir ESP32, cargador, batería, conectores, pulsador y LED reales.
+- [ ] Cerrar batería, protección, regulación y *power-path*.
+- [ ] Crear esquemático y superar ERC.
+- [ ] Cerrar footprints, ruteo, DRC, Gerbers y encastre 3D.
+- [ ] Probar primero un módulo sin batería y con fuente limitada.
+- [ ] Validar autonomía, temperatura, RF, mecanismo y fijación.
+- [ ] Replicar cinco unidades solo tras validar el prototipo.
 
-## Phase 6 - Remaining modes
+## Fase 8 — Exhibición
 
-- [ ] implement remaining modes
-- [ ] reuse global packet infrastructure
-- [ ] validate node behavior
-- [ ] validate metrics
-
-## Phase 7 - Final integration
-
-- [ ] hardware integration
-- [ ] application integration
-- [ ] database production setup
-- [ ] reliability testing
-- [ ] enclosure
-- [ ] PCB
-- [ ] documentation
-
-### PCB V0.1 note (2026-10-09)
-
-- [x] provisional editable carrier layout created under `hardware/pcb/reakt-nodo/`
-- [ ] identify and measure real ESP32, TP4056, battery, connectors and LED
-- [ ] schematic, ERC, final footprints, routing, DRC and 3D verification
-
-## Phase 8 - Exhibition
-
-- [ ] complete live demo
-- [ ] backup source code
-- [ ] field documentation
-- [ ] final schematic
-- [ ] process evidence
-- [ ] user manual
-- [ ] technical documentation
+- [ ] Demostración funcional y plan de contingencia.
+- [ ] Documentación de campo, esquemático final y manual.
+- [ ] Evidencia fotográfica/audiovisual real.
+- [ ] Código respaldado y materiales de presentación.

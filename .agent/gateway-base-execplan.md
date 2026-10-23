@@ -49,7 +49,7 @@ future app interface, packet processing, node routing, and status outputs.
 
 - Compile with the final ESP32 board selected in Arduino IDE.
 - Confirm serial output reaches `ESP-NOW ready`.
-- Perform and document a physical receive test with one ESP32-C3 node.
+- Perform and document a physical receive test with one ESP32 node.
 - Verify malformed/empty transport input does not enter packet processing.
 
 ## 8. Documentation changes

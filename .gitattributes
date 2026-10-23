@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+*.obj binary
+*.mtl text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary

@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="REAKT: sistema de entrenamiento en desarrollo con un gateway ESP32, cinco nodos ESP32, pulsadores NA y LEDs WS2812B.">
+  <meta name="theme-color" content="#070709">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>REAKT — Entrenamiento que responde</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070709;
+      --bg-elevated: #101014;
+      --surface: rgba(26, 26, 31, .68);
+      --surface-strong: rgba(32, 32, 38, .9);
+      --hairline: rgba(255, 255, 255, .1);
+      --hairline-bright: rgba(255, 255, 255, .18);
+      --text: #f5f5f7;
+      --secondary: #a1a1aa;
+      --tertiary: #707079;
+      --accent: #ff453a;
+      --accent-hot: #ff6961;
+      --accent-deep: #d8232a;
+      --green: #30d158;
+      --amber: #ffd60a;
+      --max: 1180px;
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(5.5rem + var(--safe-top)); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 70% 45% at 52% -12%, rgba(255, 69, 58, .18), transparent 72%),
+        var(--bg);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+      font-optical-sizing: auto;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .32;
+      background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, black, transparent 72%);
+    }
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; font: inherit; }
+    svg { display: block; }
+    ::selection { background: rgba(255, 69, 58, .35); }
+
+    .container {
+      width: min(var(--max), calc(100% - 2.5rem - var(--safe-left) - var(--safe-right)));
+      margin-inline: auto;
+    }
+    .section { padding: clamp(5.5rem, 10vw, 9rem) 0; }
+    .section-head { max-width: 760px; margin-bottom: clamp(2.25rem, 5vw, 4.5rem); }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      margin: 0 0 1rem;
+      color: var(--accent-hot);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+    .kicker::before { content: ""; width: 1.4rem; height: 2px; border-radius: 9px; background: currentColor; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 { text-wrap: balance; }
+    h1 {
+      margin-bottom: 1.35rem;
+      font-size: clamp(4.25rem, 12vw, 9.2rem);
+      line-height: .86;
+      letter-spacing: -.072em;
+      font-weight: 760;
+    }
+    h2 {
+      margin-bottom: 1.25rem;
+      font-size: clamp(2.55rem, 6vw, 5.2rem);
+      line-height: .98;
+      letter-spacing: -.055em;
+      font-weight: 720;
+    }
+    h3 { margin-bottom: .65rem; font-size: 1.15rem; line-height: 1.18; letter-spacing: -.022em; }
+    p { color: var(--secondary); line-height: 1.65; }
+    .lede { max-width: 680px; font-size: clamp(1.08rem, 2vw, 1.3rem); line-height: 1.52; letter-spacing: -.012em; }
+    .gradient-text {
+      color: transparent;
+      background: linear-gradient(135deg, #fff 16%, #ffaaa5 55%, var(--accent) 86%);
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    .glass {
+      border: 1px solid var(--hairline);
+      background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.012)), var(--surface);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 24px 70px rgba(0,0,0,.2);
+      backdrop-filter: blur(28px) saturate(150%);
+      -webkit-backdrop-filter: blur(28px) saturate(150%);
+    }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 100;
+      padding-top: var(--safe-top);
+      transition: background-color .28s ease, box-shadow .28s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(7, 7, 9, .76);
+      box-shadow: 0 1px 0 var(--hairline);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+    }
+    .nav-wrap { min-height: 4.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand { display: inline-flex; align-items: center; gap: .7rem; font-size: .9rem; font-weight: 750; letter-spacing: .1em; }
+    .brand-mark {
+      width: 2rem;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #fff;
+      background: linear-gradient(145deg, var(--accent-hot), var(--accent-deep));
+      box-shadow: 0 8px 28px rgba(255,69,58,.26), inset 0 1px 0 rgba(255,255,255,.34);
+    }
+    .desktop-nav { display: flex; align-items: center; gap: 1.8rem; color: #b8b8c0; font-size: .83rem; font-weight: 550; }
+    .desktop-nav a { position: relative; padding: .75rem 0; transition: color .18s ease; }
+    .desktop-nav a::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: .45rem;
+      left: 0;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform .25s cubic-bezier(.2,.8,.2,1);
+    }
+    .desktop-nav a:hover, .desktop-nav a.active { color: #fff; }
+    .desktop-nav a.active::after { transform: scaleX(1); }
+    .nav-action, .button {
+      display: inline-flex;
+      min-height: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      gap: .55rem;
+      padding: .72rem 1rem;
+      border: 1px solid var(--hairline-bright);
+      border-radius: 999px;
+      background: rgba(255,255,255,.055);
+      font-size: .83rem;
+      font-weight: 650;
+      touch-action: manipulation;
+      transition: transform .12s ease-out, border-color .2s ease, background-color .2s ease;
+    }
+    .button { min-height: 3.25rem; padding: .9rem 1.25rem; font-size: .94rem; }
+    .button.primary { border-color: transparent; background: #f5f5f7; color: #111114; box-shadow: 0 10px 35px rgba(255,255,255,.12); }
+    .button:active, .nav-action:active, .menu-button:active, .mode-card:active { transform: scale(.97); }
+    .menu-button { display: none; width: 2.75rem; height: 2.75rem; place-items: center; border: 1px solid var(--hairline); border-radius: 50%; background: rgba(255,255,255,.05); }
+
+    .hero { min-height: 100svh; display: grid; align-items: center; padding: calc(7.5rem + var(--safe-top)) 0 5rem; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(380px, .95fr); gap: clamp(3rem, 8vw, 7rem); align-items: center; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      margin-bottom: 1.5rem;
+      color: #d0d0d6;
+      font-size: .83rem;
+      font-weight: 620;
+    }
+    .status-dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 5px rgba(255,214,10,.1); }
+    .hero-copy .lede { max-width: 610px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+    .hero-note { display: flex; align-items: center; gap: .6rem; margin: 1.2rem 0 0; color: var(--tertiary); font-size: .78rem; }
+    .hero-note svg { flex: 0 0 auto; }
+
+    .system-stage {
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+      position: relative;
+      min-height: 570px;
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+      transform-style: preserve-3d;
+      transition: transform .1s linear;
+      isolation: isolate;
+    }
+    .system-stage::before {
+      content: "";
+      position: absolute;
+      inset: -25%;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 48%, rgba(255,69,58,.2), transparent 32%), conic-gradient(from 30deg, transparent, rgba(255,255,255,.035), transparent 35%);
+      animation: ambient-spin 18s linear infinite;
+    }
+    .stage-label { position: absolute; top: 1.45rem; left: 1.5rem; color: var(--tertiary); font-size: .72rem; font-weight: 680; letter-spacing: .11em; text-transform: uppercase; }
+    .stage-status { position: absolute; top: 1.25rem; right: 1.3rem; display: flex; align-items: center; gap: .45rem; padding: .5rem .7rem; border: 1px solid var(--hairline); border-radius: 999px; color: #b7b7bf; background: rgba(8,8,10,.4); font-size: .7rem; }
+    .stage-status i { width: .42rem; height: .42rem; border-radius: 50%; background: var(--amber); }
+    .orbit { position: absolute; inset: 14%; border: 1px solid rgba(255,255,255,.09); border-radius: 50%; }
+    .orbit::after { content: ""; position: absolute; inset: 17%; border: inherit; border-radius: inherit; }
+    .gateway {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 8.3rem; aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,105,97,.42);
+      border-radius: 2.2rem;
+      background: linear-gradient(145deg, rgba(255,69,58,.2), rgba(15,15,18,.95) 58%);
+      box-shadow: 0 0 0 12px rgba(255,69,58,.035), 0 25px 70px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.14);
+      transform: translate(-50%, -50%) translateZ(45px);
+      text-align: center;
+    }
+    .gateway strong { display: block; font-size: 1rem; letter-spacing: -.01em; }
+    .gateway span { display: block; margin-top: .3rem; color: var(--accent-hot); font-size: .63rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .node {
+      position: absolute;
+      width: 4.35rem; aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--hairline-bright);
+      border-radius: 1.35rem;
+      background: rgba(26,26,31,.9);
+      box-shadow: 0 16px 38px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.08);
+      transform: translate(-50%, -50%) translateZ(26px);
+    }
+    .node::before { content: ""; width: 1rem; height: 1rem; border: 3px solid var(--accent); border-radius: 50%; box-shadow: 0 0 16px rgba(255,69,58,.65); }
+    .node small { position: absolute; top: calc(100% + .5rem); white-space: nowrap; color: var(--tertiary); font-size: .62rem; }
+    .node-1 { top: 18%; left: 50%; }
+    .node-2 { top: 40%; left: 82%; }
+    .node-3 { top: 75%; left: 70%; }
+    .node-4 { top: 75%; left: 30%; }
+    .node-5 { top: 40%; left: 18%; }
+    .stage-footer { position: absolute; right: 1.5rem; bottom: 1.4rem; left: 1.5rem; display: flex; justify-content: space-between; color: var(--tertiary); font-size: .7rem; }
+    .pulse-ring { position: absolute; top: 50%; left: 50%; width: 9rem; aspect-ratio: 1; border: 1px solid rgba(255,69,58,.35); border-radius: 50%; transform: translate(-50%,-50%); animation: pulse 2.7s ease-out infinite; }
+
+    .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; padding-bottom: 2rem; }
+    .fact { min-height: 8.6rem; padding: 1.25rem; border-radius: var(--radius-md); }
+    .fact strong { display: block; margin-bottom: .3rem; font-size: clamp(1.65rem, 3vw, 2.2rem); line-height: 1; letter-spacing: -.045em; }
+    .fact span { color: var(--tertiary); font-size: .8rem; line-height: 1.35; }
+
+    .bento { display: grid; grid-template-columns: 1.15fr .85fr; gap: 1rem; }
+    .bento-card { min-height: 255px; padding: clamp(1.4rem, 3vw, 2.1rem); border-radius: var(--radius-lg); }
+    .bento-card.wide { grid-row: span 2; min-height: 526px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+    .card-index { color: var(--accent-hot); font-size: .72rem; font-weight: 720; letter-spacing: .09em; }
+    .bento-card h3 { margin-top: 2rem; font-size: clamp(1.55rem, 3vw, 2.3rem); letter-spacing: -.04em; }
+    .bento-card p { max-width: 480px; margin-bottom: 0; }
+    .signal-lines { position: relative; height: 190px; margin: 2rem -2rem -2rem; overflow: hidden; }
+    .signal-lines span { position: absolute; right: -10%; width: 75%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,69,58,.65), transparent); transform: rotate(-14deg); }
+    .signal-lines span:nth-child(1) { top: 25%; }
+    .signal-lines span:nth-child(2) { top: 48%; width: 95%; }
+    .signal-lines span:nth-child(3) { top: 71%; width: 62%; }
+    .signal-orb { position: absolute; right: 15%; top: 40%; width: 5rem; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ffaca7, var(--accent) 25%, #6d0c14 68%, transparent 70%); box-shadow: 0 0 70px rgba(255,69,58,.45); }
+
+    .architecture-shell { overflow: hidden; border-radius: var(--radius-xl); }
+    .architecture-row {
+      display: grid;
+      grid-template-columns: 3rem 1fr minmax(160px, .75fr);
+      gap: 1rem;
+      align-items: center;
+      min-height: 6.4rem;
+      padding: 1.15rem 1.4rem;
+      border-bottom: 1px solid var(--hairline);
+      transition: background-color .2s ease;
+    }
+    .architecture-row:last-child { border-bottom: 0; }
+    .architecture-row:hover { background: rgba(255,255,255,.035); }
+    .architecture-row .step-no { color: var(--accent-hot); font-size: .76rem; font-weight: 750; }
+    .architecture-row strong { display: block; margin-bottom: .3rem; font-size: 1rem; }
+    .architecture-row p, .architecture-row > span { margin: 0; color: var(--tertiary); font-size: .8rem; }
+    .architecture-row > span { text-align: right; }
+    .flow-note { display: flex; align-items: flex-start; gap: 1rem; margin-top: 1rem; padding: 1.1rem 1.25rem; border: 1px solid rgba(255,214,10,.15); border-radius: var(--radius-md); background: rgba(255,214,10,.035); }
+    .flow-note svg { flex: 0 0 auto; color: var(--amber); }
+    .flow-note p { margin: 0; font-size: .82rem; }
+
+    .mode-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .85rem; }
+    .mode-card {
+      position: relative;
+      min-height: 235px;
+      padding: 1.35rem;
+      overflow: hidden;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,.025);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform .16s ease-out, border-color .25s ease, background-color .25s ease;
+    }
+    .mode-card::after { content: ""; position: absolute; right: -30%; bottom: -55%; width: 9rem; aspect-ratio: 1; border-radius: 50%; background: var(--accent); filter: blur(45px); opacity: 0; transition: opacity .3s ease; }
+    .mode-card:hover, .mode-card[aria-pressed="true"] { border-color: rgba(255,105,97,.38); background: rgba(255,69,58,.055); }
+    .mode-card[aria-pressed="true"]::after { opacity: .22; }
+    .mode-card .number { display: flex; justify-content: space-between; color: var(--accent-hot); font-size: .7rem; font-weight: 720; letter-spacing: .08em; }
+    .mode-card .number svg { opacity: 0; transform: translate(-4px,4px); transition: opacity .2s ease, transform .2s ease; }
+    .mode-card:hover .number svg, .mode-card[aria-pressed="true"] .number svg { opacity: 1; transform: none; }
+    .mode-card h3 { margin-top: 4.7rem; font-size: 1.35rem; }
+    .mode-card p { margin: 0; color: var(--tertiary); font-size: .82rem; }
+    .mode-detail { display: grid; grid-template-columns: .8fr 1.2fr; gap: 2rem; align-items: center; margin-top: 1rem; padding: clamp(1.5rem, 4vw, 2.6rem); border-radius: var(--radius-lg); }
+    .mode-detail-label { color: var(--accent-hot); font-size: .73rem; font-weight: 720; letter-spacing: .09em; text-transform: uppercase; }
+    .mode-detail h3 { margin: .5rem 0 0; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -.045em; }
+    .mode-detail ul { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem 1.2rem; margin: 0; padding: 0; list-style: none; }
+    .mode-detail li { display: flex; gap: .55rem; color: #c0c0c7; font-size: .86rem; }
+    .mode-detail li::before { content: ""; width: .42rem; height: .42rem; flex: 0 0 auto; margin-top: .45rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px rgba(255,69,58,.55); }
+    .custom-mode { margin-top: 1rem; padding: 1.35rem 1.5rem; border: 1px dashed rgba(255,255,255,.14); border-radius: var(--radius-md); color: var(--secondary); font-size: .83rem; line-height: 1.55; }
+    .custom-mode strong { color: var(--text); }
+
+    .timeline { position: relative; max-width: 900px; margin: 0 auto; }
+    .timeline::before { content: ""; position: absolute; top: 1rem; bottom: 1rem; left: 1.1rem; width: 1px; background: linear-gradient(var(--accent), var(--hairline) 70%, transparent); }
+    .timeline-item { position: relative; display: grid; grid-template-columns: 2.2rem 1fr; gap: 1.25rem; margin-bottom: 1rem; }
+    .timeline-dot { width: 2.2rem; height: 2.2rem; z-index: 1; display: grid; place-items: center; border: 1px solid rgba(255,105,97,.45); border-radius: 50%; background: var(--bg); color: var(--accent-hot); font-size: .66rem; font-weight: 750; box-shadow: 0 0 0 6px var(--bg); }
+    .timeline-copy { padding: 1.3rem 1.45rem; border-radius: var(--radius-md); }
+    .timeline-copy p { margin-bottom: 0; font-size: .86rem; }
+
+    .data-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
+    .data-card { min-height: 220px; padding: 1.5rem; border-radius: var(--radius-lg); }
+    .data-card:nth-child(1), .data-card:nth-child(4) { grid-column: span 7; }
+    .data-card:nth-child(2), .data-card:nth-child(3) { grid-column: span 5; }
+    .data-icon { width: 2.8rem; height: 2.8rem; display: grid; place-items: center; margin-bottom: 3.6rem; border-radius: .9rem; color: var(--accent-hot); background: rgba(255,69,58,.1); }
+    .data-card p { margin-bottom: 0; font-size: .86rem; }
+
+    .requirement-list { overflow: hidden; border-radius: var(--radius-lg); }
+    .requirement-row { display: grid; grid-template-columns: 1fr 8rem 1.6fr; gap: 1rem; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--hairline); font-size: .83rem; }
+    .requirement-row:last-child { border-bottom: 0; }
+    .requirement-row.head { color: var(--tertiary); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .requirement-row span:last-child { color: var(--secondary); }
+    .state { width: fit-content; padding: .35rem .55rem; border-radius: 999px; color: var(--green); background: rgba(48,209,88,.1); font-size: .68rem; font-weight: 720; }
+    .state.tbd { color: var(--amber); background: rgba(255,214,10,.1); }
+
+    .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .85rem; }
+    .person { min-height: 235px; padding: 1.35rem; border-radius: var(--radius-lg); }
+    .person-id { width: 3rem; height: 3rem; display: grid; place-items: center; margin-bottom: 4rem; border: 1px solid var(--hairline-bright); border-radius: 50%; color: var(--accent-hot); font-size: .75rem; font-weight: 700; }
+    .person h3 { font-size: 1rem; }
+    .person p { margin: 0; color: var(--tertiary); font-size: .76rem; }
+
+    .evidence { display: grid; grid-template-columns: 1.4fr .6fr; gap: 1rem; }
+    .evidence-main, .evidence-side { min-height: 390px; padding: 1.5rem; border-radius: var(--radius-xl); }
+    .evidence-main { position: relative; overflow: hidden; display: flex; align-items: flex-end; background: radial-gradient(circle at 65% 35%, rgba(255,69,58,.18), transparent 35%), rgba(255,255,255,.025); }
+    .evidence-main::before, .evidence-main::after { content: ""; position: absolute; width: 12rem; aspect-ratio: 1.15; border: 1px solid rgba(255,255,255,.1); clip-path: polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%); }
+    .evidence-main::before { top: 16%; left: 43%; transform: rotate(6deg); }
+    .evidence-main::after { top: 29%; left: 60%; transform: scale(.72) rotate(-7deg); }
+    .placeholder-copy { position: relative; z-index: 1; max-width: 420px; }
+    .placeholder-copy small { color: var(--accent-hot); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .placeholder-copy h3 { margin: .55rem 0; font-size: 1.5rem; }
+    .placeholder-copy p { margin: 0; font-size: .82rem; }
+    .evidence-side { display: flex; flex-direction: column; justify-content: space-between; }
+    .evidence-list { display: grid; gap: .65rem; }
+    .evidence-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 0; border-bottom: 1px solid var(--hairline); color: var(--secondary); font-size: .82rem; }
+    .evidence-item:last-child { border-bottom: 0; }
+    .evidence-item span:last-child { color: var(--tertiary); }
+
+    footer { padding: 3rem 0 calc(3rem + var(--safe-bottom)); border-top: 1px solid var(--hairline); }
+    .footer-grid { display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: end; }
+    .footer-brand { margin-bottom: .65rem; font-size: 1.2rem; font-weight: 750; letter-spacing: .08em; }
+    footer p { max-width: 520px; margin: 0; font-size: .78rem; }
+    .footer-meta { color: var(--tertiary); font-size: .74rem; text-align: right; line-height: 1.6; }
+
+    [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+    [data-reveal].visible { opacity: 1; transform: none; }
+
+    :focus-visible { outline: 2px solid var(--accent-hot); outline-offset: 4px; }
+    @keyframes pulse { 0% { opacity: .72; transform: translate(-50%,-50%) scale(.88); } 75%, 100% { opacity: 0; transform: translate(-50%,-50%) scale(2.05); } }
+    @keyframes ambient-spin { to { transform: rotate(360deg); } }
+
+    @media (hover: hover) and (pointer: fine) {
+      .button:hover, .nav-action:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.28); }
+      .mode-card:hover { transform: translateY(-3px); }
+    }
+    @media (max-width: 980px) {
+      .desktop-nav, .nav-action { display: none; }
+      .menu-button { display: grid; }
+      .desktop-nav.open {
+        position: absolute;
+        top: calc(4.65rem + var(--safe-top));
+        right: 1.25rem;
+        left: 1.25rem;
+        display: grid;
+        gap: .2rem;
+        padding: .75rem;
+        border: 1px solid var(--hairline);
+        border-radius: var(--radius-lg);
+        background: rgba(22,22,27,.92);
+        box-shadow: 0 24px 70px rgba(0,0,0,.48);
+        backdrop-filter: blur(28px) saturate(170%);
+        -webkit-backdrop-filter: blur(28px) saturate(170%);
+      }
+      .desktop-nav.open a { padding: .9rem 1rem; border-radius: .8rem; }
+      .desktop-nav.open a:active { background: rgba(255,255,255,.06); }
+      .desktop-nav a::after { display: none; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-copy { max-width: 760px; }
+      .system-stage { min-height: 520px; }
+      .mode-grid, .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .container { width: min(var(--max), calc(100% - 1.5rem - var(--safe-left) - var(--safe-right))); }
+      .section { padding: 5rem 0; }
+      h1 { font-size: clamp(4rem, 23vw, 6.4rem); }
+      h2 { font-size: clamp(2.45rem, 14vw, 4rem); }
+      .hero { padding-top: calc(6.7rem + var(--safe-top)); }
+      .hero-actions { display: grid; }
+      .system-stage { min-height: 440px; border-radius: var(--radius-lg); }
+      .node { width: 3.65rem; border-radius: 1.15rem; }
+      .gateway { width: 7rem; border-radius: 1.8rem; }
+      .stage-footer span:nth-child(2) { display: none; }
+      .facts { grid-template-columns: repeat(2, 1fr); }
+      .bento { grid-template-columns: 1fr; }
+      .bento-card.wide { min-height: 420px; }
+      .architecture-row { grid-template-columns: 2rem 1fr; }
+      .architecture-row > span { grid-column: 2; text-align: left; }
+      .mode-grid { display: flex; margin-inline: -.75rem; padding: 0 .75rem .65rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+      .mode-card { min-width: min(78vw, 300px); scroll-snap-align: start; }
+      .mode-grid::-webkit-scrollbar { display: none; }
+      .mode-detail { grid-template-columns: 1fr; }
+      .mode-detail ul { grid-template-columns: 1fr; }
+      .data-grid { grid-template-columns: 1fr; }
+      .data-card:nth-child(n) { grid-column: auto; }
+      .requirement-row { grid-template-columns: 1fr auto; }
+      .requirement-row.head { display: none; }
+      .requirement-row span:last-child { grid-column: 1 / -1; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .evidence { grid-template-columns: 1fr; }
+      .evidence-main { min-height: 350px; }
+      .evidence-side { min-height: auto; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-meta { text-align: left; }
+    }
+    @media (max-width: 430px) {
+      .facts, .team-grid { grid-template-columns: 1fr; }
+      .fact { min-height: 7rem; }
+      .person { min-height: 190px; }
+      .person-id { margin-bottom: 2.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition-duration: .01ms !important; }
+      [data-reveal] { opacity: 1; transform: none; }
+      .system-stage { transform: none !important; }
+    }
+    @media (prefers-reduced-transparency: reduce) {
+      .glass, .site-header.scrolled, .desktop-nav.open { background: #16161b; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    }
+    @media (prefers-contrast: more) {
+      :root { --hairline: rgba(255,255,255,.32); --secondary: #d0d0d5; --tertiary: #b0b0b6; }
+      .glass { background: #141418; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="header">
+    <div class="container nav-wrap">
+      <a class="brand" href="#inicio" aria-label="REAKT, ir al inicio"><span class="brand-mark">R</span><span>REAKT</span></a>
+      <nav class="desktop-nav" id="primary-nav" aria-label="Navegación principal">
+        <a href="#proyecto">Proyecto</a>
+        <a href="#sistema">Sistema</a>
+        <a href="#modos">Modos</a>
+        <a href="#desarrollo">Desarrollo</a>
+        <a href="#equipo">Equipo</a>
+      </nav>
+      <a class="nav-action" href="#evidencia">Ver evidencia</a>
+      <button class="menu-button" id="menu-button" type="button" aria-label="Abrir navegación" aria-controls="primary-nav" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="container hero-grid">
+        <div class="hero-copy" data-reveal>
+          <div class="eyebrow"><span class="status-dot"></span>Proyecto integrador · En desarrollo</div>
+          <h1>RE<span class="gradient-text">AKT</span></h1>
+          <p class="lede">Entrenamiento físico que responde a cada movimiento. Cinco módulos, un gateway y una aplicación pensados para convertir estímulos y pulsaciones en información útil.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#proyecto">Descubrir REAKT
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+            </a>
+            <a class="button" href="#sistema">Explorar el sistema</a>
+          </div>
+          <p class="hero-note">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            Hardware y transporte app↔gateway aún contienen decisiones TBD.
+          </p>
+        </div>
+
+        <div class="system-stage glass" id="system-stage" aria-label="Diagrama conceptual interactivo del gateway y cinco nodos REAKT" data-reveal>
+          <span class="stage-label">Topología prevista</span>
+          <span class="stage-status"><i></i>Concepto</span>
+          <div class="orbit"></div>
+          <div class="pulse-ring"></div>
+          <div class="gateway"><div><strong>Gateway</strong><span>ESP32</span></div></div>
+          <div class="node node-1"><small>Nodo 01</small></div>
+          <div class="node node-2"><small>Nodo 02</small></div>
+          <div class="node node-3"><small>Nodo 03</small></div>
+          <div class="node node-4"><small>Nodo 04</small></div>
+          <div class="node node-5"><small>Nodo 05</small></div>
+          <div class="stage-footer"><span>ESP-NOW</span><span>5 × ESP32</span><span>Pulsador + WS2812B</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container facts" aria-label="Resumen del sistema" data-reveal>
+      <div class="fact glass"><strong>5</strong><span>nodos periféricos previstos</span></div>
+      <div class="fact glass"><strong>7</strong><span>modos de entrenamiento</span></div>
+      <div class="fact glass"><strong>ESP-NOW</strong><span>enlace entre nodos y gateway</span></div>
+      <div class="fact glass"><strong>Flutter</strong><span>aplicación multiplataforma prevista</span></div>
+    </div>
+
+    <section class="section" id="proyecto">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="kicker">01 · El proyecto</p>
+          <h2>Entrenar es repetir.<br><span class="gradient-text">Evolucionar es medir.</span></h2>
+          <p class="lede">REAKT busca volver observable un entrenamiento que suele depender de la percepción: registrar respuestas, procesarlas y convertirlas en una lectura clara del rendimiento.</p>
+        </header>
+        <div class="bento">
+          <article class="bento-card wide glass" data-reveal>
+            <div><span class="card-index">PROPUESTA</span><h3>Una red física que convierte acción en datos.</h3><p>Los módulos generan estímulos y detectan pulsaciones. El gateway coordina los eventos y la aplicación organiza cada sesión para poder compararla.</p></div>
+            <div class="signal-lines" aria-hidden="true"><span></span><span></span><span></span><i class="signal-orb"></i></div>
+          </article>
+          <article class="bento-card glass" data-reveal><span class="card-index">PROBLEMA</span><h3>Lo que no se registra, se pierde.</h3><p>Sin un sistema común, tiempos, aciertos, errores y evolución quedan sujetos a una evaluación difícil de comparar.</p></article>
+          <article class="bento-card glass" data-reveal><span class="card-index">VISIÓN</span><h3>Una base, muchas formas de entrenar.</h3><p>La arquitectura busca sumar modos, métricas y módulos manteniendo un protocolo compartido.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sistema">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="kicker">02 · Arquitectura</p>
+          <h2>De la pulsación<br><span class="gradient-text">al dato.</span></h2>
+          <p class="lede">Cada capa tiene una responsabilidad clara: adquirir, iluminar, comunicar, procesar, persistir y presentar.</p>
+        </header>
+        <div class="architecture-shell glass" data-reveal>
+          <div class="architecture-row"><span class="step-no">01</span><div><strong>Módulos físicos</strong><p>ESP32 + pulsador mecánico NA + LED WS2812B</p></div><span>Entrada digital y estímulo visual</span></div>
+          <div class="architecture-row"><span class="step-no">02</span><div><strong>ESP-NOW</strong><p>Comunicación inalámbrica entre nodos y gateway</p></div><span>Protocolo común</span></div>
+          <div class="architecture-row"><span class="step-no">03</span><div><strong>Gateway</strong><p>ESP32 central para coordinar eventos y comunicación externa</p></div><span>Wi-Fi</span></div>
+          <div class="architecture-row"><span class="step-no">04</span><div><strong>Persistencia</strong><p>Supabase / PostgreSQL para usuarios, sesiones y métricas</p></div><span>Servicio autorizado</span></div>
+          <div class="architecture-row"><span class="step-no">05</span><div><strong>Aplicación</strong><p>Flutter para configuración, control y visualización</p></div><span>Interfaz app↔gateway: TBD</span></div>
+        </div>
+        <aside class="flow-note" data-reveal>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <p>La arquitectura de persistencia se implementará a través de la aplicación o de un servicio autorizado. No se presupone una conexión privilegiada directa desde el gateway.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="modos">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="kicker">03 · Entrenamientos</p>
+          <h2>Siete objetivos.<br><span class="gradient-text">Un mismo lenguaje.</span></h2>
+          <p class="lede">Elegí un modo para ver qué busca registrar. Todos comparten una estructura de datos común.</p>
+        </header>
+        <div class="mode-grid" id="mode-grid" data-reveal>
+          <button class="mode-card" type="button" aria-pressed="true" data-mode="memoria"><span class="number">01 · MEMORIA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span><h3>Recordar y reproducir.</h3><p>Patrones y secuencias progresivas.</p></button>
+          <button class="mode-card" type="button" aria-pressed="false" data-mode="agilidad"><span class="number">02 · AGILIDAD <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span><h3>Responder y desplazarse.</h3><p>Cambios rápidos y secuencias variables.</p></button>
+          <button class="mode-card" type="button" aria-pressed="false" data-mode="reflejos"><span class="number">03 · REFLEJOS <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span><h3>Reaccionar al estímulo.</h3><p>Activaciones aleatorias y respuesta.</p></button>
+          <button class="mode-card" type="button" aria-pressed="false" data-mode="velocidad"><span class="number">04 · VELOCIDAD <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span><h3>Ejecutar en menos tiempo.</h3><p>Ritmo de aparición y accionamiento.</p></button>
+          <button class="mode-card" type="button" aria-pressed="false" data-mode="resistencia"><span class="number">05 · RESISTENCIA <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span><h3>Mantener el rendimiento.</h3><p>Rounds, intervalos y descansos.</p></button>
+          <button class="mode-card" type="button" aria-pressed="false" data-mode="precision"><span class="number">06 · PRECISIÓN <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span><h3>Acertar el objetivo.</h3><p>Respuestas correctas e incorrectas.</p></button>
+          <button class="mode-card" type="button" aria-pressed="false" data-mode="coordinacion"><span class="number">07 · COORDINACIÓN <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span><h3>Sincronizar movimiento.</h3><p>Orden, patrones y ejecución.</p></button>
+        </div>
+        <div class="mode-detail glass" id="mode-detail" aria-live="polite" data-reveal>
+          <div><span class="mode-detail-label" id="detail-label">Modo 01</span><h3 id="detail-title">Memoria</h3></div>
+          <ul id="detail-list"><li>Patrones de estímulos</li><li>Secuencias progresivas</li><li>Aciertos y errores</li><li>Memoria de trabajo</li></ul>
+        </div>
+        <div class="custom-mode" data-reveal><strong>Entrenamiento personalizado.</strong> Combina objetivos, permite seleccionar hasta seis patrones y ejecutarlos en orden o de forma aleatoria. Es una configuración flexible, no un octavo modo.</div>
+      </div>
+    </section>
+
+    <section class="section" id="desarrollo">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="kicker">04 · Desarrollo</p>
+          <h2>Validar antes<br><span class="gradient-text">de integrar.</span></h2>
+          <p class="lede">El recorrido separa las decisiones de arquitectura, las pruebas del hardware y la integración del sistema completo.</p>
+        </header>
+        <div class="timeline">
+          <article class="timeline-item" data-reveal><span class="timeline-dot">01</span><div class="timeline-copy glass"><h3>Arquitectura y diseño</h3><p>Definición del sistema, modos, flujo de datos, interfaz y stack tecnológico.</p></div></article>
+          <article class="timeline-item" data-reveal><span class="timeline-dot">02</span><div class="timeline-copy glass"><h3>Hardware y firmware base</h3><p>Prototipo de nodo con pulsador NA y WS2812B. Placa, GPIO y alimentación continúan TBD.</p></div></article>
+          <article class="timeline-item" data-reveal><span class="timeline-dot">03</span><div class="timeline-copy glass"><h3>Comunicación</h3><p>Validación de ESP-NOW entre gateway y nodos, incluyendo pérdidas, duplicados y timeouts.</p></div></article>
+          <article class="timeline-item" data-reveal><span class="timeline-dot">04</span><div class="timeline-copy glass"><h3>Aplicación</h3><p>Flutter para configurar entrenamientos, visualizar resultados, historial y estadísticas.</p></div></article>
+          <article class="timeline-item" data-reveal><span class="timeline-dot">05</span><div class="timeline-copy glass"><h3>Backend e integración</h3><p>Persistencia autorizada en Supabase/PostgreSQL e integración entre las capas.</p></div></article>
+          <article class="timeline-item" data-reveal><span class="timeline-dot">06</span><div class="timeline-copy glass"><h3>Prototipo final y exposición</h3><p>Pruebas, documentación, presentación y demostración del sistema.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="datos">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="kicker">05 · Aplicación</p>
+          <h2>Los datos también<br><span class="gradient-text">entrenan.</span></h2>
+          <p class="lede">La aplicación prevista organiza la actividad para que cada sesión tenga contexto y pueda compararse con las anteriores.</p>
+        </header>
+        <div class="data-grid">
+          <article class="data-card glass" data-reveal><div class="data-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 13h4l2-7 4 13 2-6h4"/></svg></div><h3>Resumen</h3><p>Última sesión, métricas principales, racha y acceso al entrenamiento.</p></article>
+          <article class="data-card glass" data-reveal><div class="data-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Historial</h3><p>Calendario y detalle de las sesiones realizadas.</p></article>
+          <article class="data-card glass" data-reveal><div class="data-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m4 17 5-5 4 3 7-8"/><path d="M15 7h5v5"/></svg></div><h3>Estadísticas</h3><p>Evolución de reacción, precisión, velocidad y resistencia.</p></article>
+          <article class="data-card glass" data-reveal><div class="data-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 3 2.5 5.1 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8L12 3Z"/></svg></div><h3>Récords</h3><p>Mejores resultados personales y logros vinculados a condiciones de entrenamiento.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="requisitos">
+      <div class="container">
+        <header class="section-head" data-reveal><p class="kicker">06 · Integración curricular</p><h2>Electrónica y software,<br><span class="gradient-text">en un solo sistema.</span></h2><p class="lede">Los estados reflejan decisiones del proyecto, no resultados de pruebas todavía no realizadas.</p></header>
+        <div class="requirement-list glass" data-reveal>
+          <div class="requirement-row head"><span>Componente</span><span>Estado</span><span>Aplicación en REAKT</span></div>
+          <div class="requirement-row"><strong>Microcontrolador</strong><span class="state">TODO</span><span>Un gateway ESP32 y cinco nodos ESP32.</span></div>
+          <div class="requirement-row"><strong>Sensor / adquisición</strong><span class="state tbd">TBD</span><span>Pulsador NA como entrada digital; requiere confirmación docente.</span></div>
+          <div class="requirement-row"><strong>Procesamiento</strong><span class="state">TODO</span><span>Firmware para adquisición, lógica y eventos.</span></div>
+          <div class="requirement-row"><strong>Conectividad</strong><span class="state">TODO</span><span>Wi-Fi externo y ESP-NOW entre dispositivos.</span></div>
+          <div class="requirement-row"><strong>Aplicación</strong><span class="state">TODO</span><span>Flutter para control, configuración y visualización.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="equipo">
+      <div class="container">
+        <header class="section-head" data-reveal><p class="kicker">07 · Equipo</p><h2>Un proyecto.<br><span class="gradient-text">Distintas miradas.</span></h2><p class="lede">Los roles específicos todavía están por definir.</p></header>
+        <div class="team-grid">
+          <article class="person glass" data-reveal><div class="person-id">CO</div><h3>Chirino Olmedo Constantino</h3><p>Equipo REAKT · rol por definir</p></article>
+          <article class="person glass" data-reveal><div class="person-id">MM</div><h3>Mendez Mia</h3><p>Equipo REAKT · rol por definir</p></article>
+          <article class="person glass" data-reveal><div class="person-id">PH</div><h3>Palma Huenteleo Justino</h3><p>Equipo REAKT · rol por definir</p></article>
+          <article class="person glass" data-reveal><div class="person-id">PM</div><h3>Pereyra Mia</h3><p>Equipo REAKT · rol por definir</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="evidencia">
+      <div class="container">
+        <header class="section-head" data-reveal><p class="kicker">08 · Evidencia</p><h2>El proceso también<br><span class="gradient-text">es parte del resultado.</span></h2><p class="lede">Espacio preparado para incorporar material real a medida que el prototipo avance.</p></header>
+        <div class="evidence">
+          <div class="evidence-main glass" data-reveal><div class="placeholder-copy"><small>Imagen pendiente</small><h3>Prototipo REAKT</h3><p>Este espacio se reemplazará con una fotografía validada del sistema físico.</p></div></div>
+          <aside class="evidence-side glass" data-reveal><div><span class="card-index">MATERIAL PREVISTO</span><div class="evidence-list"><div class="evidence-item"><span>Aplicación Flutter</span><span>Capturas</span></div><div class="evidence-item"><span>Hardware</span><span>Fotografías</span></div><div class="evidence-item"><span>ESP-NOW</span><span>Pruebas</span></div><div class="evidence-item"><span>Firmware</span><span>Documentación</span></div></div></div><p>Sin métricas ni pruebas declaradas hasta contar con evidencia.</p></aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div><div class="footer-brand">REAKT</div><p>Sistema inteligente de entrenamiento y análisis de rendimiento. Proyecto integrador de la E.E.S.T. N.º 4.</p></div>
+      <div class="footer-meta">Electrónica Digital · Lenguajes Electrónicos<br>Estado general: en desarrollo</div>
+    </div>
+  </footer>
+
+  <script>
+    const header = document.querySelector('#header');
+    const nav = document.querySelector('#primary-nav');
+    const menuButton = document.querySelector('#menu-button');
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+    const syncHeader = () => header.classList.toggle('scrolled', scrollY > 16);
+    syncHeader();
+    addEventListener('scroll', syncHeader, { passive: true });
+
+    menuButton.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('open');
+      menuButton.setAttribute('aria-expanded', String(isOpen));
+      menuButton.setAttribute('aria-label', isOpen ? 'Cerrar navegación' : 'Abrir navegación');
+    });
+    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+    }));
+
+    const reveals = document.querySelectorAll('[data-reveal]');
+    if (reduceMotion.matches || !('IntersectionObserver' in window)) {
+      reveals.forEach(el => el.classList.add('visible'));
+    } else {
+      const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: .12 });
+      reveals.forEach(el => revealObserver.observe(el));
+    }
+
+    const sections = [...document.querySelectorAll('main section[id]')];
+    const navLinks = [...nav.querySelectorAll('a')];
+    if ('IntersectionObserver' in window) {
+      const spy = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          navLinks.forEach(link => link.classList.toggle('active', link.hash === '#' + entry.target.id));
+        });
+      }, { rootMargin: '-30% 0px -60%', threshold: 0 });
+      sections.forEach(section => spy.observe(section));
+    }
+
+    const modeData = {
+      memoria: ['Modo 01', 'Memoria', 'Patrones de estímulos', 'Secuencias progresivas', 'Aciertos y errores', 'Memoria de trabajo'],
+      agilidad: ['Modo 02', 'Agilidad', 'Cambios rápidos', 'Secuencias variables', 'Tiempo de ejecución', 'Precisión'],
+      reflejos: ['Modo 03', 'Reflejos', 'Activación aleatoria', 'Tiempo de reacción', 'Aciertos y errores', 'Precisión'],
+      velocidad: ['Modo 04', 'Velocidad', 'Duración configurable', 'Velocidad de aparición', 'Objetivos y accionamientos', 'Velocidad máxima'],
+      resistencia: ['Modo 05', 'Resistencia', 'Rounds e intervalos', 'Descansos configurables', 'Dificultad progresiva', 'Rendimiento por round'],
+      precision: ['Modo 06', 'Precisión', 'Aciertos y errores', 'Porcentaje de precisión', 'Objetivos configurables', 'Control de rendimiento'],
+      coordinacion: ['Modo 07', 'Coordinación', 'Patrones de módulos', 'Orden y secuencia', 'Tiempo de ejecución', 'Errores de coordinación']
+    };
+    const cards = document.querySelectorAll('.mode-card');
+    const detailLabel = document.querySelector('#detail-label');
+    const detailTitle = document.querySelector('#detail-title');
+    const detailList = document.querySelector('#detail-list');
+    cards.forEach(card => card.addEventListener('click', () => {
+      cards.forEach(item => item.setAttribute('aria-pressed', String(item === card)));
+      const [label, title, ...items] = modeData[card.dataset.mode];
+      detailLabel.textContent = label;
+      detailTitle.textContent = title;
+      detailList.replaceChildren(...items.map(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        return li;
+      }));
+    }));
+
+    const stage = document.querySelector('#system-stage');
+    if (!reduceMotion.matches && matchMedia('(pointer: fine)').matches) {
+      let frame;
+      stage.addEventListener('pointermove', event => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const rect = stage.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width - .5;
+          const y = (event.clientY - rect.top) / rect.height - .5;
+          stage.style.setProperty('--tilt-x', `${-y * 3.5}deg`);
+          stage.style.setProperty('--tilt-y', `${x * 3.5}deg`);
+        });
+      });
+      stage.addEventListener('pointerleave', () => {
+        stage.style.setProperty('--tilt-x', '0deg');
+        stage.style.setProperty('--tilt-y', '0deg');
+      });
+    }
+  </script>
+</body>
+</html>

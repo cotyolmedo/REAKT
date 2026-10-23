@@ -1,45 +1,47 @@
-# REAKT Documentation
+# Documentación REAKT
 
-This directory contains the technical documentation for REAKT.
+Esta carpeta distingue requisitos, decisiones, implementación y evidencia de
+pruebas del proyecto.
 
-## Documentation map
+## Mapa documental
 
-| File | Purpose |
+| Archivo | Contenido |
 |---|---|
-| `requirements.md` | Official school requirements relevant to the project |
-| `architecture.md` | System architecture and component responsibilities |
-| `hardware.md` | Hardware, GPIOs, power and physical interfaces |
-| `firmware.md` | Firmware conventions and embedded behavior |
-| `packet-protocol.md` | Common communication packet definition |
-| `app.md` | Flutter application architecture |
-| `backend.md` | Supabase/PostgreSQL architecture |
-| `development.md` | Development workflow and tools |
-| `testing.md` | Testing strategy and validation |
-| `roadmap.md` | Project phases and current progress |
-| `decisions.md` | Important architectural decisions |
-| `glossary.md` | Project terminology |
+| `requirements.md` | Requisitos escolares de referencia |
+| `requirements-addendum.md` | Verificación pendiente sobre el pulsador como sensor |
+| `architecture.md` | Arquitectura y responsabilidades |
+| `hardware.md` | Inventario, interfaces físicas y pendientes |
+| `firmware.md` | Convenciones y comportamiento embebido |
+| `packet-protocol.md` | Protocolo común todavía no finalizado |
+| `app.md` | Arquitectura prevista de Flutter |
+| `backend.md` | Arquitectura prevista de Supabase/PostgreSQL |
+| `development.md` | Flujo de desarrollo |
+| `testing.md` | Estrategia, evidencia y verificaciones realizadas |
+| `roadmap.md` | Fases y estado real |
+| `decisions.md` | Decisiones arquitectónicas (ADR) |
+| `diseno-mecanico.md` | Especificación conceptual de carcasa |
+| `pcb/README.md` | Índice de ingeniería PCB y puertas de decisión |
+| `cambios-2026-10-08.md` | Trazabilidad del cambio de nodos y entrada |
+| `glossary.md` | Términos del proyecto |
 
-## Source-of-truth rules
+## Fuentes de verdad
 
-Code is the source of truth for implementation.
+- El código describe lo implementado.
+- Esta documentación describe requisitos y decisiones acordadas.
+- `Docs/testing.md` describe únicamente verificaciones con evidencia.
+- Los sketches en `Tests/` pueden ser históricos y no representan el diseño
+  vigente.
 
-Documentation is the source of truth for agreed architecture, requirements and decisions.
+Si código y documentación discrepan, determinar primero cuál refleja la última
+decisión intencional, actualizar la fuente obsoleta y registrar un ADR cuando
+exista un cambio de arquitectura.
 
-When code and documentation disagree:
+## Estados
 
-1. Determine which one reflects the latest intentional decision.
-2. Do not silently rewrite one to match the other.
-3. Update the outdated source.
-4. Record a decision if the disagreement represents an architectural change.
+- `TBD`: por definir.
+- `TODO`: decidido, no implementado.
+- `IN PROGRESS`: en desarrollo.
+- `DONE`: implementado y verificado.
+- `BLOCKED`: depende de una decisión, pieza o validación externa.
 
-## Status notation
-
-Use:
-
-- `TBD` → not decided
-- `TODO` → decided but not implemented
-- `IN PROGRESS` → currently being implemented
-- `DONE` → implemented and validated
-- `BLOCKED` → cannot proceed because of an external dependency
-
-Do not mark something `DONE` without evidence.
+No marcar elementos como `DONE` sin evidencia verificable.

@@ -1,39 +1,38 @@
-﻿# REAKT Gateway Firmware
+# Firmware del gateway REAKT
 
-## Status
+## Estado
 
-Base transport scaffold. It is not yet a functional gateway for training
-sessions.
+`REAKT_Gateway/REAKT_Gateway.ino` es una base de transporte ESP-NOW. Recibe
+tramas en una cola acotada y las procesa fuera del callback. No implementa
+todavía sesiones ni el protocolo v1.
 
-## What exists
+## Implementado
 
-`REAKT_Gateway.ino`:
+- Inicialización Wi-Fi en modo estación y ESP-NOW.
+- Callbacks de envío y recepción con contadores separados de tramas inválidas,
+  tramas descartadas por cola llena y fallos de transmisión.
+- Cola de recepción protegida; el callback no interpreta el payload.
+- Recuperación periódica y no bloqueante si falla la inicialización.
+- Diagnóstico periódico mediante `millis()`.
 
-- starts the ESP32 in station mode;
-- initializes ESP-NOW;
-- registers send and receive callbacks;
-- records transport-level diagnostics without interpreting payloads;
-- uses a non-blocking `millis()` diagnostic interval;
-- leaves explicit hooks for app commands, node-event processing, and outputs.
+## Pendiente
 
-## Intentionally not implemented
+- Campos y serialización del protocolo v1.
+- MAC, IDs y política de canal de los cinco nodos.
+- ACK, reintentos, deduplicación y timeouts semánticos.
+- Transporte App ↔ gateway y lógica de sesiones.
+- GPIO, indicadores y placa exacta del gateway.
 
-- final node MAC addresses or node registration;
-- radio-channel policy;
-- packet encoding, validation, ACKs, retries, or deduplication;
-- App-to-Gateway protocol;
-- GPIOs, sensors, actuators, or power handling;
-- Supabase integration;
-- session or training-mode logic.
+Esos elementos siguen `TBD` en `Docs/packet-protocol.md`, `Docs/hardware.md` y
+`Docs/architecture.md`.
 
-Those items are still TBD in `Docs/hardware.md` and
-`Docs/packet-protocol.md`, or require a documented architectural decision.
+## Validación pendiente
 
-## Validation pending
+1. Seleccionar la placa ESP32 gateway real y registrar la versión del core.
+2. Compilar el sketch para ese destino.
+3. Verificar por monitor serie la inicialización y la recuperación.
+4. Probar recepción y transmisión con un nodo ESP32 real.
+5. Extender a cinco nodos tras definir protocolo y direccionamiento.
 
-1. Select the actual ESP32 gateway board in Arduino IDE.
-2. Compile `REAKT_Gateway.ino` with the project ESP32 Arduino core.
-3. Confirm serial output reports `ESP-NOW ready`.
-4. Record a one-node ESP32-C3 receive test before marking roadmap work done.
-
-No physical validation is claimed by this scaffold.
+No hay validación física registrada. No agregar credenciales, MAC, GPIO ni
+campos de protocolo ficticios para aparentar una implementación completa.

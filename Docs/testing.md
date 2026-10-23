@@ -1,114 +1,119 @@
-# REAKT Testing Strategy
+# Estrategia y registro de pruebas REAKT
 
-## Verificación de la interfaz Flutter — 2026-10-09
+## Criterio
 
-- Estado: UNVERIFIED.
-- Se revisó estáticamente la estructura de `app/`.
-- No fue posible ejecutar `flutter analyze` ni `flutter test` porque el SDK de Flutter no está disponible en este entorno.
-- Falta validar el renderizado en Android/iOS y conectar datos reales cuando se defina la interfaz app↔gateway.
+Avanzar de componentes aislados hacia integración. Una prueba solo se considera
+aprobada si registra condiciones, versión, resultado esperado, resultado real y
+evidencia cuando corresponda. No inferir validación física desde una revisión
+estática o un archivo CAD.
 
-## Testing philosophy
+## Matriz pendiente
 
-Testing must progress from isolated components to complete system integration.
+### Firmware y ESP-NOW
 
-## Firmware tests
+- [ ] Compilar gateway y nodo para la placa ESP32 real; registrar versión del
+  core.
+- [ ] Verificar inicialización, transmisión y recepción con un nodo.
+- [ ] Extender a cinco nodos.
+- [ ] Probar límites, paquetes inválidos, cola llena, pérdidas, duplicados,
+  orden, timeouts y recuperación.
+- [ ] Probar coexistencia entre el transporte App ↔ gateway y el canal ESP-NOW.
 
-### ESP32 ↔ ESP32-C3
+### Pulsador NA
 
-Verify:
+- [ ] Verificar GPIO y polaridad antes de habilitar `BUTTON_GPIO`.
+- [ ] Confirmar un solo evento por pulsación y rearme tras liberación.
+- [ ] Probar rebote, pulsaciones rápidas/prolongadas y vibración.
+- [ ] Definir y medir el criterio de timestamp.
 
-- node discovery/addressing
-- packet transmission
-- packet reception
-- invalid packets
-- lost packets
-- timeout behavior
-- multiple nodes
-- simultaneous events where applicable
+### WS2812B y alimentación
 
-### Sensors
+- [ ] Verificar estados visuales, nivel lógico, brillo y consumo máximo.
+- [ ] Medir tensiones durante picos de LED y radio.
+- [ ] Verificar protección, carga, temperatura y batería baja.
+- [ ] Probar operación durante carga solo si existe un *power-path* diseñado.
 
-For every sensor:
+### Aplicación
 
-- idle state
-- activation
-- false trigger behavior
-- expected range
-- electrical limits
+- [ ] Ejecutar `flutter analyze` y pruebas automatizadas.
+- [ ] Validar navegación y renderizado en Android/iOS.
+- [ ] Probar conexión, desconexión, datos inválidos y errores de backend.
+- [ ] Sustituir datos de demostración solo cuando existan interfaces reales.
 
-### Actuators
+### Backend
 
-Verify:
+- [ ] Probar migraciones, restricciones, CRUD, autenticación y RLS.
+- [ ] Verificar que Flutter no use claves privilegiadas.
+- [ ] Probar fallos de red y autorización.
 
-- correct output
-- timing
-- repeated activation
-- failure/recovery behavior
-
-## Application tests
-
-Verify:
-
-- screen navigation
-- session configuration
-- connection states
-- malformed data handling
-- result visualization
-- backend errors
-- offline/disconnected behavior where applicable
-
-## Backend tests
-
-Verify:
-
-- schema constraints
-- inserts
-- reads
-- updates
-- authorization
-- invalid data
-- failure handling
-
-## Integration tests
-
-At minimum:
+### Integración
 
 ```text
-Flutter
-  ↓
-Gateway
-  ↓
-ESP32-C3
-  ↓
-Gateway
-  ↓
-Flutter
-  ↓
-Supabase
+Flutter → gateway → nodo (WS2812B)
+Flutter ← gateway ← nodo (pulsador)
+Flutter o servicio autorizado ↔ Supabase/PostgreSQL
 ```
 
-Test both normal operation and communication failures.
+Validar camino normal, desconexiones y recuperación antes de la exhibición.
 
-## Evidence
+## Evidencia existente
 
-When a requirement depends on physical hardware:
+### Consolidación del repositorio — 2026-10-10
 
-- record test conditions
-- record expected result
-- record actual result
-- record date/version when useful
-- store photo/video evidence when required by school documentation
+- `git diff --check`: completado sin errores de espacios en blanco.
+- Revisión automatizada de enlaces Markdown locales: 0 enlaces rotos.
+- Búsqueda fuera de `Tests/`: sin referencias a las antiguas rutas paralelas
+  numeradas.
+- Búsqueda en `firmware/`: sin llamadas a `delay()`.
+- Búsqueda de patrones comunes de tokens JWT/API: sin coincidencias.
+- Arduino CLI, PlatformIO, KiCad CLI y compilador C++ independiente: no
+  disponibles; compilación de firmware y nuevo DRC no ejecutados.
 
-Codex must never fabricate physical test results.
+### Flutter — 2026-10-09
 
-## Web REAKT — auditoría Apple
+- Revisión estática de `app/` realizada.
+- `flutter analyze`, pruebas y renderizado quedaron sin ejecutar porque el SDK
+  no estaba disponible en ese entorno.
+- Estado: no verificado en dispositivo.
 
-- Se verificaron estáticamente los metadatos Apple, `viewport-fit=cover`, safe areas, navegación móvil y manifest de `REAKT_web.html` el 2026-10-09.
-- La verificación visual en Safari sobre iPhone/iPad y el modo Home Screen queda pendiente porque no hay dispositivo Apple disponible en este entorno.
-- El detalle de cada cambio está documentado en `cambios pagina.md`.
+### Flutter — intento de verificación 2026-10-10
 
-## PCB V0.1 verification
+- El SDK fue detectado en el entorno, pero `flutter pub get`/`flutter analyze` y
+  luego `flutter --version` no produjeron salida y agotaron los límites de 120 s
+  y 30 s respectivamente.
+- No se generó `pubspec.lock` ni se modificó `app/`.
+- Estado: análisis aún pendiente; investigar la instalación del SDK antes de
+  atribuir el timeout al proyecto.
 
-- KiCad 9 CLI DRC ran on `hardware/pcb/reakt-nodo/reakt-nodo.kicad_pcb` on 2026-10-09.
-- Result: file parsed; 0 unconnected pads; 14 silkscreen/library warnings; exit code 0 because violation exit mode was not requested.
-- ERC, schematic parity, fabrication review, 3D fit and physical tests: pending because the real component variants and power architecture are TBD.
+### Prototipo web — 2026-10-09
+
+- Revisión estática de metadatos Apple, `viewport-fit=cover`, safe areas,
+  navegación móvil y manifest en `REAKT_web.html`.
+- Safari en iPhone/iPad y modo Home Screen: pendientes.
+- Detalle en `cambios pagina.md`.
+
+### PCB V0.1 — 2026-10-09
+
+- KiCad 9 CLI pudo analizar `hardware/pcb/reakt-nodo/reakt-nodo.kicad_pcb`.
+- Informe guardado en `hardware/pcb/reakt-nodo/drc-v0.1.rpt`: cero pads sin
+  conectar y advertencias esperables por footprints/serigrafía provisionales.
+- Esto no constituye un DRC limpio de liberación.
+- Esquemático, ERC, revisión de fabricación, encastre 3D y pruebas físicas:
+  pendientes.
+
+## Pruebas históricas
+
+Los sketches en `Tests/` con ESP32-C3 o piezoeléctricos son antecedentes. No
+validan los cinco nodos ESP32 con pulsador del diseño actual.
+
+## Plantilla de evidencia
+
+Registrar para cada ensayo:
+
+- fecha y responsable;
+- commit o versión de archivos;
+- placa, componentes y conexiones reales;
+- herramientas y configuración;
+- procedimiento y resultado esperado;
+- resultado real, mediciones y errores;
+- fotos, video o logs cuando correspondan.

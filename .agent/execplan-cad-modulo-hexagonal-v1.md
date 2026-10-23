@@ -11,10 +11,10 @@ La documentacion vigente describe un modulo hexagonal conceptual con ESP32, puls
 Archivos relevantes:
 
 - `Docs/README.md`
-- `Docs1/diseno-mecanico.md`
-- `Docs1/pcb/componentes-dimensiones.md`
-- `Docs1/pcb/plan-codex.md`
-- `Docs1/decisions.md`
+- `Docs/diseno-mecanico.md`
+- `Docs/pcb/componentes-dimensiones.md`
+- `Docs/pcb/plan-codex.md`
+- `Docs/decisions.md`
 
 ## 3. Requirements
 

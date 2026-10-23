@@ -9,24 +9,23 @@ TP4056 1S (módulo a identificar) ─── Celda 1S protegida / protección equ
     └── [gestión de carga y power-path TBD] ── interruptor / protección de línea
                                                  │
                                      ┌───────────┴───────────┐
-                                regulador 3V3          regulador 5V LED
+                              alimentación ESP32    alimentación LED
                                      │                       │
-                              ESP32 DevKit             WS2812B + bulk C
+                              ESP32 por definir          WS2812B
                                      │                       ▲
-                        GPIO27 ← pulsador NA           74AHCT125 ← GPIO18
-                        GPIO34 ← divisor batería
-                        GPIO25 → buzzer opcional
-                        Wi-Fi/ESP-NOW ↔ gateway
+                         GPIO TBD ← pulsador NA      adaptación TBD ← GPIO TBD
+                         ADC TBD  ← medición batería opcional
+                         Wi-Fi/ESP-NOW ↔ gateway
 ```
 El esquema es **conceptual**, no una netlist fabricable. La topología real de power-path, protecciones, reguladores, masa y puertos debe seleccionarse con hojas técnicas.
 
 ## Bloques del esquemático en KiCad
 1. `PWR_INPUT`: entrada del cargador, batería, protección, interruptor y fusible adecuado.
-2. `REG_3V3`: fuente para ESP32, picos RF, desacoplamiento y pruebas.
-3. `REG_5V_LED`: fuente de LED dimensionada para corriente y autonomía objetivo.
+2. `PWR_ESP32`: fuente compatible con la placa real, picos RF, desacoplamiento y pruebas.
+3. `PWR_LED`: fuente de LED dimensionada para tensión, corriente y autonomía objetivo.
 4. `MCU_CARRIER`: dos conectores hembra del ESP32; footprint medido y orientación marcada.
 5. `INPUT_IMPACT`: conector 2 vías, pull-up, protección/filtrado opcional según cable y ESD; masa común.
-6. `RGB`: buffer 74AHCT125 a 5 V, salida datos, resistencia serie, bulk capacitor y conector 3 vías.
+6. `RGB`: adaptación de nivel si corresponde, salida de datos, protección/desacoplamiento y conector.
 7. `VBAT_SENSE`: divisor a ADC1, posible habilitación por MOSFET y filtrado; evitar consumo parasitario.
 8. `SERVICE`: testpoints GND, VBAT, 3V3, 5V, DATA, INPUT; serigrafía y puntos de depuración.
 

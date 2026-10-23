@@ -1,82 +1,61 @@
-# REAKT Hardware
+# Hardware REAKT
 
-## Main hardware
+## Inventario vigente
 
-Current planned architecture:
+| Elemento | Cantidad | Estado |
+|---|---:|---|
+| ESP32 central (gateway) | 1 | Arquitectura aceptada; placa exacta `TBD` |
+| ESP32 periféricos | 5 | Arquitectura aceptada; placa exacta `TBD` |
+| Pulsador mecánico normalmente abierto | 1 por nodo | Entrada acordada; modelo `TBD` |
+| LED RGB direccionable WS2812B | `TBD` | Salida acordada; cantidad por nodo `TBD` |
+| Carga y alimentación recargable | `TBD` | Topología, componentes y protección `TBD` |
 
-- 1 × ESP32 gateway
-- 5 × ESP32-C3 nodes
-- sensors/input devices according to each training mode
-- LED/actuator feedback
-- rechargeable battery-powered nodes where applicable
+Los ensayos antiguos con ESP32-C3 y piezoeléctricos no definen el hardware
+actual. Sus GPIO tampoco deben copiarse a las placas nuevas.
 
-## ESP32 gateway
+## Nodo ESP32
 
-Role:
+- Entrada digital mediante pulsador NA. Cuando el circuito y el GPIO lo
+  permitan, la opción prevista es pulsador hacia GND con `INPUT_PULLUP`.
+- Lectura por flancos, antirrebote no bloqueante y un evento por accionamiento.
+- Salida WS2812B para estímulo y estados; cantidad, GPIO, tensión, limitación de
+  brillo y adaptación de nivel continúan `TBD`.
+- ESP-NOW hacia el gateway; canal, pares y direccionamiento continúan `TBD`.
+- Carcasa hexagonal conceptual. La PCB, la batería y el pulsador deben quedar
+  fuera del camino principal de carga mecánica.
 
-- central wireless coordinator
-- communication bridge between application and nodes
+El pulsador no mide fuerza, energía ni intensidad de impacto.
 
-Board-specific GPIO assignments must be documented here when finalized.
+## Gateway ESP32
 
-Current status:
+Coordina los cinco nodos y se comunica con Flutter. Placa, GPIO, alimentación e
+interfaz App ↔ gateway siguen `TBD`.
 
-- GPIO map: TBD
-- power supply: TBD
-- enclosure: TBD
+## Alimentación y seguridad
 
-## ESP32-C3 nodes
+Antes de diseñar el esquemático final se debe definir y verificar:
 
-Each node is an independent training device.
+1. batería, química, capacidad y protección;
+2. cargador y corriente de carga;
+3. comportamiento durante carga y necesidad de *power-path*;
+4. regulación para ESP32 y WS2812B;
+5. consumo máximo y autonomía objetivo;
+6. conectores, fusibles/protecciones y prevención de retorno de corriente;
+7. fijación y aislamiento mecánico de la celda.
 
-Responsibilities may include:
+Un módulo TP4056 previsto no debe tratarse como regulador ni como solución de
+*power-path*. No conectar una celda directamente a `3V3` ni asumir que un GPIO
+puede manejar una carga sin revisar tensión y corriente.
 
-- push-button input
-- piezoelectric sensor
-- LED output
-- other mode-specific sensors/actuators
+## Decisiones bloqueantes
 
-Existing development tests have used, where applicable:
+- Identificar y medir las placas ESP32 reales.
+- Elegir GPIO compatibles evitando pines de arranque o funciones reservadas.
+- Elegir pulsador y documentar fuerza, carrera, sobrecarrera y vida útil.
+- Definir cantidad de LED y presupuesto de corriente.
+- Cerrar batería, protección, carga, regulación y política durante carga.
+- Confirmar con docentes si el pulsador satisface el requisito de sensor.
 
-- button: GPIO 4
-- piezoelectric input: GPIO 5
-- LED: GPIO 8
-
-These pins must be verified against the actual board and final circuit before being treated as final.
-
-## Power
-
-Nodes may use rechargeable batteries and a charging circuit.
-
-The final design must explicitly define:
-
-- battery chemistry/type
-- nominal voltage
-- holder/connector
-- charging module
-- protection
-- power-path behavior
-- regulator requirements
-- maximum current
-- operating time target
-
-Do not invent electrical ratings.
-
-## Hardware documentation requirements
-
-For every finalized circuit document:
-
-- schematic
-- GPIO table
-- supply voltage
-- current considerations
-- sensor/actuator electrical interface
-- protection components
-- connector/pinout
-- known risks
-
-## Safety
-
-Never assume a GPIO can directly drive a load without checking current and voltage requirements.
-
-Document level shifting, transistor/MOSFET drivers, resistors and protection components where required.
+La ingeniería preliminar se organiza en `Docs/pcb/README.md` y
+`Docs/diseno-mecanico.md`. Ninguna dimensión aproximada autoriza un footprint o
+una fabricación final.

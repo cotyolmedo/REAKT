@@ -1,6 +1,6 @@
 # Firmware vigente de REAKT
 
-Esta carpeta contiene la estructura de firmware alineada con `Docs1/`:
+Esta carpeta contiene la estructura de firmware alineada con `Docs/`:
 
 - `gateway/REAKT_Gateway/REAKT_Gateway.ino`: ESP32 central.
 - `nodes/REAKT_Node/REAKT_Node.ino`: firmware común para los cinco ESP32 periféricos.

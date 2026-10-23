@@ -1,51 +1,28 @@
-# REAKT Glossary
+# Glosario REAKT
 
-## Gateway
+**Gateway:** ESP32 central que coordina los nodos y se comunica con la app.
 
-The central ESP32 responsible for coordinating the ESP32-C3 nodes and communicating with the application.
+**Nodo:** uno de los cinco ESP32 periféricos de entrenamiento.
 
-## Node
+**ESP-NOW:** transporte inalámbrico previsto entre gateway y nodos.
 
-An ESP32-C3 training device.
+**Pulsador NA:** contacto normalmente abierto; entrega una entrada digital al
+cerrarse y no mide fuerza.
 
-## ESP-NOW
+**Antirrebote:** validación temporal que evita contar varias transiciones
+eléctricas o mecánicas como pulsaciones independientes.
 
-Wireless communication mechanism used by the gateway and nodes.
+**WS2812B:** LED RGB direccionable previsto como salida visual de los nodos.
 
-## Mode
+**Modo:** actividad de entrenamiento que reutiliza la infraestructura común.
 
-A training activity focused on a specific cognitive/physical metric.
+**Paquete:** unidad estructurada de datos; su formato v1 sigue `TBD`.
 
-Current modes:
+**Sesión:** ejecución configurada de un modo con uno o más nodos.
 
-- memoria
-- agilidad
-- reflejos
-- velocidad
-- resistencia
-- precisión
-- coordinación
+**Métrica:** valor derivado de eventos medibles y de una temporización validada.
 
-## Packet
+**Documentación de campo:** registro escolar de avances, evidencia y trabajo
+técnico real.
 
-Structured unit of data exchanged between REAKT components.
-
-## Session
-
-A configured training activity executed by one or more nodes.
-
-## Metric
-
-A measured value or performance indicator associated with a training mode.
-
-## Dashboard
-
-The application interface used to configure, control and visualize the system.
-
-## Field documentation
-
-The project documentation used to record development progress, evidence and technical work.
-
-## ExecPlan
-
-A living plan used by Codex for complex multi-step implementation work.
+**ExecPlan:** plan vivo en `.agent/` para un cambio complejo.

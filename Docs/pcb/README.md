@@ -21,7 +21,7 @@
 | `componentes-dimensiones.md` | Medidas aproximadas, fuentes y confianza |
 | `arquitectura-electrica.md` | Bloques, conexiones, dominios eléctricos |
 | `alimentacion-y-autonomia.md` | Batería, TP4056, power-path, LED y cálculos |
-| `pinout-y-conectores.md` | GPIO provisionales, conectores y señalización |
+| `pinout-y-conectores.md` | Señales requeridas y proceso para definir GPIO/conectores |
 | `layout-kicad.md` | Geometría, stack-up, trazado, RF, DRC y fabricación |
 | `gateway-pcb.md` | Diferencias y diseño de placa central |
 | `bom-preliminar.md` | Lista de materiales y alternativas |

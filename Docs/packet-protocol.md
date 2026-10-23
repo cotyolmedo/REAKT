@@ -1,90 +1,52 @@
-# REAKT Packet Protocol
+# Protocolo de paquetes REAKT
 
-## Purpose
+## Estado
 
-REAKT uses a common packet concept so different training modes can communicate through the same infrastructure.
+Arquitectura conceptual; no existe todavía un formato v1 definitivo. Ningún
+campo de esta página autoriza una codificación concreta.
 
-The protocol is intentionally documented separately from the implementation.
+## Direcciones
 
-## Direction
+- App → gateway: configuración y órdenes.
+- Gateway → nodos: órdenes y estímulos.
+- Nodos → gateway: eventos del pulsador y estado.
+- Gateway → app: eventos, diagnósticos y resultados.
 
-### App → Gateway
+## Campos candidatos
 
-Carries commands/configuration.
-
-### Gateway → Node
-
-Carries node-specific commands.
-
-### Node → Gateway
-
-Carries events/results/status.
-
-### Gateway → App
-
-Carries events/results/status.
-
-## Common packet concept
-
-The exact binary/serialized representation is still a technical design task.
-
-Conceptual fields:
-
-| Field | Purpose | Status |
+| Campo | Función | Estado |
 |---|---|---|
-| `type` | packet/event type | TBD/finalize |
-| `mode` | training mode | TBD/finalize |
-| `node_id` | node identity | TBD/finalize |
-| `timestamp` | event timing | TBD/finalize |
-| `value` | measurement/result | TBD/finalize |
-| `sequence` | duplicate/order detection | TBD |
-| `payload` | mode-specific data | TBD |
+| `version` | Compatibilidad del formato | `TBD` |
+| `type` | Orden, evento o estado | `TBD` |
+| `mode` | Modo de entrenamiento | `TBD` |
+| `node_id` | Identidad lógica | `TBD` |
+| `timestamp` | Referencia temporal local | `TBD` |
+| `sequence` | Orden y detección de duplicados | `TBD` |
+| `payload` | Datos específicos del mensaje | `TBD` |
 
-Do not implement these fields blindly. Finalize their types, sizes, ranges and encoding before treating the protocol as stable.
+Antes de implementar se deben definir tipos, tamaños, rangos, endianness,
+serialización, longitud máxima y reglas de compatibilidad.
 
-## Modes
+## Evento de pulsador
 
-Current conceptual modes:
+Representa una activación digital validada. No contiene fuerza ni amplitud de
+impacto. Debe decidirse si transmite el primer flanco observado o el instante de
+confirmación del antirrebote.
 
-- memoria
-- agilidad
-- reflejos
-- velocidad
-- resistencia
-- precisión
-- coordinación
+## Temporización
 
-All modes should reuse the global packet architecture whenever possible.
+Una marca local del nodo no equivale al reloj del gateway ni de Flutter. La
+referencia del estímulo, sincronización, latencia y compensación deben definirse
+y ensayarse antes de publicar métricas entre dispositivos.
 
-Mode-specific data should be represented as payload/data rather than creating completely separate protocols.
+## Validación mínima de v1
 
-## Compatibility
+- Mensaje válido y longitudes límite.
+- Versión o tipo desconocido.
+- ID de nodo o modo inválido.
+- Duplicados y mensajes fuera de orden.
+- Pérdidas, reintentos y timeouts.
+- Compatibilidad gateway ↔ nodos ↔ app.
 
-When changing the packet:
-
-1. update this document
-2. update gateway implementation
-3. update node implementation
-4. update application model
-5. test both directions
-6. document backward compatibility or migration requirements
-
-## Validation
-
-At minimum test:
-
-- valid packet
-- invalid packet
-- unknown packet type
-- wrong node ID
-- wrong mode
-- duplicate packet
-- timeout
-- lost packet
-- out-of-order packet where applicable
-
-## Security
-
-Do not place secrets in packets.
-
-If authentication/integrity becomes necessary, document the threat model before selecting a mechanism.
+No incluir secretos en los paquetes. Si se requiere autenticidad o integridad,
+documentar primero el modelo de amenazas.

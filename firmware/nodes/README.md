@@ -10,5 +10,5 @@ Incluye:
 - inicialización ESP-NOW sin inventar MAC, canal ni peer;
 - punto de integración para WS2812B sin escribir en GPIO todavía no confirmados.
 
-El protocolo v1 no está implementado porque `Docs1/packet-protocol.md` todavía
+El protocolo v1 no está implementado porque `Docs/packet-protocol.md` todavía
 lo declara TBD. El nodo no mide fuerza ni intensidad de impacto.

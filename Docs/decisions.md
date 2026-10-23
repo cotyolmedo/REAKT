@@ -1,145 +1,115 @@
-# REAKT Architecture Decision Record
+# Registro de decisiones de arquitectura (ADR)
 
-This file records significant decisions.
+## ADR-001 — Gateway central
 
-## ADR-001 - Primer shell de interfaz Flutter
+**Fecha:** 2026. **Estado:** aceptada.
 
-Date: 2026-10-09
-Status: Accepted
+Un ESP32 actúa como gateway entre Flutter y cinco nodos de entrenamiento. El
+gateway concentra coordinación y separa el enlace de la app del enlace local.
 
-### Decision
+## ADR-002 — Comunicación entre gateway y nodos
 
-Se adopta una primera interfaz Flutter en `app/` con fondo oscuro, acento rojo REAKT, superficies redondeadas y navegación inferior, trasladando la jerarquía visual de `REAKT_web.html`. Los datos visibles son de demostración y los estados de gateway/backend permanecen pendientes.
+**Fecha:** 2026. **Estado:** aceptada.
 
-### Consequences
+Se usa ESP-NOW bidireccional. Canal, direccionamiento, ACK y recuperación ante
+errores continúan `TBD`.
 
-La UI puede evolucionar sin comprometer el protocolo ni inventar una interfaz app↔gateway antes de definirla.
+## ADR-003 — Backend
 
-## Decision template
+**Fecha:** 2026. **Estado:** aceptada.
+
+Supabase/PostgreSQL es el backend persistente previsto. Esquema, autenticación y
+RLS todavía no están definidos.
+
+## ADR-004 — Protocolo común
+
+**Fecha:** 2026. **Estado:** aceptada.
+
+Todos los modos reutilizan una arquitectura común de paquetes. Campos y
+codificación definitivos continúan `TBD`.
+
+## ADR-005 — Sustitución de ESP32-C3
+
+**Fecha:** 2026-10-08. **Estado:** aceptada.
+
+Se usarán cinco ESP32 periféricos en lugar de cinco ESP32-C3; el gateway sigue
+siendo ESP32. Deben revisarse pinout, consumo, dimensiones, alimentación y
+firmware. Los GPIO de los ensayos anteriores no se trasladan al diseño vigente.
+
+## ADR-006 — Sustitución del piezoeléctrico
+
+**Fecha:** 2026-10-08. **Estado:** aceptada.
+
+La entrada principal pasa a ser un pulsador mecánico normalmente abierto
+accionado por la tapa. Requiere antirrebote y rediseño mecánico. Se pierde toda
+posibilidad de inferir fuerza o intensidad desde una señal analógica. Debe
+confirmarse con docentes si cuenta como sensor para el requisito escolar.
+
+## ADR-007 — Carcasa hexagonal conceptual
+
+**Fecha:** 2026-10-08. **Estado:** propuesta; validación física pendiente.
+
+Se explora una carcasa hexagonal con tapa móvil, iluminación perimetral y
+montaje intercambiable. Dimensiones, materiales, topes, resortes y fijaciones no
+son decisiones finales.
+
+## ADR-008 — Carrier PCB para nodos
+
+**Fecha:** 2026-10-08. **Estado:** aceptada como estrategia de prototipado.
+
+La primera placa será una carrier para una placa ESP32 enchufable. El gateway
+tendrá una placa distinta. La variante, footprints y pinout deben cerrarse con
+mediciones de las piezas reales.
+
+## ADR-009 — Alimentación recargable por definir
+
+**Fecha:** 2026-10-08. **Estado:** propuesta; bloqueada por selección de piezas.
+
+Se evalúa una batería 1S y un módulo TP4056 USB-C. Protección, regulación,
+capacidad, corriente de carga y *power-path* deben resolverse antes de fabricar.
+El TP4056 no se considera por sí solo una fuente regulada ni un *power-path*.
+
+## ADR-010 — Electrónica aislada del impacto
+
+**Fecha:** 2026-10-08. **Estado:** aceptada.
+
+El bastidor y los topes reciben las cargas. Pulsador, PCB y batería quedan fuera
+del camino principal de fuerza. La decisión requiere validación mecánica.
+
+## ADR-011 — Primer shell de interfaz Flutter
+
+**Fecha:** 2026-10-09. **Estado:** aceptada.
+
+Se adopta una primera interfaz en `app/`, basada en la jerarquía visual del
+prototipo web. Los datos son de demostración y no definen la interfaz con el
+gateway ni el backend.
+
+## ADR-012 — Bases de firmware separadas
+
+**Fecha:** 2026-10-09. **Estado:** en progreso.
+
+`firmware/gateway/` y `firmware/nodes/` contienen bases separadas. Las tramas se
+encolan sin interpretar y el nodo implementa antirrebote con el GPIO
+deshabilitado mientras el pinout sea `TBD`.
+
+**Validación pendiente:** compilación para placas reales, enlace ESP-NOW y
+pruebas físicas del pulsador y WS2812B.
+
+## Plantilla
 
 ```md
-## ADR-XXX - Title
+## ADR-XXX — Título
 
-Date:
-Status: Proposed / Accepted / Superseded
+**Fecha:**
+**Estado:** propuesta / aceptada / reemplazada
 
-### Context
+### Contexto
 
-What problem required a decision?
+### Decisión
 
-### Decision
+### Alternativas consideradas
 
-What was chosen?
+### Consecuencias
 
-### Alternatives considered
-
-What other options were considered?
-
-### Consequences
-
-What does the decision improve or make harder?
-
-### Validation
-
-How will the decision be validated?
+### Validación
 ```
-
-## ADR-001 - Gateway architecture
-
-Date: 2026
-
-Status: Accepted
-
-### Context
-
-REAKT requires communication between the mobile application and multiple ESP32-C3 training nodes.
-
-### Decision
-
-Use one ESP32 as a gateway between the Flutter application and five ESP32-C3 nodes.
-
-### Consequences
-
-The gateway centralizes node coordination and separates application communication from local node communication.
-
-### Alternatives
-
-A Raspberry Pi or direct application-to-node architecture were considered conceptually but are not part of the current architecture.
-
----
-
-## ADR-002 - Node communication
-
-Date: 2026
-
-Status: Accepted
-
-### Decision
-
-Use ESP-NOW for gateway-to-node communication unless a later decision explicitly replaces it.
-
-### Consequences
-
-The system can communicate locally without requiring each node to maintain a normal Wi-Fi application connection.
-
----
-
-## ADR-003 - Backend
-
-Date: 2026
-
-Status: Accepted
-
-### Decision
-
-Use Supabase/PostgreSQL as the intended persistent backend.
-
-### Consequences
-
-Database design should follow PostgreSQL principles and Supabase security mechanisms.
-
----
-
-## ADR-004 - Global packet concept
-
-Date: 2026
-
-Status: Accepted
-
-### Decision
-
-Use a shared packet architecture across training modes.
-
-### Consequences
-
-New modes should reuse the same transport/protocol foundation instead of creating independent communication systems.
-
----
-
-## Future decisions
-
-Add an ADR whenever a significant choice changes:
-
-- architecture
-- communication protocol
-- database technology/schema
-- Flutter architecture
-- hardware topology
-- security model
-- packet protocol
-
----
-
-## ADR-005 - PCB V0.1 is a provisional node carrier
-
-Date: 2026-10-09
-
-Status: Provisional / blocked by physical measurements
-
-### Decision
-
-Create only an editable carrier layout for one node: hypothetical 65 x 75 mm outline, provisional 2x15 header reservation for the unidentified ESP32 board, conceptual impact/RGB/battery connectors, and service test points. Do not freeze the ESP32 footprint, battery path, regulator topology, connector series, mounting holes, RF keepout, or routing until the real parts are measured.
-
-### Evidence and consequences
-
-The KiCad 9 board is `hardware/pcb/reakt-nodo/reakt-nodo.kicad_pcb`. It is not fabrication-ready and has no schematic or electrical netlist. The KiCad CLI DRC completed with zero unconnected pads and warnings expected from provisional local footprints and silkscreen; this is not a clean DRC release.

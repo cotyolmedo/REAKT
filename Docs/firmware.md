@@ -1,102 +1,54 @@
-# REAKT Firmware
+# Firmware REAKT
 
-## Firmware targets
+## Destinos
 
-- ESP32 Gateway
-- ESP32-C3 Nodes
+- Un ESP32 gateway.
+- Cinco nodos ESP32 con pulsador digital y WS2812B.
 
-## Development environment
+Entorno previsto: Arduino IDE, C/C++ y ESP32 Arduino core. La placa concreta y
+la versión del core deben registrarse con cada compilación relevante.
 
-Primary intended environment:
+## Reglas
 
-- Arduino IDE during current development
-- C/C++ firmware
-- ESP32 Arduino core
+- Evitar `delay()` en firmware productivo.
+- Usar `millis()` para temporización general y `esp_timer_get_time()` cuando se
+  necesiten marcas locales de microsegundos.
+- Separar inicialización, comunicación, adquisición, lógica, salidas,
+  temporización y errores.
+- Mantener callbacks de radio breves: validar límites, copiar/encolar y procesar
+  fuera del callback.
+- No interpretar payloads hasta definir `Docs/packet-protocol.md`.
 
-## Core rules
+## Pulsador
 
-Production firmware should be non-blocking.
+- Usar `INPUT_PULLUP` con pulsador NA hacia GND solo si el circuito final lo
+  permite.
+- Detectar una transición estable HIGH → LOW.
+- Emitir un solo evento y exigir liberación estable antes de rearmar.
+- Implementar antirrebote configurable y no bloqueante.
+- Definir si el timestamp representa el primer flanco o la confirmación tras el
+  antirrebote; documentar y validar el criterio.
 
-Avoid:
+## ESP-NOW
 
-```cpp
-delay(...)
-```
+- Definir canal, peers y direccionamiento antes de registrarlos en producción.
+- Gestionar inicialización fallida, colas llenas y fallos de envío.
+- Incorporar validación, ACK/reintentos, deduplicación y timeouts después de
+  cerrar el protocolo v1.
+- No asumir relojes sincronizados ni latencia nula entre dispositivos.
 
-Prefer:
+## Estados conceptuales de nodo
 
-- `millis()`
-- timers
-- finite-state machines
-- event-driven logic
+`INICIALIZANDO → LISTO → ESPERANDO_ESTIMULO → OBJETIVO_ACTIVO → EVENTO_REGISTRADO → LISTO`
 
-## Firmware structure
+También deben existir estados o rutas de recuperación para errores y pérdida de
+comunicación. Los estados no implican que el modo de entrenamiento esté ya
+implementado.
 
-A firmware project should separate:
+## Estado real
 
-```text
-Initialization
-    ↓
-Communication
-    ↓
-Input acquisition
-    ↓
-State/logic processing
-    ↓
-Output/actuation
-    ↓
-Telemetry/results
-```
-
-## Gateway responsibilities
-
-The gateway should:
-
-1. initialize communication
-2. maintain known node information
-3. receive commands from the application
-4. validate incoming commands
-5. transmit commands to nodes
-6. receive node events
-7. validate events
-8. forward/aggregate information
-9. handle communication failures
-
-## Node responsibilities
-
-A node should:
-
-1. initialize GPIO and communication
-2. receive commands
-3. enter the requested training state
-4. read local inputs
-5. drive local outputs
-6. timestamp/measure events as required
-7. send events/results to the gateway
-8. recover from communication failures
-
-## Error handling
-
-Firmware should explicitly handle:
-
-- failed packet transmission
-- invalid packet
-- unknown node
-- timeout
-- duplicate event
-- unexpected state
-- initialization failure
-
-Do not hide communication failures.
-
-## Timing
-
-Training timing must not depend on blocking delays.
-
-Timing-sensitive behavior should use monotonic elapsed-time measurements.
-
-## Debugging
-
-Serial logging is allowed during development.
-
-Production/debug logging should be controllable so it does not interfere with timing or communication.
+- `firmware/gateway/`: base de transporte con cola y recuperación no bloqueante.
+- `firmware/nodes/`: base de adquisición con GPIO deshabilitado hasta definir el
+  pinout y recepción opaca de ESP-NOW.
+- Protocolo v1, control WS2812B, peers, app y sesiones: pendientes.
+- Compilación para la placa real y pruebas físicas: pendientes.

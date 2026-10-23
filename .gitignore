@@ -1,0 +1,28 @@
+# Local editor and tool artifacts
+*.lck
+*~
+__pycache__/
+*.py[cod]
+
+# Arduino build output
+build/
+*.elf
+*.bin
+*.hex
+*.map
+
+# Flutter/Dart generated state
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+app/build/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
