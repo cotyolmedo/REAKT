@@ -56,7 +56,7 @@ jobs:
           "$APKSIGNER" verify --verbose dist/REAKT-0.3.0-android.apk > dist/signature-verification.txt
           cd dist
           sha256sum REAKT-0.3.0-android.apk > SHA256SUMS.txt
-          printf 'Source commit: %s\nSupabase: configured (public anon key only)\nGateway: ws://192.168.4.1:81; boards not configured yet\nBuild: debug, Android minSdk 23\nPhysical integration: pending\n' "$GITHUB_SHA" > BUILD-INFO.txt
+          printf 'Source commit: %s\nSupabase: configured (public anon key only)\nGateway: ws://192.168.4.1:81; boards not configured yet\nBuild: debug, Android minSdk 24\nPhysical integration: pending\n' "$GITHUB_SHA" > BUILD-INFO.txt
       - uses: actions/upload-artifact@v4
         with:
           name: REAKT-android

@@ -9,3 +9,5 @@ Comprobación remota: Auth settings HTTP200, las tres tablas reakt_* existen con
 Gateway `ws://192.168.4.1:81`, protocolo MVP v1. El usuario confirmó que las placas aún no están configuradas. La app queda preparada y probada con gateway simulado, sin atribuir conexión física. Arquitectura final de cinco nodos; MVP actual admite dos.
 
 Pruebas y publicación concretas se registran al completar el workflow. El APK es de demostración debug: antes de cambiar de firma/instalación exportar historial JSON.
+
+La compilación con Flutter 3.47.4 requiere actualizar el proyecto anterior: Gradle 8.14.3 (checksum oficial), AGP 8.11.1, Kotlin 2.2.20 y Android mínimo 7.0/API24. No se usa `--android-skip-build-dependency-validation`.
