@@ -73,7 +73,7 @@ The UI must support the project requirements and the actual training workflow.
 
 Wireframes/mockups should be kept separately from source code when appropriate.
 
-## Implementación MVP — 2026-10-22
+## Historial de implementación MVP — 2026-10-22
 
 `app/lib/services/` concreta contrato de snapshots, GatewayLink, LocalStore y
 CloudSync. Gateway coordina sesiones; app presenta métricas reales recibidas,
@@ -83,4 +83,6 @@ bitácora y protocolo antes de atribuir funcionamiento a esta implementación.
 
 Continuación de la misma entrega: SDK instalado, analyze y17tests aprobados.
 Incluye exportación JSON de historial a portapapeles, sin importación automática.
-Consultar ESTADO-FINAL-MVP.md para el APK y las verificaciones que siguen pendientes.
+ESTADO-FINAL-MVP.md conserva la entrega histórica 0.2.0. Para el APK actual 0.3.0
+y las verificaciones ejecutadas consultar [PROBAR-HOY](PROBAR-HOY.md) y el
+[registro del banco](banco-2026-10-23.md).

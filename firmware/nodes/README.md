@@ -6,12 +6,16 @@ requiere resistencia y circuito verificados; no requiere NeoPixel. Las variantes
 digital y deshabilitada también compilaron con core3.3.4. Empezar por
 [PROBAR-HOY](../../Docs/PROBAR-HOY.md) y [protoboard](../../Docs/MVP-PROTOBOARD.md).
 
-Abrir `REAKT_Node/REAKT_Node.ino`. Compilado para ESP32 Dev Module con core2.0.17,
-ReaktCore y Adafruit NeoPixel1.12.3. Copiar LocalConfig.example.h a LocalConfig.h.
+Abrir `REAKT_Node/REAKT_Node.ino`. Banco actual compilado y cargado para ESP32 Dev
+Module con core3.3.4 y ReaktCore1.0.0, usando LED digital sin NeoPixel. La referencia
+histórica de WS2812B usó core2.0.17 y Adafruit NeoPixel1.12.3; esa salida no se
+validó físicamente. Copiar LocalConfig.example.h a LocalConfig.h.
 
 Registrar MAC station real del gateway, ID1/2, validar GPIO18 pulsadorNA a GND y
-habilitar REAKT_HARDWARE_VALIDATED. LED GPIO23 es propuesta: REAKT_LED_ENABLED=0
-por defecto porque el usuario todavía no tiene LEDs ni fuente. Cinco WS2812B solo
+habilitar REAKT_HARDWARE_VALIDATED tras comprobar el circuito. GPIO18/23 se probaron
+en este banco; no fijan el pinout final de PCB. REAKT_LED_ENABLED=0 por defecto para
+no activar una salida sin configuración local. El usuario ya probó un LED común
+con resistencia y DIGITAL=1. WS2812B solo
 tras adquirirlos/verificar circuito; no alimentar desde GPIO ni regulador3V3.
 
 Callback encola, loop valida peer/sesión/secuencia y confirma comandos sin repetir
