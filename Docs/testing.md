@@ -2,6 +2,12 @@
 
 ## Referencia actual — 23/10/2026
 
+Puesta en marcha posterior: gatewayCOM4 programado con verificación de hashes y
+logs de ejecución; app conectada según confirmación del usuario. Nodo identificado
+y respaldado, pruebas de circuito/radio aún en curso. Evidencia y límites en
+[banco-2026-10-23.md](banco-2026-10-23.md); no confundir conexión de gateway con
+entrenamiento completo probado.
+
 Verificación de integración ejecutada en Windows: Flutter3.47.4 con
 `pub get --enforce-lockfile`, `analyze --no-pub` sin problemas y21tests aprobados;
 simulador WebSocket2tests aprobados en venv con websockets15.0.1. Arduino core3.3.4:

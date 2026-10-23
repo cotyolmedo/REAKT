@@ -32,5 +32,10 @@ PILLDROP local con SHA256 comprobado. No publicar configuraciones privadas.
 - [x] Fusionar colegio en rama Android y conservar ambas bitácoras.
 - [x] Flutter21tests/analyze, simulador2tests y tres compilaciones Arduino aprobados.
 - [x] Guías/enlaces y exclusiones revisados.
-- [~] Publicar integración y actualizar main/copia principal.
-- [ ] Nueva solicitud: identificar placa y programar gateway con respaldo previo.
+- [x] Integración publicada en main2e50b0c; copia principal sincronizada y limpia.
+- [x] Android CI de main aprobado (run40010186970); sin publicar otro APK.
+- [x] Identificar y respaldar gatewayCOM4 y nodoCOM19 (4MB cada uno).
+- [x] Gateway cargado, hashes verificados y app conectada según confirmación del usuario.
+- [~] Corregir diagnóstico MAC al arranque con core3.x y cargar versión final en ambos roles.
+- [~] Usuario arma nodo GPIO18/23 con pulsadorNA y LED común con resistencia.
+- [ ] Probar radio/LED/pulsador desde app; registrar lo observado, sin inventar métricas.

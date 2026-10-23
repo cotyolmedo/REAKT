@@ -4,8 +4,21 @@
 #include <esp_now.h>
 #include <esp_wifi.h>
 #include <esp_arduino_version.h>
+#if __has_include(<esp_mac.h>)
+#include <esp_mac.h>
+#else
+#include <esp_system.h>
+#endif
 #include "ReaktCore.h"
 namespace reakt {
+// Read the factory-derived STA address even before the async netif is ready.
+// WiFi.macAddress() may return all zeros early during startup with core 3.x.
+inline String stationMac(){
+ uint8_t mac[6];
+ if(esp_read_mac(mac,ESP_MAC_WIFI_STA)!=ESP_OK)return "unavailable";
+ char value[18];snprintf(value,sizeof(value),"%02x:%02x:%02x:%02x:%02x:%02x",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+ return String(value);
+}
 struct Received { uint8_t mac[6]; Frame frame; };
 class Radio {
  struct Raw {uint8_t mac[6],data[WireSize];};

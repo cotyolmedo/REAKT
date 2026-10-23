@@ -1,5 +1,21 @@
 # Registro de decisiones de arquitectura (ADR)
 
+## ADR-017 — Puesta en marcha del banco con placas reales
+
+**Fecha:** 2026-10-23. **Estado:** en verificación física.
+
+El usuario autorizó programar el gateway conectado y confirmó el puertoCOM4 tras
+identificación; la segunda placa de nodo apareció enCOM19. Ambos son ESP32 de
+4MB identificados por ROM. Las MAC reales se conservan en LocalConfig.h ignorados.
+Se respaldaron ambas flashes completas antes de grabar. El usuario confirmó para
+el ensayo pulsadorNA enGPIO18 y LED común con resistencia enGPIO23; esto no fija
+el pinout de la PCB ni sustituye mediciones eléctricas.
+
+La lectura de MAC para configuración usa esp_read_mac(ESP_MAC_WIFI_STA), porque
+WiFi.macAddress() devolvió ceros al arrancar con core3.3.4. El comportamiento de
+la API temprana está documentado en el [repositorio oficial de Espressif](https://github.com/espressif/arduino-esp32/issues/11285).
+No se altera la MAC de radio, el protocolo ni los GPIO por esta corrección.
+
 ## ADR-016 — Integración del MVP y referencia operativa única
 
 **Fecha:** 2026-10-23. **Estado:** aceptada por solicitud del usuario.

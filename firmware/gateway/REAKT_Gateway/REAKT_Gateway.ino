@@ -65,7 +65,7 @@ void onCommand(uint8_t client,uint8_t* payload,size_t len){
 }
 void setup(){
  Serial.begin(115200);WiFi.mode(WIFI_AP_STA);WiFi.disconnect();
- Serial.printf("REAKT gateway STATION MAC=%s\n",WiFi.macAddress().c_str());
+ Serial.printf("REAKT gateway STATION MAC=%s\n",stationMac().c_str());
  if(strlen(REAKT_AP_PASSWORD)<12||!configuredMac(Nodes[0])){Serial.println("BLOCKED: fill LocalConfig password and node1 station MAC");return;}
  if(configuredMac(Nodes[1])&&!memcmp(Nodes[0],Nodes[1],6)){Serial.println("duplicate peer MAC");return;}
  if(!WiFi.softAP("REAKT-MVP",REAKT_AP_PASSWORD,Channel)||!radio.begin()){Serial.println("AP/radio init failed");return;}

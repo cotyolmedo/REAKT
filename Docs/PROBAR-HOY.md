@@ -15,8 +15,10 @@ antiguo siguiendo un bloqueo ya resuelto.
   GPIO, LED, resistencia y alimentación deben verificarse con piezas reales.
 - Supabase: esquema aplicado, Auth y RLS comprobados. Falta probar login y
   sincronización desde el teléfono, y aislamiento con dos cuentas reales.
-- Placas todavía sin configurar según el usuario. No se afirma radio, reacción
-  visual ni diez sesiones físicas aprobadas.
+- Puesta en marcha posterior: gatewayCOM4 cargado y verificado; el usuario confirmó
+  conexión de la app del teléfono. NodoCOM19 identificado y respaldado, a la espera
+  de completar carga/circuito. [Registro del banco](banco-2026-10-23.md).
+  No se afirman reacción visual ni diez sesiones físicas aprobadas.
 
 ## 1. Preparar la copia correcta y las herramientas
 

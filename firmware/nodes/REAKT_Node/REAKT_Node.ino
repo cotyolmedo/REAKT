@@ -18,7 +18,7 @@ void report(Type type,uint32_t us){
 }
 void setup(){
  Serial.begin(115200);WiFi.mode(WIFI_STA);WiFi.disconnect();
- Serial.printf("REAKT node id=%u station MAC=%s\n",NodeId,WiFi.macAddress().c_str());
+ Serial.printf("REAKT node id=%u station MAC=%s\n",NodeId,stationMac().c_str());
  if(!REAKT_HARDWARE_VALIDATED||NodeId<1||NodeId>2||!configuredMac(GatewayMac)){Serial.println("BLOCKED: validate LocalConfig hardware/MAC");return;}
  pinMode(REAKT_BUTTON_GPIO,INPUT_PULLUP);button.init(digitalRead(REAKT_BUTTON_GPIO)==HIGH,millis());
  stimulus.begin();

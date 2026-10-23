@@ -2,6 +2,10 @@
 
 ## Estado integrado — 23/10/2026
 
+Puesta en marcha posterior: gateway cargado enCOM4 y app del teléfono conectada
+según usuario. NodoCOM19 respaldado, carga y circuito en curso. Ver
+[registro del banco](banco-2026-10-23.md); el resto de los pendientes físicos sigue vigente.
+
 - App 0.3.0 y APK publicados, análisis/21 tests y firma/SHA256 verificados.
 - Supabase remoto aplicado; Auth/API/RLS comprobados con transacciones revertidas.
 - Firmware nodo con salida digital/WS2812B/deshabilitada y gateway compilados.
