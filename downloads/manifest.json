@@ -1,0 +1,16 @@
+{
+  "REAKT-0.2.0-android-arm64.zip": {
+    "zip_bytes": 7993847,
+    "zip_sha256": "7c71283875e4418f17510c358be3e277ce284953a582617d5ec5be8c5e382ab2",
+    "apk_file": "REAKT-liviano-arm64-v8a.apk",
+    "apk_bytes": 17313186,
+    "apk_sha256": "2e7e9e8b9a2e60feff1c042ed99e4805cca980d81c1ae896dfd686a6e2aed623"
+  },
+  "REAKT-0.2.0-universal-original.zip": {
+    "zip_bytes": 83878149,
+    "zip_sha256": "92bdd7d5e82c9cb5f18adf4e17f8ac37c1e04f96a5c9600614f72d8d1366d816",
+    "apk_file": "REAKT-0.2.0-debug.apk",
+    "apk_bytes": 208433007,
+    "apk_sha256": "a6323ae514e46d27e13106dffe703a009d2159fd30004020a200bd851bdb3201"
+  }
+}

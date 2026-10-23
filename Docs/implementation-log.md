@@ -208,3 +208,18 @@ exitoso), PROBADO (check ejecutado), PENDIENTE DE HARDWARE, BLOQUEADO (externo).
   privadas ni patrones de tokens. git diff --cached --check aprobado.
 - El usuario autorizó esta publicación; los siguientes cambios no adquieren permiso
   automático para push. El prompt conserva esta distinción.
+
+## 10. Alternativa de descarga autorizada
+
+- Visor del entorno devuelve “Could not download artifact” al usuario. Tamaño y
+  permisos ajustados no resolvieron el acceso; los enlaces del entorno no se dan
+  por verificados como descarga cliente.
+- Preparado build release por ABI del mismo código, firmado con la clave de pruebas
+  existente. ARM64 APK17.3MB, ZIP8MB. Firma e integridad verificadas; sin cambio de
+  funciones ni credenciales, sin prueba física adicional.
+- Usuario aprobó nuevo commit/push de binarios de descarga y pidió incluir también
+  el APK original. Original208433007bytes comprimido a ZIP83878149bytes; cabe en
+  GitHub sin partes ni Git LFS. SHA256 interno coincide con el original entregado.
+- downloads/ incluye ambos ZIP, README comparativo, manifest.json y SHA256SUMS.txt.
+  No se utiliza GitHub Releases/API, cuyo acceso desde este entorno devolvió403.
+  Publicación mediante Git normal, sin force push ni servicios pagos nuevos.

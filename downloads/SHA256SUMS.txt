@@ -1,0 +1,2 @@
+7c71283875e4418f17510c358be3e277ce284953a582617d5ec5be8c5e382ab2  REAKT-0.2.0-android-arm64.zip
+92bdd7d5e82c9cb5f18adf4e17f8ac37c1e04f96a5c9600614f72d8d1366d816  REAKT-0.2.0-universal-original.zip
