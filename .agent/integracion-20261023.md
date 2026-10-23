@@ -36,6 +36,9 @@ PILLDROP local con SHA256 comprobado. No publicar configuraciones privadas.
 - [x] Android CI de main aprobado (run40010186970); sin publicar otro APK.
 - [x] Identificar y respaldar gatewayCOM4 y nodoCOM19 (4MB cada uno).
 - [x] Gateway cargado, hashes verificados y app conectada según confirmación del usuario.
-- [~] Corregir diagnóstico MAC al arranque con core3.x y cargar versión final en ambos roles.
-- [~] Usuario arma nodo GPIO18/23 con pulsadorNA y LED común con resistencia.
-- [ ] Probar radio/LED/pulsador desde app; registrar lo observado, sin inventar métricas.
+- [x] Diagnóstico MAC corregido, ambos roles cargados y hashes/arranque comprobados.
+- [x] Usuario armó nodo GPIO18/23 con pulsadorNA y LED común con resistencia.
+- [x] Primera sesión física: LED/pulsador/acierto observado por usuario y hit1/miss0 en serial.
+- [x] Usuario confirmó mantener sin duplicados, timeout5s, stop/LED apagado e historial tras reapertura.
+- [x] Serie confirmó Cancelada con objetivo desactivado y sin errores de radio registrados.
+- [ ] Verificar sincronización Android y registrar límites pendientes.

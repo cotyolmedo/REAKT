@@ -9,7 +9,8 @@ No inventa métricas ni presencia de nodos. MVP máximo dos nodos; ampliación a
 pendiente. El contrato terminal no distingue manual/reflejos: historial usa Sesión.
 
 Flutter 3.47.4/Dart 3.13.3, 21 tests y APK Android 7+ publicado con configuración
-pública Supabase. Conexión física y sincronización en teléfono pendientes.
+pública Supabase. Conexión física y ensayo básico LED/pulsador en Android
+comprobados; sincronización desde teléfono pendiente de confirmación.
 Ver [guía actual](PROBAR-HOY.md), [app/README](../app/README.md) y
 [evidencia de publicación](android-release-2026-10-23.md).
 

@@ -17,4 +17,6 @@ tras adquirirlos/verificar circuito; no alimentar desde GPIO ni regulador3V3.
 Callback encola, loop valida peer/sesión/secuencia y confirma comandos sin repetir
 estímulos. Reacción se mide localmente tras show y al confirmar debounce20ms.
 Sin LEDs habilitados los eventos son diagnósticos, no medición de reacción visual.
-Ver Docs/mvp-installation.md y Docs/mvp-physical-tests.md. No se probó en placa.
+Ver Docs/mvp-installation.md y Docs/mvp-physical-tests.md. Banco posterior con
+LED común, pulsadorGPIO18/LEDGPIO23 y Android probado según
+[registro](../../Docs/banco-2026-10-23.md); diez sesiones y WS2812B pendientes.

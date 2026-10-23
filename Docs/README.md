@@ -63,14 +63,15 @@ o dos nodos en el primer MVP. Consultar primero:
 - [Pruebas físicas pendientes](mvp-physical-tests.md).
 - [Informe técnico escolar](mvp-school-report.md).
 
-Las referencias anteriores a cinco nodos son la ampliación prevista. Hoy solo
-hay placas y pulsador; no hay validación física de WS2812B ni alimentación.
+Las referencias a cinco nodos son la ampliación prevista. El banco actual tiene
+un nodo con pulsador y LED común enGPIO18/23, probado desde Android. WS2812B y
+alimentación recargable siguen sin validación física.
 
 ## Entrega para el colegio
 
 - [Estado final](ESTADO-FINAL-MVP.md).
 - [Guía del viernes 23/10/2026](GUIA-COLEGIO-2026-10-23.md).
-- [Planilla de resultados sin completar](registro-pruebas-colegio.md).
+- [Planilla de resultados del banco](registro-pruebas-colegio.md).
 
 La publicación posterior usa Flutter3.47.4 y aprueba21tests. Los bloqueos de SDK
 descriptos en entradas previas son históricos. PROBAR-HOY y android-release son

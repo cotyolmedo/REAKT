@@ -6,12 +6,14 @@
 ## Estado y alcance
 
 Firmware nodo/gateway compilado para ESP32 Dev Module, Arduino-ESP32 **2.0.17**.
-No se cargó en una placa desde este entorno. Flutter 3.47.4: lock resuelto, análisis y 21 tests aprobados.
+La referencia original de core es2.0.17. El banco actual se compiló con core3.3.4,
+se cargó en gateway/nodo y pasó el ensayo básico desde Android; ver banco-2026-10-23.md.
+Flutter3.47.4: lock resuelto, análisis y21tests aprobados.
 Estado actual del APK en android-release-2026-10-23.md. No considerar completa la integración física.
 
-Actualmente hay placas y pulsador; faltan WS2812B y alimentación de LEDs. No
-habilitar LED output hasta conseguirlos y verificar conexiones. Se puede probar
-radio y pulsador primero. No confundir eventos simulados con mediciones físicas.
+El banco actual usa LED común con resistencia y pulsador; WS2812B y su alimentación
+siguen pendientes. Habilitar salida solo tras verificar el circuito real. No
+confundir eventos simulados con mediciones físicas.
 
 ## Firmware en Arduino IDE 2
 

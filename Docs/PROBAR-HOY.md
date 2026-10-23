@@ -15,10 +15,12 @@ antiguo siguiendo un bloqueo ya resuelto.
   GPIO, LED, resistencia y alimentación deben verificarse con piezas reales.
 - Supabase: esquema aplicado, Auth y RLS comprobados. Falta probar login y
   sincronización desde el teléfono, y aislamiento con dos cuentas reales.
-- Puesta en marcha posterior: gatewayCOM4 cargado y verificado; el usuario confirmó
-  conexión de la app del teléfono. NodoCOM19 identificado y respaldado, a la espera
-  de completar carga/circuito. [Registro del banco](banco-2026-10-23.md).
-  No se afirman reacción visual ni diez sesiones físicas aprobadas.
+- Puesta en marcha posterior: gatewayCOM4 y nodoCOM19 cargados y verificados;
+  primera sesión manual con LED/pulsador y acierto en Android comprobada por
+  usuario y contadores serie. [Registro del banco](banco-2026-10-23.md).
+  Mantener sin duplicados, timeout5s, stop e historial tras reapertura confirmados;
+  diez sesiones completas y pruebas extendidas pendientes. No se afirma calibración
+  independiente de tiempos de reacción.
 
 ## 1. Preparar la copia correcta y las herramientas
 

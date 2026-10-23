@@ -2,7 +2,7 @@
 
 App Android adaptada al [demo Impacto](https://app.jotform.com/262674524369669): fondo oscuro/bordó, tarjetas negras y acciones rojas. Inicio, Entrenar, Historial, Progreso y Perfil. Se inspeccionaron el inicio y menú públicos el 23/10/2026; Entrenamiento redirige al login Jotform. La cabecera usa degradado e icono Material en lugar de redistribuir la foto del demo.
 
-Base funcional recuperada de [cotyolmedo/REAKT](https://github.com/cotyolmedo/REAKT/tree/3f34294/app), verificando hashes. Conserva WebSocket, SQLite, exportación JSON y Supabase Auth/outbox. No se modificó firmware ni se desplegó backend.
+Base funcional recuperada de [cotyolmedo/REAKT](https://github.com/cotyolmedo/REAKT/tree/3f34294/app), verificando hashes. La adaptación visual conserva WebSocket, SQLite, exportación JSON y Supabase Auth/outbox. La integración posterior de firmware y las pruebas con placas están en [PROBAR-HOY](../Docs/PROBAR-HOY.md).
 
 ## Ejecutar
 

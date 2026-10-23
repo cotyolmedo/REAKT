@@ -5,7 +5,8 @@
 MVP de uno o dos nodos y gateway implementado según [protocolo v1](packet-protocol.md).
 Nodo con pulsador, antirrebote20ms, ACK/reintentos y salida digital/WS2812B/off;
 gateway con SoftAP canal6 y WebSocket81. Cinco nodos siguen siendo ampliación.
-Compilado, sin integración física validada. [Guía operativa](PROBAR-HOY.md).
+Compilado y cargado; ensayo físico básico con un nodo y Android comprobado.
+Matriz extendida pendiente. [Guía operativa](PROBAR-HOY.md).
 
 ## Destinos
 

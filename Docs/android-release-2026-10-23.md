@@ -1,5 +1,9 @@
 # APK del demo REAKT — 23/10/2026
 
+> Esta publicación precede a la carga de placas. La puesta en marcha posterior,
+> con gateway/nodo programados y pruebas desde Android, está en
+> [banco-2026-10-23.md](banco-2026-10-23.md).
+
 Se publica desde la rama `codex/android-demo-v0.3.0`, conservando main y los cambios locales ajenos a la app. Workflow `.github/workflows/android-apk.yml`: Flutter 3.47.4, JDK17, análisis, pruebas, compilación debug universal, verificación de firma y SHA256, publicación como prerelease con descarga directa.
 
 Supabase usa variables GitHub Actions `SUPABASE_URL` y `SUPABASE_ANON_KEY`, verificadas como proyecto `hvaoezcsgqepcttaznof` y JWT de rol anon. Sin contraseñas ni claves privilegiadas en el APK. Inicio de sesión requerido en Perfil para sincronizar.

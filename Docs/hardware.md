@@ -1,5 +1,13 @@
 # Hardware REAKT
 
+## Banco actual — 23/10/2026
+
+GatewayCOM4 ESP32-D0WDQ6 y nodoCOM19 ESP32-D0WDQ6-V3, flash4MB, alimentados por
+USB. PulsadorNA GPIO18→GND y LED común con resistencia GPIO23→ánodo/cátodo→GND
+confirmados por usuario y probados funcionalmente desde Android. Refiere solo al
+banco de un nodo; no cierra la placa comercial, medidas ni pinout final de PCB.
+El MVP usa ESP-NOW canal6 y WebSocket81. Ver [evidencia](banco-2026-10-23.md).
+
 ## Inventario vigente
 
 | Elemento | Cantidad | Estado |
@@ -20,7 +28,8 @@ actual. Sus GPIO tampoco deben copiarse a las placas nuevas.
 - Lectura por flancos, antirrebote no bloqueante y un evento por accionamiento.
 - Salida WS2812B para estímulo y estados; cantidad, GPIO, tensión, limitación de
   brillo y adaptación de nivel continúan `TBD`.
-- ESP-NOW hacia el gateway; canal, pares y direccionamiento continúan `TBD`.
+- ESP-NOW hacia el gateway; MVP canal6 y pares configurados por MAC reales locales.
+  La ampliación a cinco nodos sigue pendiente.
 - Carcasa hexagonal conceptual. La PCB, la batería y el pulsador deben quedar
   fuera del camino principal de carga mecánica.
 
@@ -28,8 +37,8 @@ El pulsador no mide fuerza, energía ni intensidad de impacto.
 
 ## Gateway ESP32
 
-Coordina los cinco nodos y se comunica con Flutter. Placa, GPIO, alimentación e
-interfaz App ↔ gateway siguen `TBD`.
+Coordina hasta dos nodos en el MVP y se comunica con Flutter mediante WebSocket
+local en192.168.4.1:81. Cinco nodos, alimentación final y placa de producto pendientes.
 
 ## Alimentación y seguridad
 

@@ -2,7 +2,9 @@
 
 Implementado en `firmware/libraries/ReaktCore/src/ReaktCore.h`. Decisión concretada
 por la especificación del MVP suministrada el 22/10/2026. No es compatible con
-ensayos históricos. Compilado para Arduino-ESP32 2.0.17; radio física pendiente.
+ensayos históricos. Compilación original con Arduino-ESP32 2.0.17; banco posterior
+core3.3.4 con un nodo y primera cadena física comprobada según
+[registro del23/10](banco-2026-10-23.md). Matriz de fiabilidad extendida pendiente.
 
 ## ESP-NOW
 

@@ -22,13 +22,16 @@ ESP-NOW ↔ uno o dos nodos con pulsadorNA y salida prevista de cinco WS2812B.
 App Flutter 0.3.0 implementada, **21 tests aprobados**, APK debug Android 7+ publicado
 y verificado por checksum/firma. Firmware gateway/nodo implementado y compilado;
 el nodo admite salida deshabilitada, LED digital o WS2812B. Supabase remoto tiene
-esquema aplicado y RLS comprobado. Falta validar la cadena física completa,
-el teléfono y la sincronización desde Android. Ver [estado actual](Docs/PROBAR-HOY.md).
+esquema aplicado y RLS comprobado. Gateway y un nodo ya cargados: primera sesión
+manual con LED/pulsador y acierto en Android comprobada por usuario y serie.
+La matriz completa, sincronización Android y diez sesiones siguen pendientes.
+Ver [estado actual](Docs/PROBAR-HOY.md).
 
-Actualmente solo hay placas y pulsador: LEDs y su alimentación faltan. GPIO18/23
-son propuestas por validar; MAC y credenciales no se inventan. La configuración
-inicial no habilita hardware sin verificación. No se consideran medidas físicas
-las reacciones del simulador o los tiempos sin estímulo luminoso.
+El banco actual usa un nodo por USB, pulsadorNA enGPIO18 y LED común con
+resistencia enGPIO23, confirmados por usuario en el ensayo funcional. WS2812B,
+alimentación recargable y pinout final de PCB siguen pendientes. MAC y contraseña
+quedan en configuración local. La configuración pública por defecto no habilita
+hardware; los simuladores no cuentan como evidencia física.
 
 ## Desarrollo
 

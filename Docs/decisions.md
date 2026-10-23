@@ -2,7 +2,7 @@
 
 ## ADR-017 — Puesta en marcha del banco con placas reales
 
-**Fecha:** 2026-10-23. **Estado:** en verificación física.
+**Fecha:** 2026-10-23. **Estado:** banco básico implementado y probado; matriz extendida pendiente.
 
 El usuario autorizó programar el gateway conectado y confirmó el puertoCOM4 tras
 identificación; la segunda placa de nodo apareció enCOM19. Ambos son ESP32 de

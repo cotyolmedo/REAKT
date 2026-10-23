@@ -2,18 +2,18 @@
 
 ## Estado integrado — 23/10/2026
 
-Puesta en marcha posterior: gateway cargado enCOM4 y app del teléfono conectada
-según usuario. NodoCOM19 respaldado, carga y circuito en curso. Ver
-[registro del banco](banco-2026-10-23.md); el resto de los pendientes físicos sigue vigente.
+Puesta en marcha posterior: gatewayCOM4 y nodoCOM19 cargados y verificados;
+primera sesión manual con LED/pulsador y acierto confirmada por usuario y serie.
+Ver [registro del banco](banco-2026-10-23.md) para verificaciones en curso.
 
 - App 0.3.0 y APK publicados, análisis/21 tests y firma/SHA256 verificados.
 - Supabase remoto aplicado; Auth/API/RLS comprobados con transacciones revertidas.
 - Firmware nodo con salida digital/WS2812B/deshabilitada y gateway compilados.
-- Pendientes: configuración/carga de placas, radio, circuito LED, Android físico,
-  sincronización desde teléfono, aislamiento con dos logins y diez sesiones físicas.
+- Pendientes: completar matriz de banco, historial/sincronización desde teléfono,
+  aislamiento con dos logins y diez sesiones físicas completas.
 - [Procedimiento actual](PROBAR-HOY.md). Las entradas inferiores conservan el historial.
 
-## Estado actual
+## Estado histórico anterior al MVP
 
 Fase inicial e incremental. Hay documentación, una interfaz Flutter de
 demostración, bases de firmware y artefactos PCB/CAD conceptuales. No existe aún
