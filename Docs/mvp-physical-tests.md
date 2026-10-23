@@ -25,7 +25,7 @@ marcar PROBADO por compilar. Meta: diez sesiones consecutivas sin fallos crític
 | Reconectar app | App compilada, AP | Sesión continúa en gateway, snapshot recupera eventos | PENDIENTE DE HARDWARE: Android físico |
 | Reiniciar gateway | App y gateway | No inventar continuidad; sesión anterior queda local no completada | PENDIENTE DE HARDWARE: Android físico |
 | SQLite | App instalada | Cerrar/reabrir conserva historial; no borrar datos | CONFIRMADO POR USUARIO en Android |
-| Sincronización | Teléfono con Internet y cuentas reales | Repetir upsert sin duplicados, RLS entre dos usuarios | PENDIENTE: Android y dos logins reales |
+| Sincronización | Teléfono con Internet y cuentas reales | Repetir upsert sin duplicados, RLS entre dos usuarios | Android y repetición aprobados; aislamiento con dos logins reales pendiente |
 | Segundo nodo | Tercera placa disponible | IDs/MAC distintos, objetivos alternan aleatoriamente | PENDIENTE DE HARDWARE |
 | Diez sesiones físicas | Circuito completo | Diez x diez rondas, sin bloqueo ni duplicación; logs guardados | PENDIENTE: circuito e integración física |
 

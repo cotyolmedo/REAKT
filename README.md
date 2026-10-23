@@ -24,7 +24,9 @@ y verificado por checksum/firma. Firmware gateway/nodo implementado y compilado;
 el nodo admite salida deshabilitada, LED digital o WS2812B. Supabase remoto tiene
 esquema aplicado y RLS comprobado. Gateway y un nodo ya cargados: primera sesión
 manual con LED/pulsador y acierto en Android comprobada por usuario y serie.
-La matriz completa, sincronización Android y diez sesiones siguen pendientes.
+Sincronización Android comprobada:11sesiones/11resultados/28eventos en Supabase,
+repetición sin duplicados confirmada por usuario. Matriz extendida, dos cuentas
+reales y diez sesiones consecutivas completas siguen pendientes.
 Ver [estado actual](Docs/PROBAR-HOY.md).
 
 El banco actual usa un nodo por USB, pulsadorNA enGPIO18 y LED común con

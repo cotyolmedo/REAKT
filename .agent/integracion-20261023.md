@@ -41,4 +41,5 @@ PILLDROP local con SHA256 comprobado. No publicar configuraciones privadas.
 - [x] Primera sesión física: LED/pulsador/acierto observado por usuario y hit1/miss0 en serial.
 - [x] Usuario confirmó mantener sin duplicados, timeout5s, stop/LED apagado e historial tras reapertura.
 - [x] Serie confirmó Cancelada con objetivo desactivado y sin errores de radio registrados.
-- [ ] Verificar sincronización Android y registrar límites pendientes.
+- [x] Usuario confirmó doble sincronización sin duplicados; SQL remoto:11sesiones/11resultados/28eventos, sin sesiones sin resultado.
+- [x] Integración y banco básico cerrados; límites extendidos documentados en Docs/banco-2026-10-23.md.

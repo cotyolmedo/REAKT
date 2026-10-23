@@ -49,7 +49,8 @@ Los demás modos quedan pendientes. El contrato terminal no distingue manual/ref
 Supabase usa `SUPABASE_URL` y `SUPABASE_ANON_KEY` por `--dart-define` o archivo público
 excluido de Git. El APK publicado ya incluye esa configuración pública. Nunca agregar
 service_role ni contraseñas al código. Las sesiones sin propietario se asignan a la
-cuenta al sincronizar. Esquema y RLS remotos comprobados; pendiente sincronización
-desde Android y aislamiento con dos logins reales.
+cuenta al sincronizar. Esquema y RLS remotos comprobados; sincronización Android
+probada en banco con registros remotos y repetición sin duplicados confirmada por
+usuario. Aislamiento con dos logins reales pendiente.
 
 Evidencia en `../Docs/testing.md`. La opción de tests `--dart-define=REAKT_CAPTURE_UI=true` genera capturas con datos sintéticos en `../.school-work/flutter-preview/`; usa fuentes Windows únicamente para esa captura opcional.

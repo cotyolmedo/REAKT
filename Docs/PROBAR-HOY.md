@@ -13,8 +13,9 @@ antiguo siguiendo un bloqueo ya resuelto.
   Un gateway y uno o dos nodos; cinco nodos y otros modos son ampliaciones.
 - Nodo con pulsador NA y salida deshabilitada, LED común o WS2812B. Modelo de placa,
   GPIO, LED, resistencia y alimentación deben verificarse con piezas reales.
-- Supabase: esquema aplicado, Auth y RLS comprobados. Falta probar login y
-  sincronización desde el teléfono, y aislamiento con dos cuentas reales.
+- Supabase: esquema aplicado, Auth/RLS comprobados y sincronización desde Android
+  confirmada por usuario y datos remotos (11sesiones/11resultados/28eventos).
+  Repetición sin duplicados confirmada; aislamiento con dos cuentas reales pendiente.
 - Puesta en marcha posterior: gatewayCOM4 y nodoCOM19 cargados y verificados;
   primera sesión manual con LED/pulsador y acierto en Android comprobada por
   usuario y contadores serie. [Registro del banco](banco-2026-10-23.md).

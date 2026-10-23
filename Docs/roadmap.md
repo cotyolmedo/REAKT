@@ -9,8 +9,10 @@ Ver [registro del banco](banco-2026-10-23.md) para verificaciones en curso.
 - App 0.3.0 y APK publicados, análisis/21 tests y firma/SHA256 verificados.
 - Supabase remoto aplicado; Auth/API/RLS comprobados con transacciones revertidas.
 - Firmware nodo con salida digital/WS2812B/deshabilitada y gateway compilados.
-- Pendientes: completar matriz de banco, historial/sincronización desde teléfono,
-  aislamiento con dos logins y diez sesiones físicas completas.
+- Sincronización Android comprobada:11sesiones/11resultados/28eventos remotos;
+  repetición sin duplicados confirmada por usuario.
+- Pendientes: completar matriz extendida, exportación del historial, aislamiento
+  con dos logins y diez sesiones físicas consecutivas completas.
 - [Procedimiento actual](PROBAR-HOY.md). Las entradas inferiores conservan el historial.
 
 ## Estado histórico anterior al MVP

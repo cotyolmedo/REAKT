@@ -88,7 +88,8 @@ Espressif y SHA-512 de ctags; no se deshabilitó TLS ni verificación de artefac
 
 **Limitaciones actuales:** pruebas físicas Android pendientes; ver estado del APK en
 android-release-2026-10-23.md. Supabase remoto tiene migración aplicada,
-cuenta confirmada y pruebas RLS revertidas; falta sincronización desde Android.
+cuenta confirmada y pruebas RLS revertidas; sincronización desde Android comprobada
+en el banco del23/10, con datos remotos verificados y repetición sin duplicados.
 No volver a ejecutar la migración para usar el APK. Si el inicio de
 Supabase falla, la app conserva entrenamiento local y permite reabrir con Internet.
 Historial en curso tras reinicio de gateway queda local, sin inventar cierre ni

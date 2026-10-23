@@ -27,7 +27,7 @@ las diez sesiones inferiores no se completan por inferencia. Evidencia en
 | Reconectar cliente | Snapshot recuperado | SIN EJECUTAR | |
 | Quitar nodo | Interrupción diagnosticada | SIN EJECUTAR | |
 | Reiniciar app | Historial local conservado | CONFIRMADO POR USUARIO | Cerró/reabrió y conservó sesiones |
-| Sincronizar dos veces | Sin duplicar sesiones/eventos | SIN EJECUTAR | |
+| Sincronizar dos veces | Sin duplicar sesiones/eventos | APROBADO EN BANCO | Usuario confirmó repetición sin duplicados; SQL remoto11sesiones/11resultados/28eventos, sin sesiones sin resultado |
 | Otra cuenta | No puede leer/modificar datos ajenos | SIN EJECUTAR | |
 
 ## Diez sesiones

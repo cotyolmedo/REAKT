@@ -2,7 +2,9 @@
 
 Estado actualizado23/10/2026: conector operativo, migración aplicada tras inspección,
 cuenta de prueba confirmada y pruebas remotas RLS transaccionales aprobadas.
-La sincronización desde Android físico y un segundo login real siguen pendientes.
+Sincronización desde Android físico confirmada por usuario y consulta remota:
+11sesiones,11resultados,28eventos, sin sesiones sin resultado. Usuario confirmó
+repetición sin duplicados. Un segundo login real y su aislamiento siguen pendientes.
 Los apartados siguientes conservan el procedimiento y la evidencia histórica;
 el cierre actual está en [CIERRE-SOFTWARE](../Docs/CIERRE-SOFTWARE-2026-10-23.md).
 

@@ -2,6 +2,12 @@
 
 ## Referencia actual — 23/10/2026
 
+Sincronización física Android→Supabase confirmada por usuario, incluyendo repetición
+sin duplicados. Consulta SQL de solo lectura:11sesiones/11resultados/28eventos y
+cero sesiones sin resultado; antes del envío las tablas estaban vacías. No se
+insertaron fixtures ni se modificó esquema en esta verificación. Dos logins reales
+y diez sesiones consecutivas completas siguen pendientes.
+
 Puesta en marcha posterior: gatewayCOM4 y nodoCOM19 programados con verificación
 de hashes y logs de ejecución. Primera sesión manual física con LED y pulsador:
 usuario confirmó un acierto en Android; serie confirmó completed/hit1/miss0 y nodo
@@ -21,7 +27,8 @@ La app 0.3.0 aprobó análisis y 21 pruebas; APK debug publicado con firma/SHA25
 configuración Supabase y endpoint gateway comprobados dentro del archivo descargado.
 Evidencia y workflows: [publicación Android](android-release-2026-10-23.md).
 RLS remoto fue probado con datos sintéticos revertidos; no es login desde teléfono
-ni segundo login real. Circuito, radio, Android y diez sesiones físicas pendientes.
+ni segundo login real. El banco físico y su sincronización se comprobaron después
+según la entrada superior; diez sesiones consecutivas completas siguen pendientes.
 Las entradas inferiores son bitácora histórica. Para ejecutar: [PROBAR-HOY](PROBAR-HOY.md).
 
 ## Criterio
