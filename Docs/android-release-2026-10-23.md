@@ -10,4 +10,12 @@ Gateway `ws://192.168.4.1:81`, protocolo MVP v1. El usuario confirmó que las pl
 
 Pruebas y publicación concretas se registran al completar el workflow. El APK es de demostración debug: antes de cambiar de firma/instalación exportar historial JSON.
 
+## Publicación verificada
+
+Workflow https://github.com/cotyolmedo/REAKT/actions/runs/39965490097: success; análisis, 21 pruebas Flutter, ensamblado, firma y publicación aprobados. Fuente compilada `a6985d2f1846259dbcdbdc0f9df46262784c4a8f`.
+
+[Descarga directa del APK](https://github.com/cotyolmedo/REAKT/releases/download/v0.3.0-demo.4.1/REAKT-0.3.0-android.apk), [release con checksum y firma](https://github.com/cotyolmedo/REAKT/releases/tag/v0.3.0-demo.4.1). Tamaño 154267345 bytes. SHA256: `ab2f646c77047784e8a22944a3edfe1f0467f3346a7ebb7408782c33f920c072`.
+
+La prueba SQL transaccional remota de RLS fue aprobada y revertida; no quedaron sesiones/eventos sintéticos. Falta iniciar sesión en el teléfono y probar sincronización desde la app. Placas todavía sin configurar: no se declara conexión física.
+
 La compilación con Flutter 3.47.4 requiere actualizar el proyecto anterior: Gradle 8.14.3 (checksum oficial), AGP 8.11.1, Kotlin 2.2.20 y Android mínimo 7.0/API24. No se usa `--android-skip-build-dependency-validation`.
