@@ -34,10 +34,9 @@ class LocalStore {
         'id': snapshot.id,
         'owner': old.isEmpty ? null : old.first['owner'],
         'payload': payload,
-        'captured_at':
-            old.isEmpty
-                ? DateTime.now().toUtc().toIso8601String()
-                : old.first['captured_at'],
+        'captured_at': old.isEmpty
+            ? DateTime.now().toUtc().toIso8601String()
+            : old.first['captured_at'],
         'synced': 0,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     });
@@ -50,18 +49,17 @@ class LocalStore {
     return jsonEncode({
       'format': 'reakt-history-v1',
       'exported_at': DateTime.now().toUtc().toIso8601String(),
-      'sessions':
-          entries
-              .map(
-                (row) => {
-                  'id': row['id'],
-                  'owner': row['owner'],
-                  'captured_at': row['captured_at'],
-                  'synced': row['synced'] == 1,
-                  'snapshot': jsonDecode(row['payload'] as String),
-                },
-              )
-              .toList(),
+      'sessions': entries
+          .map(
+            (row) => {
+              'id': row['id'],
+              'owner': row['owner'],
+              'captured_at': row['captured_at'],
+              'synced': row['synced'] == 1,
+              'snapshot': jsonDecode(row['payload'] as String),
+            },
+          )
+          .toList(),
     });
   }
 

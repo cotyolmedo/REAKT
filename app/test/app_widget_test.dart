@@ -27,13 +27,25 @@ void main() {
     'offline training screen renders and prevents disconnected start',
     (tester) async {
       await tester.pumpWidget(ReaktApp(store: store));
-      expect(find.text('REAKT · Entrenamiento'), findsOneWidget);
+      expect(find.text('Iniciar entrenamiento'), findsOneWidget);
+      await tester.tap(find.text('Iniciar entrenamiento'));
+      await tester.pumpAndSettle();
       expect(find.text('Gateway sin conexión'), findsOneWidget);
-      final manual = tester.widget<FilledButton>(
-        find.widgetWithText(FilledButton, 'Prueba manual · 5 segundos'),
+      await tester.scrollUntilVisible(
+        find.text('Comenzar sesión'),
+        300,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const PageStorageKey(1)),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      final manual = tester.widget<OutlinedButton>(
+        find.widgetWithText(OutlinedButton, 'Prueba manual · 5 segundos'),
       );
       final start = tester.widget<FilledButton>(
-        find.widgetWithText(FilledButton, 'Reflejos · 10 rondas · 1,5 s'),
+        find.widgetWithText(FilledButton, 'Comenzar sesión'),
       );
       expect(manual.onPressed, isNull);
       expect(start.onPressed, isNull);
@@ -47,6 +59,7 @@ void main() {
       late HttpServer server;
       final sockets = <WebSocket>[];
       final received = Completer<Map<String, dynamic>>();
+      final configuredStart = Completer<Map<String, dynamic>>();
       await tester.runAsync(() async {
         server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
         server.listen((request) async {
@@ -56,6 +69,8 @@ void main() {
           socket.listen((raw) {
             final command = jsonDecode(raw as String) as Map<String, dynamic>;
             if (!received.isCompleted) received.complete(command);
+            if (command['command'] == 'start' && !configuredStart.isCompleted)
+              configuredStart.complete(command);
             final result = sample.fixture();
             result['session_id'] = 'abcdef01-1234-4567-8123-123456789abc';
             (result['events'] as List).first['id'] =
@@ -81,6 +96,8 @@ void main() {
 
       try {
         await tester.pumpWidget(ReaktApp(store: store));
+        await tester.tap(find.text('Iniciar entrenamiento'));
+        await tester.pumpAndSettle();
         await tester.enterText(
           find.byType(TextField).first,
           'ws://127.0.0.1:${server.port}',
@@ -99,12 +116,21 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('Gateway conectada'), findsOneWidget);
         final manual = find.widgetWithText(
-          FilledButton,
+          OutlinedButton,
           'Prueba manual · 5 segundos',
         );
-        await tester.ensureVisible(manual);
+        await tester.scrollUntilVisible(
+          manual,
+          250,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const PageStorageKey(1)),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
         await tester.runAsync(() async {
-          tester.widget<FilledButton>(manual).onPressed!();
+          tester.widget<OutlinedButton>(manual).onPressed!();
           await Future<void>.delayed(const Duration(milliseconds: 20));
         });
         await waitForRows(2);
@@ -113,7 +139,57 @@ void main() {
           'manual',
         );
         await tester.pumpAndSettle();
-        expect(find.text('Aciertos 1'), findsOneWidget);
+        await tester.scrollUntilVisible(
+          find.text('Reacción'),
+          250,
+          scrollable: find
+              .descendant(
+                of: find.byKey(const PageStorageKey(1)),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        expect(find.text('250.0 ms'), findsOneWidget);
+        final scrollable = find
+            .descendant(
+              of: find.byKey(const PageStorageKey(1)),
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        await tester.scrollUntilVisible(
+          find.text('10 rondas'),
+          -250,
+          scrollable: scrollable,
+        );
+        await tester.ensureVisible(find.byType(DropdownButtonFormField<int>).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('10 rondas'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('20 rondas').last);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('1.5 s'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('3.0 s').last);
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.text('Comenzar sesión'),
+          200,
+          scrollable: scrollable,
+        );
+        await tester.runAsync(() async {
+          tester
+              .widget<FilledButton>(
+                find.widgetWithText(FilledButton, 'Comenzar sesión'),
+              )
+              .onPressed!();
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        });
+        final command = await tester.runAsync(
+          () => configuredStart.future.timeout(const Duration(seconds: 3)),
+        );
+        expect(command!['rounds'], 20);
+        expect(command['limit_ms'], 3000);
+        await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
       } finally {
         await tester.pumpWidget(const SizedBox());
