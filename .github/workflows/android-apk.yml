@@ -1,0 +1,92 @@
+name: REAKT Android APK
+
+on:
+  push:
+    branches: [codex/android-demo-v0.3.0]
+    paths: ['app/**', '.github/workflows/android-apk.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: app
+    env:
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install exact Flutter SDK
+        run: |
+          git clone --depth 1 --branch 3.47.4 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - run: flutter --version
+      - name: Validate public project configuration
+        run: |
+          python3 - <<'PY'
+          import os,json,base64
+          assert os.environ['SUPABASE_URL'] == 'https://hvaoezcsgqepcttaznof.supabase.co'
+          key = os.environ['SUPABASE_ANON_KEY']
+          claims = json.loads(base64.urlsafe_b64decode(key.split('.')[1] + '=='))
+          assert claims['role'] == 'anon' and claims['ref'] == 'hvaoezcsgqepcttaznof'
+          print('Project URL and public anon key validated; no privileged key embedded.')
+          PY
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter analyze --no-pub
+      - run: flutter test --no-pub
+      - name: Build Android APK with public Supabase configuration
+        run: >-
+          flutter build apk --debug --no-pub
+          --dart-define="SUPABASE_URL=$SUPABASE_URL"
+          --dart-define="SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
+      - name: Verify and package
+        run: |
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-debug.apk dist/REAKT-0.3.0-android.apk
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --verbose dist/REAKT-0.3.0-android.apk > dist/signature-verification.txt
+          cd dist
+          sha256sum REAKT-0.3.0-android.apk > SHA256SUMS.txt
+          printf 'Source commit: %s\nSupabase: configured (public anon key only)\nGateway: ws://192.168.4.1:81; boards not configured yet\nBuild: debug, Android minSdk 24\nPhysical integration: pending\n' "$GITHUB_SHA" > BUILD-INFO.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: REAKT-android
+          path: app/dist/*
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: REAKT-android
+          path: dist
+      - name: Publish downloadable APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SOURCE_SHA: ${{ github.sha }}
+          RELEASE_TAG: v0.3.0-demo.${{ github.run_number }}.${{ github.run_attempt }}
+        run: |
+          cat > notes.md <<'EOF'
+          REAKT Flutter: Inicio, Entrenar, Historial, Progreso y Perfil inspirados en el demo.
+
+          APK Android debug con Supabase configurado mediante clave pública. En Perfil, iniciar sesión con la cuenta del proyecto para sincronizar. Gateway preconfigurado en ws://192.168.4.1:81: conectarse al Wi-Fi REAKT-MVP cuando las placas tengan firmware compatible.
+
+          Analyze, pruebas Flutter y firma APK verificados por este workflow. Las placas todavía no están configuradas: integración física pendiente. No incluye contraseñas, sesiones de usuario ni claves privilegiadas.
+
+          Antes de cambiar de instalación, exportar el historial JSON. La firma debug de esta compilación puede diferir de APKs anteriores; no desinstalar sin guardar los datos.
+          EOF
+          gh release create "$RELEASE_TAG" dist/* --target "$SOURCE_SHA" --title 'REAKT 0.3.0 · demo Android' --notes-file notes.md --prerelease

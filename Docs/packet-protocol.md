@@ -1,5 +1,11 @@
 # REAKT Packet Protocol
 
+## Compatibilidad de la app — 2026-10-23
+
+La app recuperada de GitHub `main` en `3f34294` implementa el [contrato MVP v1 remoto](https://github.com/cotyolmedo/REAKT/blob/3f34294/Docs/packet-protocol.md). Este documento local conserva debajo la definición conceptual anterior; no implica que se haya actualizado el firmware local.
+
+Gateway compatible: WebSocket JSON v1, órdenes `start`, `manual`, `stop`, rondas 1..50 y límite 100..10000 ms; snapshots completos validados por `app/lib/services/snapshot.dart`. El MVP admite nodos 1 y 2. La UI no altera ESP-NOW ni crea otra codificación. Comprobar versiones antes de probar hardware.
+
 ## Purpose
 
 REAKT uses a common packet concept so different training modes can communicate through the same infrastructure.

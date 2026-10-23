@@ -1,5 +1,25 @@
 # REAKT Architecture Decision Record
 
+## ADR-007 — Compilación Android y distribución de demostración
+
+Date: 2026-10-23
+Status: Accepted
+
+Por pedido del usuario se compila y publica el APK mediante GitHub Actions desde `codex/android-demo-v0.3.0`, sin instalar Android SDK en la PC del colegio ni incluir cambios ajenos de firmware. La URL/clave pública anon se suministran por variables de compilación, sin credenciales privilegiadas ni autenticación de usuario incrustada.
+
+Distribución como prerelease debug con SHA256 y verificación de firma. La firma debug del runner puede diferir de APKs anteriores: exportar historial antes de cambiar de instalación. La configuración de gateway no acredita conexión física: el usuario confirmó que las placas no están configuradas. Autenticación y sincronización requieren iniciar sesión desde Perfil con Internet.
+
+## ADR-006 — Adaptación Flutter al demo Impacto
+
+Date: 2026-10-23
+Status: Accepted
+
+Se recupera exclusivamente la app del commit remoto `3f34294`, con hashes comprobados, y se adapta la presentación al demo Jotform aportado. Se mantienen servicios y contrato MVP sin inventar transporte. Firmware local y ensayos anteriores permanecen intactos.
+
+Inicio, Entrenar, Historial, Progreso y Perfil reemplazan el shell. Solo Reflejos y prueba manual tienen comandos implementados. Precisión/reacción provienen de capturas validadas; velocidad, resistencia y rachas no se presentan como mediciones. El contrato terminal no distingue manual/reflejos: se muestran como sesiones.
+
+La base remota limita el MVP a dos nodos; ampliar a cinco requiere trabajo futuro en protocolo/firmware. La topología final acordada no cambia. Flutter mínimo 3.35, SDK usado 3.47.4 por APIs de presentación; lock resuelto con este SDK. Validar físicamente con firmware compatible y completar build Android cuando se disponga del SDK.
+
 This file records significant decisions.
 
 ## ADR-001 - Primer shell de interfaz Flutter

@@ -1,5 +1,17 @@
 # REAKT Flutter Application
 
+## Adaptación al demo — 2026-10-23
+
+`app/` usa la base funcional remota `cotyolmedo/REAKT`, main `3f34294`, en lugar del shell local: Android, GatewayLink, TrainingSnapshot, LocalStore y CloudSync. Se conservan los cambios ajenos del firmware local.
+
+La presentación sigue el inicio y menú públicos del demo Impacto/Jotform: Inicio, Entrenar, Historial, Progreso y Perfil; superficies negras, fondo bordó y acciones rojas. Entrenamiento del demo exige autenticación; su contenido interno no pudo inspeccionarse. El flujo interno se implementa según REAKT.
+
+Entrenar configura rondas/tiempo y emite start/manual/stop. Historial conserva capturas, detalle y exportación; Progreso usa sesiones completadas; Perfil conserva Auth/outbox. Errores y desconexión visibles. `presentation/` separa componentes/adaptación de registros de los servicios.
+
+El MVP remoto admite dos nodos; arquitectura final prevista: cinco. No interpretar peers configurados como dispositivos presentes. Antes de probar hardware comprobar compatibilidad con el [contrato MVP](https://github.com/cotyolmedo/REAKT/blob/3f34294/Docs/packet-protocol.md).
+
+SDK verificado Flutter 3.47.4/Dart 3.13.3. APK generado y publicado mediante GitHub Actions; configuración pública Supabase y permisos remotos verificados. Pruebas físicas de teléfono, radio y sincronización desde Android pendientes. Uso en `app/README.md`, evidencia en `testing.md` y `android-release-2026-10-23.md`.
+
 ## Purpose
 
 The Flutter application is the user-facing control and visualization layer.

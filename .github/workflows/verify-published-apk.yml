@@ -1,0 +1,46 @@
+name: Verify published REAKT APK
+on:
+  push:
+    branches: [codex/android-demo-v0.3.0]
+    paths: ['.github/workflows/verify-published-apk.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+    steps:
+      - name: Download and inspect the actual public APK
+        run: |
+          python3 - <<'PY'
+          import urllib.request, hashlib, zipfile, os, pathlib
+          base = 'https://github.com/cotyolmedo/REAKT/releases/download/v0.3.0-demo.4.1/'
+          for name in ['SHA256SUMS.txt', 'REAKT-0.3.0-android.apk']:
+              urllib.request.urlretrieve(base + name, name)
+          apk = pathlib.Path('REAKT-0.3.0-android.apk')
+          expected = pathlib.Path('SHA256SUMS.txt').read_text().split()[0]
+          with apk.open('rb') as file:
+              actual = hashlib.file_digest(file,'sha256').hexdigest()
+          assert actual == expected == 'ab2f646c77047784e8a22944a3edfe1f0467f3346a7ebb7408782c33f920c072'
+          print('Public APK download and SHA256 verified:', actual)
+          with zipfile.ZipFile(apk) as package:
+              kernel_name = next(n for n in package.namelist() if 'kernel_blob' in n)
+              kernel = package.read(kernel_name)
+              for label, marker in [
+                  ('Supabase project URL', os.environ['SUPABASE_URL'].encode()),
+                  ('Supabase public anon key', os.environ['SUPABASE_ANON_KEY'].encode()),
+                  ('Gateway WebSocket', b'ws://192.168.4.1:81')
+              ]:
+                  assert marker and marker in kernel, label + ' absent from compiled APK'
+                  print(label + ': present in compiled APK')
+              assert b'service_role' not in os.environ['SUPABASE_ANON_KEY'].encode()
+              print('Native architectures:',sorted({n.split('/')[1] for n in package.namelist() if n.startswith('lib/') and n.endswith('.so')}))
+          PY
+      - name: Verify signature of downloaded APK
+        run: |
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --verbose REAKT-0.3.0-android.apk
