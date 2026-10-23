@@ -1,122 +1,360 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'services/local_store.dart';
+import 'services/gateway_link.dart';
+import 'services/cloud_sync.dart';
 
-void main() => runApp(const ReaktApp());
-
-abstract final class ReaktColors {
-  static const background = Color(0xFF070707);
-  static const card = Color(0xFF121214);
-  static const raised = Color(0xFF18181B);
-  static const line = Color(0xFF2B2B30);
-  static const muted = Color(0xFFA1A1AA);
-  static const accent = Color(0xFFE3262E);
-  static const accentSoft = Color(0xFFFF4B52);
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    const url = String.fromEnvironment('SUPABASE_URL');
+    const key = String.fromEnvironment('SUPABASE_ANON_KEY');
+    SupabaseClient? cloud;
+    String cloudError = "";
+    if (url.isNotEmpty && key.isNotEmpty) {
+      try {
+        if (!url.startsWith('https://'))
+          throw StateError('Supabase requiere HTTPS');
+        await Supabase.initialize(
+          url: url,
+          anonKey: key,
+        ).timeout(const Duration(seconds: 8));
+        cloud = Supabase.instance.client;
+      } catch (_) {
+        cloudError =
+            'Supabase no disponible al iniciar. Entrenamiento local habilitado; reabrí la app con Internet para iniciar sesión.';
+      }
+    }
+    final store = await LocalStore.open();
+    runApp(ReaktApp(store: store, cloud: cloud, cloudError: cloudError));
+  } catch (e) {
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                'No se pudo iniciar REAKT. No se borraron datos.\n$e',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class ReaktApp extends StatelessWidget {
-  const ReaktApp({super.key});
-
+  final LocalStore store;
+  final SupabaseClient? cloud;
+  final String cloudError;
+  const ReaktApp({
+    super.key,
+    required this.store,
+    this.cloud,
+    this.cloudError = "",
+  });
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'REAKT',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: ReaktColors.background,
-          colorScheme: ColorScheme.fromSeed(seedColor: ReaktColors.accent, brightness: Brightness.dark),
-          useMaterial3: true,
-        ),
-        home: const DashboardPage(),
+    title: 'REAKT',
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      brightness: Brightness.dark,
+      colorSchemeSeed: const Color(0xFFE3262E),
+      scaffoldBackgroundColor: const Color(0xFF070707),
+      useMaterial3: true,
+    ),
+    home: TrainingPage(store: store, cloud: cloud, cloudError: cloudError),
+  );
+}
+
+class TrainingPage extends StatefulWidget {
+  final LocalStore store;
+  final SupabaseClient? cloud;
+  final String cloudError;
+  const TrainingPage({
+    super.key,
+    required this.store,
+    this.cloud,
+    this.cloudError = "",
+  });
+  @override
+  State<TrainingPage> createState() => _TrainingPageState();
+}
+
+class _TrainingPageState extends State<TrainingPage>
+    with WidgetsBindingObserver {
+  late final GatewayLink link;
+  late final CloudSync cloudSync;
+  final address = TextEditingController(text: 'ws://192.168.4.1:81');
+  final email = TextEditingController(), password = TextEditingController();
+  StreamSubscription<AuthState>? authSubscription;
+  Timer? syncTimer;
+  String message = '';
+  bool busy = false;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    link = GatewayLink(widget.store)..addListener(changed);
+    cloudSync = CloudSync(
+      widget.store,
+      widget.cloud == null ? null : SupabaseRemote(widget.cloud!),
+    );
+    authSubscription = widget.cloud?.auth.onAuthStateChange.listen(
+      (_) => changed(),
+    );
+    syncTimer = Timer.periodic(const Duration(seconds: 20), (_) {
+      if (widget.cloud?.auth.currentUser != null) unawaited(sync(silent: true));
+    });
+  }
+
+  void changed() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        widget.cloud?.auth.currentUser != null)
+      unawaited(sync(silent: true));
+  }
+
+  Future<void> action(Future<void> Function() work) async {
+    if (busy) return;
+    setState(() => busy = true);
+    try {
+      await work();
+    } catch (e) {
+      if (mounted) setState(() => message = '$e');
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Future<void> sync({bool silent = false}) async {
+    try {
+      await link.flush();
+      final n = await cloudSync.sync();
+      if (mounted && (!silent || n > 0))
+        setState(() => message = '$n sesiones sincronizadas');
+    } catch (e) {
+      if (mounted) setState(() => message = 'Pendiente de sincronizar: $e');
+    }
+  }
+
+  Future<void> history() async {
+    await link.flush();
+    final rows = await widget.store.rows();
+    if (!mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Historial local'),
+            content: SizedBox(
+              width: 420,
+              height: 320,
+              child: ListView(
+                children:
+                    rows
+                        .map(
+                          (r) => ListTile(
+                            title: Text('${r['id']}'),
+                            subtitle: Text(
+                              '${r['captured_at']}\n${r['synced'] == 1 ? 'Sincronizada' : 'Guardada localmente'}',
+                            ),
+                          ),
+                        )
+                        .toList(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cerrar'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Future<void> exportHistory() async {
+    await link.flush();
+    await Clipboard.setData(
+      ClipboardData(text: await widget.store.exportJson()),
+    );
+    if (mounted)
+      setState(
+        () =>
+            message =
+                'Historial copiado. Pegalo en un archivo y guardalo antes de cambiar de instalación.',
       );
-}
+  }
 
-class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
   @override
-  State<DashboardPage> createState() => _DashboardPageState();
-}
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    syncTimer?.cancel();
+    authSubscription?.cancel();
+    link.removeListener(changed);
+    link.dispose();
+    address.dispose();
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
 
-class _DashboardPageState extends State<DashboardPage> {
-  int tab = 0;
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
-          child: IndexedStack(index: tab, children: const [HomeView(), TrainingView(), ProgressView(), ProfileView()]),
-        ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: tab,
-          onDestinationSelected: (value) => setState(() => tab = value),
-          backgroundColor: ReaktColors.raised,
-          indicatorColor: ReaktColors.accent.withValues(alpha: .18),
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.grid_view_rounded), label: 'Inicio'),
-            NavigationDestination(icon: Icon(Icons.bolt_rounded), label: 'Entrenar'),
-            NavigationDestination(icon: Icon(Icons.insights_rounded), label: 'Progreso'),
-            NavigationDestination(icon: Icon(Icons.person_outline_rounded), label: 'Perfil'),
-          ],
-        ),
-      );
-}
-
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
-  @override
-  Widget build(BuildContext context) => ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
+  Widget build(BuildContext context) {
+    final s = link.snapshot;
+    final training = s?.data['active'] == true;
+    final user = widget.cloud?.auth.currentUser;
+    return Scaffold(
+      appBar: AppBar(title: const Text('REAKT · Entrenamiento')),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
         children: [
-          const TopBar(),
-          const SizedBox(height: 30),
-          const Text('TU PRÓXIMO NIVEL', style: TextStyle(color: ReaktColors.accentSoft, fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: 1.6)),
-          const SizedBox(height: 8),
-          Text('Entrená\ncon intención.', style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w800, height: .98)),
-          const SizedBox(height: 14),
-          const Text('Medí tus respuestas, entendé tu rendimiento y convertí cada sesión en progreso.', style: TextStyle(color: ReaktColors.muted, height: 1.5, fontSize: 15)),
-          const SizedBox(height: 24),
-          FilledButton.icon(onPressed: () {}, icon: const Icon(Icons.play_arrow_rounded), label: const Text('Comenzar entrenamiento'), style: FilledButton.styleFrom(backgroundColor: ReaktColors.accent, minimumSize: const Size.fromHeight(52), shape: const StadiumBorder(), textStyle: const TextStyle(fontWeight: FontWeight.w800))),
-          const SizedBox(height: 28),
-          const SectionTitle(title: 'Resumen de rendimiento', action: 'Esta semana'),
-          const SizedBox(height: 12),
-          const Row(children: [Expanded(child: MetricCard(value: '86%', label: 'Precisión', icon: Icons.track_changes_rounded)), SizedBox(width: 12), Expanded(child: MetricCard(value: '0.42s', label: 'Reacción', icon: Icons.timer_outlined))]),
-          const SizedBox(height: 12),
-          const Surface(child: Row(children: [Icon(Icons.bolt_rounded, color: ReaktColors.accentSoft, size: 30), SizedBox(width: 14), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Última sesión', style: TextStyle(fontWeight: FontWeight.w700)), SizedBox(height: 4), Text('Reflejos · 12 min · 48 respuestas', style: TextStyle(color: ReaktColors.muted, fontSize: 12))])), Icon(Icons.chevron_right_rounded, color: ReaktColors.muted)])),
+          const Text(
+            'Entrená con intención.',
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Conectá el teléfono al Wi-Fi REAKT-MVP. El entrenamiento funciona sin Internet.',
+          ),
+          TextField(
+            controller: address,
+            decoration: const InputDecoration(labelText: 'Gateway WebSocket'),
+          ),
+          FilledButton(
+            onPressed:
+                busy
+                    ? null
+                    : () => action(() => link.connect(address.text.trim())),
+            child: Text(
+              link.connected ? 'Reconectar gateway' : 'Conectar gateway',
+            ),
+          ),
+          Text(link.connected ? 'Gateway conectada' : 'Gateway sin conexión'),
+          if (link.error.isNotEmpty)
+            Text(
+              link.error,
+              style: const TextStyle(color: Colors.orangeAccent),
+            ),
+          const SizedBox(height: 20),
+          Text(
+            'Estado: ${s?.status ?? 'sin datos'} · Ronda ${s?.data['round'] ?? 0}/${s?.data['rounds'] ?? 0}',
+          ),
+          Text('Nodo objetivo: ${s?.data['target'] ?? '—'}'),
+          const Text(
+            'Sin LEDs verificados, usá estas pruebas solo para comprobar mensajes y pulsador; no para medir reacción visual.',
+          ),
+          Wrap(
+            spacing: 12,
+            children: [
+              Chip(label: Text('Aciertos ${s?.data['hits'] ?? 0}')),
+              Chip(label: Text('Fallos ${s?.data['misses'] ?? 0}')),
+              Chip(label: Text('Anticipadas ${s?.data['early'] ?? 0}')),
+              Chip(
+                label: Text(
+                  'Reacción ${((s?.data['mean_us'] ?? 0) / 1000).toStringAsFixed(1)} ms',
+                ),
+              ),
+            ],
+          ),
+          FilledButton(
+            onPressed:
+                !link.connected || training || busy
+                    ? null
+                    : () => action(() => link.command('manual', limitMs: 5000)),
+            child: const Text('Prueba manual · 5 segundos'),
+          ),
+          FilledButton(
+            onPressed:
+                !link.connected || training || busy
+                    ? null
+                    : () => action(() => link.command('start')),
+            child: const Text('Reflejos · 10 rondas · 1,5 s'),
+          ),
+          OutlinedButton(
+            onPressed:
+                !link.connected || !training || busy
+                    ? null
+                    : () => action(() => link.command('stop')),
+            child: const Text('Detener sesión'),
+          ),
+          Text(
+            'Diagnóstico: ${s?.data['diagnostics'] ?? '—'}\n${s?.data['error'] ?? ''}',
+          ),
+          TextButton(
+            onPressed: () => action(history),
+            child: const Text('Ver historial guardado'),
+          ),
+          TextButton(
+            onPressed: busy ? null : () => action(exportHistory),
+            child: const Text('Copiar historial JSON'),
+          ),
+          const Divider(height: 32),
+          const Text('Sincronización Supabase', style: TextStyle(fontSize: 20)),
+          if (widget.cloudError.isNotEmpty) Text(widget.cloudError),
+          if (widget.cloud == null)
+            const Text(
+              'Sin configurar. Las sesiones se conservan en este teléfono. Usar SUPABASE_URL y SUPABASE_ANON_KEY al compilar.',
+            ),
+          if (widget.cloud != null && user == null) ...[
+            TextField(
+              controller: email,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Correo del usuario de pruebas',
+              ),
+            ),
+            TextField(
+              controller: password,
+              obscureText: true,
+              autocorrect: false,
+              decoration: const InputDecoration(labelText: 'Contraseña'),
+            ),
+            FilledButton(
+              onPressed:
+                  busy
+                      ? null
+                      : () => action(() async {
+                        await widget.cloud!.auth.signInWithPassword(
+                          email: email.text.trim(),
+                          password: password.text,
+                        );
+                        password.clear();
+                      }),
+              child: const Text('Iniciar sesión'),
+            ),
+          ],
+          if (user != null) ...[
+            Text(
+              'Cuenta: ${user.email ?? user.id}. Las sesiones sin propietario se asignarán a esta cuenta al sincronizar.',
+            ),
+            FilledButton(
+              onPressed: busy ? null : () => action(() => sync()),
+              child: const Text('Sincronizar sesiones finalizadas'),
+            ),
+            TextButton(
+              onPressed:
+                  busy
+                      ? null
+                      : () => action(() => widget.cloud!.auth.signOut()),
+              child: const Text('Cerrar sesión'),
+            ),
+          ],
+          if (message.isNotEmpty) Text(message),
+          const Text(
+            'La conexión a Internet se usa solo para iniciar sesión y sincronizar. Volvé a una red con Internet después del entrenamiento.',
+          ),
         ],
-      );
+      ),
+    );
+  }
 }
-
-class TrainingView extends StatelessWidget {
-  const TrainingView({super.key});
-  @override
-  Widget build(BuildContext context) => SimplePage(title: 'Entrenamientos', subtitle: 'Elegí un modo y prepará tu próxima sesión.', child: const Column(children: [ModeTile(name: 'Reflejos', description: 'Responder al estímulo.', icon: Icons.flash_on_rounded), ModeTile(name: 'Velocidad', description: 'Ejecutar en el menor tiempo.', icon: Icons.speed_rounded), ModeTile(name: 'Precisión', description: 'Acertar el objetivo.', icon: Icons.gps_fixed_rounded), ModeTile(name: 'Coordinación', description: 'Sincronizar respuesta y movimiento.', icon: Icons.hub_rounded)]));
-}
-
-class ProgressView extends StatelessWidget {
-  const ProgressView({super.key});
-  @override
-  Widget build(BuildContext context) => SimplePage(title: 'Tu progreso', subtitle: 'Una mirada clara a cómo estás evolucionando.', child: const Column(children: [Surface(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Rendimiento general', style: TextStyle(color: ReaktColors.muted, fontSize: 12)), SizedBox(height: 10), Text('+12.4%', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 32)), SizedBox(height: 12), LinearProgressIndicator(value: .72, minHeight: 8, color: ReaktColors.accent, backgroundColor: ReaktColors.line), SizedBox(height: 10), Text('Comparado con tus últimas 10 sesiones', style: TextStyle(color: ReaktColors.muted, fontSize: 12))])), SizedBox(height: 18), SectionTitle(title: 'Últimas sesiones', action: 'Ver historial'), SizedBox(height: 12), HistoryTile(date: 'Hoy, 18:42', mode: 'Reflejos', score: '86%'), HistoryTile(date: 'Ayer, 19:10', mode: 'Velocidad', score: '78%')]));
-}
-
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
-  @override
-  Widget build(BuildContext context) => SimplePage(title: 'Perfil', subtitle: 'Configurá tu experiencia REAKT.', child: const Column(children: [Surface(child: Row(children: [CircleAvatar(radius: 28, backgroundColor: ReaktColors.raised, child: Icon(Icons.person_outline_rounded, color: ReaktColors.accentSoft)), SizedBox(width: 14), Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Atleta REAKT', style: TextStyle(fontWeight: FontWeight.w700)), SizedBox(height: 4), Text('Configuración inicial pendiente', style: TextStyle(color: ReaktColors.muted, fontSize: 12))])])), SizedBox(height: 16), SettingTile(title: 'Conectividad', detail: 'Gateway no configurado', icon: Icons.wifi_off_rounded), SettingTile(title: 'Preferencias', detail: 'Notificaciones y objetivos', icon: Icons.tune_rounded), SettingTile(title: 'Documentación', detail: 'Arquitectura y estado del proyecto', icon: Icons.menu_book_outlined)]));
-}
-
-class SimplePage extends StatelessWidget {
-  final String title, subtitle;
-  final Widget child;
-  const SimplePage({required this.title, required this.subtitle, required this.child, super.key});
-  @override
-  Widget build(BuildContext context) => ListView(padding: const EdgeInsets.fromLTRB(20, 24, 20, 28), children: [const TopBar(), const SizedBox(height: 32), Text(title, style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800)), const SizedBox(height: 8), Text(subtitle, style: const TextStyle(color: ReaktColors.muted, height: 1.5)), const SizedBox(height: 24), child]);
-}
-
-class TopBar extends StatelessWidget {
-  const TopBar({super.key});
-  @override
-  Widget build(BuildContext context) => Row(children: [Container(width: 38, height: 38, alignment: Alignment.center, decoration: BoxDecoration(color: ReaktColors.accent, borderRadius: BorderRadius.circular(12)), child: const Text('R', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20))), const SizedBox(width: 10), const Text('REAKT', style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 2)), const Spacer(), const Icon(Icons.notifications_none_rounded, color: Colors.white70)]);
-}
-
-class SectionTitle extends StatelessWidget { final String title, action; const SectionTitle({required this.title, required this.action, super.key}); @override Widget build(BuildContext context) => Row(children: [Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)), const Spacer(), Text(action, style: const TextStyle(color: ReaktColors.accentSoft, fontSize: 12, fontWeight: FontWeight.w700))]); }
-class Surface extends StatelessWidget { final Widget child; const Surface({required this.child, super.key}); @override Widget build(BuildContext context) => Container(padding: const EdgeInsets.all(18), decoration: BoxDecoration(color: ReaktColors.card, border: Border.all(color: ReaktColors.line), borderRadius: BorderRadius.circular(20)), child: child); }
-class MetricCard extends StatelessWidget { final String value, label; final IconData icon; const MetricCard({required this.value, required this.label, required this.icon, super.key}); @override Widget build(BuildContext context) => Surface(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Icon(icon, color: ReaktColors.accentSoft), const SizedBox(height: 18), Text(value, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 26)), const SizedBox(height: 3), Text(label, style: const TextStyle(color: ReaktColors.muted, fontSize: 12))])); }
-class ModeTile extends StatelessWidget { final String name, description; final IconData icon; const ModeTile({required this.name, required this.description, required this.icon, super.key}); @override Widget build(BuildContext context) => Padding(padding: const EdgeInsets.only(bottom: 12), child: Surface(child: Row(children: [Icon(icon, color: ReaktColors.accentSoft), const SizedBox(width: 14), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(name, style: const TextStyle(fontWeight: FontWeight.w700)), const SizedBox(height: 4), Text(description, style: const TextStyle(color: ReaktColors.muted, fontSize: 12))])), const Icon(Icons.arrow_forward_ios_rounded, size: 15, color: ReaktColors.muted)]))); }
-class HistoryTile extends StatelessWidget { final String date, mode, score; const HistoryTile({required this.date, required this.mode, required this.score, super.key}); @override Widget build(BuildContext context) => Padding(padding: const EdgeInsets.only(bottom: 10), child: Surface(child: Row(children: [Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(mode, style: const TextStyle(fontWeight: FontWeight.w700)), const SizedBox(height: 4), Text(date, style: const TextStyle(color: ReaktColors.muted, fontSize: 12))]), Text(score, style: const TextStyle(color: ReaktColors.accentSoft, fontWeight: FontWeight.w800))]))); }
-class SettingTile extends StatelessWidget { final String title, detail; final IconData icon; const SettingTile({required this.title, required this.detail, required this.icon, super.key}); @override Widget build(BuildContext context) => Padding(padding: const EdgeInsets.only(bottom: 10), child: Surface(child: Row(children: [Icon(icon, color: ReaktColors.accentSoft), const SizedBox(width: 14), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(fontWeight: FontWeight.w700)), const SizedBox(height: 4), Text(detail, style: const TextStyle(color: ReaktColors.muted, fontSize: 12))]), const Icon(Icons.chevron_right_rounded, color: ReaktColors.muted)]))); }

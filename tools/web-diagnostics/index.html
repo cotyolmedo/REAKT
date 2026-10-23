@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REAKT · Diagnóstico de banco</title>
+<style>body{background:#09090b;color:#fafafa;font:16px system-ui;max-width:850px;margin:auto;padding:24px}input,button{font:inherit;padding:12px;border:1px solid #555;border-radius:8px;margin:5px 0}input{background:#18181b;color:white;width:min(95%,400px)}button{background:#a51d28;color:white;cursor:pointer}button:disabled{opacity:.4;cursor:default}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#18181b;padding:16px}small{color:#fbbf24}#state{font-size:24px}a{color:#fbbf24}</style>
+<h1>REAKT · Diagnóstico de banco</h1>
+<p>Conectá esta computadora al Wi-Fi REAKT-MVP. Este panel prueba el mismo enlace WebSocket que la app Android.</p>
+<small>Con placas y pulsador, sin LEDs: verificá mensajes y pulsaciones. Los tiempos no validan reacción visual. Este panel guarda datos solo en este navegador; no sincroniza Supabase.</small>
+<p><label>Gateway <input id="url" value="ws://192.168.4.1:81" spellcheck="false"></label><br>
+<button id="connect">Conectar</button> <button id="disconnect">Desconectar</button></p>
+<p id="connection" role="status">Sin conexión</p>
+<p id="state">Sin datos</p><p id="score"></p>
+<button id="manual" disabled>Prueba manual · 5 s</button>
+<button id="start" disabled>10 rondas · 1,5 s</button>
+<button id="stop" disabled>Detener</button>
+<p id="error" role="alert"></p>
+<h2>Historial local</h2><p id="history"></p><button id="export">Exportar JSON</button>
+<h2>Último snapshot</h2><pre id="snapshot">—</pre>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let ws=null,wanted=false,generation=0,retry=null,attempt=0,last=null,storageFailed=false;
+let history=[];
+try {history=JSON.parse(localStorage.getItem('reakt-bank-history')||'[]');if(!Array.isArray(history))throw Error('Historial inválido');}
+catch(e){storageFailed=true;$('error').textContent='No se pudo abrir historial local; exportá/revisá el almacenamiento antes de iniciar.';}
+function historyLabel(){$('history').textContent=`${history.length} sesiones guardadas en este navegador`;}
+historyLabel();
+function controls(connected){const active=last?.active===true;$('manual').disabled=$('start').disabled=!connected||active||storageFailed;$('stop').disabled=!connected||!active;}
+function validate(s){
+ if(!s||s.v!==1||s.type!=='snapshot'||typeof s.active!=='boolean'||!['idle','running','manual','completed','cancelled','interrupted'].includes(s.status))throw Error('Snapshot incompatible');
+ if(typeof s.session_id!=='string'||(s.session_id!==''&&!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(s.session_id)))throw Error('ID inválido');
+ for(const k of ['round','rounds','limit_ms','hits','misses','early','mean_us'])if(!Number.isInteger(s[k])||s[k]<0)throw Error('Métrica inválida');
+ if(s.rounds>50||s.round>s.rounds||!Array.isArray(s.events)||s.events.length>64)throw Error('Límites inválidos');
+ const ids=new Set();let hits=0,misses=0,early=0,sum=0;
+ for(const e of s.events){
+  if(!e||typeof e.id!=='string'||!e.id.startsWith(s.session_id+':')||ids.has(e.id)||!['hit','miss','early'].includes(e.kind)||!Number.isInteger(e.reaction_us)||e.reaction_us<0)throw Error('Evento inválido');
+  ids.add(e.id);
+  if(e.kind==='hit'){if(e.reaction_us===0||e.reaction_us>=s.limit_ms*1000)throw Error('Reacción fuera de ventana');hits++;sum+=e.reaction_us;}
+  else if(e.kind==='miss')misses++;else early++;
+ }
+ if(hits!==s.hits||misses!==s.misses||early!==s.early||Math.floor(hits?sum/hits:0)!==s.mean_us)throw Error('Métricas inconsistentes');
+ return s;
+}
+function show(s){
+ last=s;$('state').textContent=`${s.status} · ronda ${s.round}/${s.rounds}`;
+ $('score').textContent=`Aciertos ${s.hits} · fallos ${s.misses} · anticipadas ${s.early} · media ${(s.mean_us/1000).toFixed(1)} ms`;
+ $('snapshot').textContent=JSON.stringify(s,null,2);
+ if(s.session_id&&!storageFailed){
+  const i=history.findIndex(x=>x.session_id===s.session_id);if(i<0)history.push(s);else history[i]=s;
+  try{localStorage.setItem('reakt-bank-history',JSON.stringify(history));}
+  catch(e){storageFailed=true;$('error').textContent='No se pudo guardar el resultado. Exportá JSON; no se habilitan nuevas sesiones.';}
+  historyLabel();
+ }
+ controls(ws?.readyState===WebSocket.OPEN);
+}
+function open(){
+ clearTimeout(retry);const mine=++generation;
+ try{ws=new WebSocket($('url').value.trim());}catch(e){$('error').textContent=e.message;return;}
+ const socket=ws;$('connection').textContent='Conectando…';controls(false);
+ socket.onopen=()=>{if(mine!==generation)return;attempt=0;$('connection').textContent='Conectado; esperando snapshot válido';};
+ socket.onmessage=event=>{
+  if(mine!==generation)return;
+  try{if(event.data.length>32768)throw Error('Mensaje demasiado grande');const raw=JSON.parse(event.data);if(raw.type==='error')throw Error(raw.error||'Orden rechazada');show(validate(raw));$('connection').textContent='Gateway conectada';}
+  catch(e){$('error').textContent=e.message;}
+ };
+ socket.onerror=()=>{if(mine===generation)$('error').textContent='Error WebSocket; revisar Wi-Fi, dirección y gateway.';};
+ socket.onclose=()=>{if(mine!==generation)return;controls(false);$('connection').textContent='Desconectado';if(wanted)retry=setTimeout(open,Math.min(16000,1000*2**attempt++));};
+}
+$('connect').onclick=()=>{
+ const url=$('url').value.trim();try{const u=new URL(url);if(!['ws:','wss:'].includes(u.protocol)||u.username||u.password)throw Error('Usar dirección ws:// o wss:// sin credenciales');}catch(e){$('error').textContent=e.message;return;}
+ ++generation;ws?.close();wanted=true;attempt=0;$('error').textContent='';open();
+};
+$('disconnect').onclick=()=>{wanted=false;++generation;clearTimeout(retry);ws?.close();controls(false);$('connection').textContent='Sin conexión';};
+function command(name){if(ws?.readyState!==WebSocket.OPEN)return;ws.send(JSON.stringify({v:1,id:`bank-${Date.now()}-${++command.counter}`,command:name,rounds:name==='manual'?1:10,limit_ms:name==='manual'?5000:1500}));}
+command.counter=0;
+for(const name of ['manual','start','stop'])$(name).onclick=()=>command(name);
+$('export').onclick=()=>{
+ const blob=new Blob([JSON.stringify({exported_at:new Date().toISOString(),source:'REAKT browser diagnostics',sessions:history,last_snapshot:last},null,2)],{type:'application/json'});
+ const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download='reakt-banco-evidencia.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+</script></html>

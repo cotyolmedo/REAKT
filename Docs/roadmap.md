@@ -80,3 +80,19 @@ un sistema integrado ni hardware vigente validado.
 - [ ] Documentación de campo, esquemático final y manual.
 - [ ] Evidencia fotográfica/audiovisual real.
 - [ ] Código respaldado y materiales de presentación.
+
+## Actualización MVP — 2026-10-22
+
+- IMPLEMENTADO/COMPILADO: firmware gateway/nodo, contrato común y salidas opcionales.
+- PROBADO: componentes C++/simulación, simulador WebSocket y SQL/RLS local aislado.
+- IMPLEMENTADO, validación BLOQUEADA: Flutter Android/SQLite/Auth/sync; SDK inaccesible.
+- BLOQUEADO: Supabase remoto sin conector; migración autorizada tras inspección sin conflictos.
+- PENDIENTE DE HARDWARE: radio/pulsador; LEDs/fuente no disponibles.
+- Meta física aún pendiente: diez sesiones consecutivas, uno o dos nodos según placas.
+- No incluir segundo nodo/modos extra antes de cerrar integración básica en escuela.
+
+### Continuación de preparación para el colegio
+
+Flutter dejó de estar bloqueado: SDK/lock instalados, análisis y17tests aprobados.
+Panel de banco Chromium probado y exportación de historial agregada. Build APK y
+artefactos finales en ESTADO-FINAL-MVP.md; Supabase y pruebas físicas siguen separados.

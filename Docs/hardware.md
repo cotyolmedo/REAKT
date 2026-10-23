@@ -59,3 +59,11 @@ puede manejar una carga sin revisar tensión y corriente.
 La ingeniería preliminar se organiza en `Docs/pcb/README.md` y
 `Docs/diseno-mecanico.md`. Ninguna dimensión aproximada autoriza un footprint o
 una fabricación final.
+
+## Disponibilidad comunicada para el MVP — 2026-10-22
+
+El usuario dispone únicamente de placas ESP32 y pulsador. WROOM-32/DevKitC es el
+destino de compilación solicitado, por cotejar con placas reales. GPIO18 para
+pulsador y GPIO23 para cinco WS2812B son propuestas, no pinout validado. Salida LED
+deshabilitada; no hay LEDs/fuente/regulación/adaptación de nivel confirmados.
+Ver mvp-installation.md para conexiones propuestas y pruebas sin LEDs.

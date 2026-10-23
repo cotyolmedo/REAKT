@@ -50,3 +50,9 @@ All schema decisions should be recorded in `Docs/decisions.md`.
 The application should interact with the backend through a dedicated service/repository layer.
 
 Firmware should not contain database credentials unless a future architecture explicitly requires direct access and its security implications are documented.
+
+## Propuesta implementada — 2026-10-22
+
+Ver `backend/README.md` y migración preparada. Diez pruebas PostgreSQL locales
+aprobaron; no se inspeccionó Supabase remoto. El usuario autorizó aplicación tras
+inspección si no hay conflictos. Ausencia del conector impide ejecutar ese paso.

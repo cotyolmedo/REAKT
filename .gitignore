@@ -26,3 +26,11 @@ app/build/
 # Operating system metadata
 .DS_Store
 Thumbs.db
+
+# MVP local tools and secrets
+.pio/
+**/LocalConfig.h
+app/android/local.properties
+
+# Local Supabase client configuration
+app/supabase-public.json

@@ -113,3 +113,26 @@ pruebas físicas del pulsador y WS2812B.
 
 ### Validación
 ```
+
+## ADR-013 — MVP aprobado por especificación del usuario
+
+**Fecha:** 2026-10-22. **Estado:** implementado; validación física pendiente.
+La especificación recibida concreta WROOM-32/DevKitC, un nodo obligatorio y hasta
+dos, cinco WS2812B por nodo, pulsador NA, WebSocket local y entrenamiento coordinado
+en gateway. Reduce el alcance inicial de cinco nodos sin cambiar la topología.
+Se define protocolo binario común v1, SoftAP en canal 6 y reacción medida solo en
+reloj del nodo. GPIO18/23 son propuestas y quedan detrás de habilitación explícita.
+El usuario confirma que actualmente solo dispone de placas y pulsador: salida LED
+deshabilitada por defecto. La prueba sin LEDs es diagnóstica, no valida reacción
+ante estímulo luminoso. No se inventaron MAC ni credenciales.
+
+## ADR-014 — Persistencia offline y seguridad de datos
+
+**Fecha:** 2026-10-22. **Estado:** cliente implementado; Supabase remoto bloqueado.
+SQLite guarda snapshots e IDs estables antes de sustituir una sesión; upserts
+separados e idempotentes a Supabase Auth, con propietario conservado localmente.
+La migración propone tablas con prefijo reakt y RLS por usuario; fue probada en
+PostgreSQL aislado, no contra Supabase remoto. El usuario autorizó expresamente
+aplicarla **tras inspección y si no hay conflictos**. No se ejecutó remotamente
+por ausencia del conector. Si hay conflictos, ajustar y volver a revisar el cambio.
+Las sesiones sin dueño se vinculan a la cuenta que inicia su sincronización.

@@ -1,71 +1,28 @@
-# Arquitectura REAKT
+# Arquitectura REAKT — MVP 2026-10-22
 
-## Topología vigente
+Flutter Android ↔ WebSocket local ↔ gateway ESP32 WROOM-32 ↔ ESP-NOW ↔ uno o dos
+nodos WROOM-32. Cada nodo incorpora pulsador NA y prevé cinco WS2812B. La meta
+anterior de cinco nodos queda como ampliación; el MVP admite dos explícitamente.
 
-```text
-Flutter (interfaz, sesiones y presentación)
-          ↕ interfaz App ↔ gateway (TBD)
-ESP32 central / gateway
-          ↕ ESP-NOW bidireccional
-  ┌───────┼────────┬────────┬────────┐
-ESP32-1 ESP32-2 ESP32-3 ESP32-4 ESP32-5
-  │       │        │        │        │
-Pulsador NA + salida WS2812B por nodo
+Gateway crea SoftAP canal 6, coordina rondas aleatorias, acepta prueba manual,
+confirma eventos y calcula métricas. El nodo controla debounce, estímulo y reloj
+monotónico `esp_timer_get_time()`. No se comparan relojes entre dispositivos.
+Callbacks radio solo copian a cola protegida; procesamiento y LEDs se hacen en
+loop. No hay `delay()` en el firmware productivo de REAKT.
 
-Flutter o servicio autorizado ↔ Supabase/PostgreSQL
-```
+Flutter consume snapshots completos, valida contrato y guarda en SQLite. Intenta
+reconectar con espera creciente 1..16 s y detecta ausencia de snapshots tras 6 s.
+La lógica de entrenamiento sigue funcionando en el gateway aunque cierre la app.
+Solo se conserva la última sesión en RAM del gateway: recuperar en el teléfono
+antes de reiniciar o comenzar otra. La app conserva el resultado antes de iniciar
+otra sesión; los reinicios de teléfono/radio requieren prueba física.
 
-## Responsabilidades
+Al volver Internet, Supabase Auth habilita sincronización de sesiones terminales,
+resultados y eventos mediante IDs estables. Ningún fallo de nube borra el archivo
+SQLite; los upserts parciales se repiten hasta completarse. Cuenta propietaria
+estable y RLS propuesta aíslan datos. Las copias locales no están cifradas por la
+app; se deshabilita backup Android. Ver backend/README.md para límites y aprobación.
 
-### Aplicación Flutter
-
-- Configurar modos y sesiones.
-- Presentar estados y resultados.
-- Comunicarse con el gateway mediante una interfaz todavía `TBD`.
-- Acceder a Supabase con credenciales apropiadas para cliente; nunca con claves
-  privilegiadas embebidas.
-
-### Gateway ESP32
-
-- Recibir y validar comandos de la app.
-- Coordinar hasta cinco nodos.
-- Enviar órdenes y recibir eventos mediante ESP-NOW.
-- Gestionar direccionamiento, duplicados, timeouts y fallos cuando el protocolo
-  los defina.
-- Reenviar eventos o resultados hacia la app.
-
-### Cinco nodos ESP32
-
-- Leer un pulsador mecánico NA con antirrebote.
-- Controlar la salida visual WS2812B.
-- Mantener temporización y lógica local no bloqueantes.
-- Intercambiar órdenes, eventos y estado con el gateway.
-
-### Supabase/PostgreSQL
-
-- Persistir usuarios, sesiones, resultados e historial según un esquema futuro.
-- Aplicar autenticación, autorización y RLS antes de uso productivo.
-
-## Flujo previsto
-
-1. La app configura una sesión y envía una orden al gateway.
-2. El gateway valida y distribuye órdenes a uno o varios nodos.
-3. Los nodos presentan estímulos y detectan pulsaciones.
-4. Los eventos vuelven al gateway y luego a la app.
-5. La app o un servicio autorizado persiste los resultados.
-
-El reparto exacto del cálculo de métricas sigue `TBD`; no debe implementarse
-antes de definir referencias temporales y latencias.
-
-## Restricciones
-
-- No hay Raspberry Pi en la arquitectura vigente.
-- El enlace gateway ↔ nodos usa ESP-NOW.
-- Todos los modos reutilizan un protocolo común.
-- El firmware productivo es no bloqueante.
-- El pulsador entrega una activación digital; no mide fuerza ni presión.
-- La política de canal, la interfaz App ↔ gateway y la sincronización temporal
-  siguen `TBD`.
-- PCB y carcasa son conceptos hasta completar mediciones y validación física.
-
-Todo cambio a esta arquitectura debe registrarse en `Docs/decisions.md`.
+Disponibilidad real: usuario solo tiene placas y pulsador. Los WS2812B y su
+alimentación faltan; su uso queda deshabilitado. Las métricas sin estímulo físico
+sirven para diagnóstico, no para evaluación de reacción humana.

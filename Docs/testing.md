@@ -117,3 +117,53 @@ Registrar para cada ensayo:
 - procedimiento y resultado esperado;
 - resultado real, mediciones y errores;
 - fotos, video o logs cuando correspondan.
+
+### MVP — 2026-10-22 (evidencia de esta ejecución)
+
+| Verificación | Resultado real |
+|---|---|
+| `tools/test-core.sh` | 2 ejecutables C++ aprobados con ASan/UBSan: contrato y simulación10x10 con pérdidas/ACKs/duplicados |
+| `python3 tests/test_mock_gateway.py` | 2 pruebas aprobadas, repetidas tras ajuste UUID |
+| `/workspace/tools/venv/bin/python tests/test_backend.py` | 10 pruebas PostgreSQL aislado aprobadas; shim local auth.uid, NO Supabase remoto |
+| `tools/compile-firmware-cloud.sh` | Nodo721561bytes flash/44220RAM y gateway767069flash/47712RAM; ambos exit0 |
+| Variante nodo2 + LEDs habilitados | Compilación exitosa previa; no carga en placa ni validación de alimentación |
+| Dart/Android XML | Siete archivos Dart pasaron parser sintáctico; XML Android parseado. No equivalen a analyzer/build |
+| Metadatos de dependencias pub.dev | Pins existentes; sqflite2.4.2 requiere Dart>=3.7, manifiesto ajustado |
+| `flutter pub get / analyze / test / build apk` | NO EJECUTADOS: SDK ausente; descarga storage.googleapis.com rechazada403 |
+| Tests Dart | 10 escritos, NO EJECUTADOS (5 contrato,5 almacenamiento/sync) |
+| `pio run -j 2` | Falló por registry PlatformIO bloqueado403; no se valida esa ruta de build |
+| `git diff --check` | Aprobado |
+| Supabase remoto/Auth/RLS | NO INSPECCIONADO/NO APLICADO; sin conector; aprobación condicional recibida |
+| Radio/GPIO/LEDs/Android físico | NO EJECUTADO; usuario solo tiene placas y pulsador |
+
+Logs locales ignorados por Git en `build/firmware-build.log` y
+`build/node-led-variant.log`; herramientas verificadas en `/workspace/tools`.
+No se deshabilitó TLS, firmas ni checksums. Las advertencias Arduino sobre
+serial/mdns/dfu-discovery corresponden a utilidades de detección USB no instaladas;
+no impidieron compilación. No se verifica upload desde este entorno.
+
+
+### Continuación final — 2026-10-22 (sustituye bloqueos Flutter de la etapa anterior)
+
+| Check | Resultado final |
+|---|---|
+| Flutter3.29.3/Dart3.7.2 + pub get frozen | APROBADO; pubspec.lock incluido |
+| flutter analyze | APROBADO: No issues found |
+| flutter test | 17 APROBADOS: contrato5, SQLite/sync/export6, enlace4, widgets2 |
+| UI→WebSocket→SQLite | APROBADO con pantalla productiva y servidor de prueba; datos sintéticos |
+| Exportación de historial de app | PROBADA en repositorio local; botón copia JSON, sin importación automática |
+| Panel navegador | Chromium aprobado: orden manual, métricas, historial durable y export JSON |
+| PostgreSQL local | 11 APROBADOS; añadido script de inspección read-only |
+| Build APK final | APROBADO con JDK17 y NDK27.0.12077973,18.1s usando caché |
+| Firma APK | apksigner verifica v1/v2; no prueba física ni publicación |
+| Metadata APK | ar.edu.reakt, versionCode2, minSdk23/target35, arm64/armv7/x86/x86_64 |
+| Supabase Auth/REST remoto | Proxy CONNECT403, servicio HTTP000; sin acceso SQL ni cambios remotos |
+| Radio, GPIO y Android físico | PENDIENTES; LEDs/fuente no disponibles |
+
+Problemas de setup corregidos: rutas de estado de HOME no escribibles, soname
+SQLite faltante, proxy Java, JRE sin javac, NDK exigido por plugins. Se conservaron
+TLS y comprobaciones oficiales. Primera descarga NDK27 con SDKManager falló;
+archivo oficial verificado contra el índice Android instaló correctamente. No se
+cambiaron hashes esperados ni se desactivaron verificaciones. Las primeras pruebas
+widget de integración requerían avanzar fake microtasks entre IO real; harness
+corregido y suite completa aprobada. Los logs locales permanecen en build/.

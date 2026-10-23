@@ -1,53 +1,46 @@
 # REAKT
 
-Proyecto integrador de electrónica de la E.E.S.T. N.º 4 orientado a módulos de
-entrenamiento interactivo.
+MVP de entrenamiento interactivo de la E.E.S.T. N.º4. Entrega objetivo: **6 de
+noviembre de 2026**. Flutter Android ↔ WebSocket local ↔ ESP32 gateway WROOM-32 ↔
+ESP-NOW ↔ uno o dos nodos con pulsadorNA y salida prevista de cinco WS2812B.
 
-## Arquitectura vigente
+## Empezar
 
-```text
-Flutter ↔ gateway ESP32 ↔ cinco nodos ESP32 (ESP-NOW)
-   ↕
-Supabase/PostgreSQL
-```
+- [Estado final de esta entrega](Docs/ESTADO-FINAL-MVP.md).
+- [Guía para el colegio mañana 23/10](Docs/GUIA-COLEGIO-2026-10-23.md).
 
-Cada nodo prevé un pulsador mecánico normalmente abierto como entrada y uno o
-más WS2812B como salida visual. El modelo exacto de placa, los GPIO, la
-alimentación, la interfaz App ↔ gateway y el protocolo v1 continúan por definir.
+- [Instalación, configuración y pinout](Docs/mvp-installation.md).
+- [Pruebas físicas y meta de diez sesiones](Docs/mvp-physical-tests.md).
+- [Protocolo compartido](Docs/packet-protocol.md).
+- [Bitácora y evidencia](Docs/implementation-log.md).
+- [Backend y autorización condicional](backend/README.md).
+- [Informe técnico](Docs/mvp-school-report.md).
 
 ## Estado real
 
-- La app Flutter tiene una estructura y una interfaz inicial de demostración.
-- El gateway tiene una base de transporte ESP-NOW no bloqueante.
-- Los nodos tienen una base de firmware con antirrebote y estados, deshabilitada
-  en hardware hasta definir GPIO reales.
-- PCB y carcasa son prototipos conceptuales, no diseños listos para fabricar.
-- Las pruebas históricas con ESP32-C3 y piezoeléctricos se conservan únicamente
-  como evidencia del proceso anterior.
+Firmware nodo y gateway **COMPILADO** con Arduino-ESP32 2.0.17. Componentes del
+protocolo **PROBADOS** en C++ con pérdidas y duplicados simulados. SQL **PROBADO**
+en PostgreSQL aislado con once casos de RLS/constraints; no aplicado remotamente.
+Cliente Flutter/Android **IMPLEMENTADO**; análisis sin errores y **17 tests Flutter
+aprobados**, incluida UI→WebSocket→SQLite con servidor de prueba. APK debug **COMPILADO** y firmado;
+[entrega final](Docs/ESTADO-FINAL-MVP.md) contiene artefactos y límites. No hay validación completa App↔radio↔hardware↔Supabase.
 
-No hay todavía una integración completa App ↔ gateway ↔ nodos ↔ Supabase ni
-validación física del diseño vigente.
+Actualmente solo hay placas y pulsador: LEDs y su alimentación faltan. GPIO18/23
+son propuestas por validar; MAC y credenciales no se inventan. La configuración
+inicial no habilita hardware sin verificación. No se consideran medidas físicas
+las reacciones del simulador o los tiempos sin estímulo luminoso.
 
-## Estructura
+## Desarrollo
 
-- [`Docs/`](Docs/README.md): arquitectura, requisitos, decisiones y pruebas.
-- [`firmware/gateway/`](firmware/gateway/README.md): firmware del coordinador.
-- [`firmware/nodes/`](firmware/nodes/README.md): firmware común de los nodos.
-- [`app/`](app/README.md): aplicación Flutter.
-- [`hardware/`](hardware/): PCB y CAD conceptuales.
-- [`Tests/`](Tests/): ensayos históricos y futura evidencia verificable.
-- [`.agent/`](.agent/PLANS.md): planes de ejecución para cambios extensos.
+`./tools/test-core.sh`: pruebas C++ y simulación de diez sesiones.
+`python3 tests/test_mock_gateway.py`: contrato del simulador WebSocket.
+`python3 tests/test_backend.py`: migración y RLS en PostgreSQL local aislado.
+Dependencias Python en `tools/requirements-dev.txt`; usar virtualenv. Pruebas SQL
+locales usan pgserver en Linux. El panel de banco solo necesita Python y navegador.
 
-## Antes de trabajar
-
-Leer [`AGENTS.md`](AGENTS.md) y [`Docs/README.md`](Docs/README.md). No fijar MAC,
-GPIO, credenciales, métricas ni resultados de pruebas sin evidencia. Los
-cambios de arquitectura deben registrarse en `Docs/decisions.md`.
-
-## Próximos bloqueos
-
-1. Identificar y medir las placas y componentes reales.
-2. Confirmar con docentes si el pulsador satisface el requisito de sensor.
-3. Definir protocolo v1 e interfaz App ↔ gateway.
-4. Compilar para la placa seleccionada y validar un enlace ESP-NOW con un nodo.
-5. Diseñar y verificar alimentación antes de fabricar o instalar baterías.
+Arduino IDE: sketches en firmware/gateway y firmware/nodes, biblioteca local en
+firmware/libraries. Flutter: `app/`. Los prototipos web HTML y los ensayos históricos
+`Tests/` se conservan. PCB/CAD siguen conceptuales; no son diseños para fabricar.
+Leer `AGENTS.md` y `Docs/README.md` antes de cambiar subsistemas. No hacer push ni
+merge sin autorización para cambios posteriores. Ver [resumen de entrega](Docs/RESUMEN-ENTREGA.md)
+y [prompt para retomar](Docs/PROMPT-PARA-MANANA.md).

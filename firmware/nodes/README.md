@@ -1,14 +1,14 @@
-# Firmware de nodos REAKT
+# Nodo MVP
 
-`REAKT_Node/REAKT_Node.ino` es la estructura inicial para los cinco ESP32 periféricos. La carpeta conserva el nombre del sketch principal requerido por Arduino IDE/CLI.
+Abrir `REAKT_Node/REAKT_Node.ino`. Compilado para ESP32 Dev Module con core2.0.17,
+ReaktCore y Adafruit NeoPixel1.12.3. Copiar LocalConfig.example.h a LocalConfig.h.
 
-Incluye:
+Registrar MAC station real del gateway, ID1/2, validar GPIO18 pulsadorNA a GND y
+habilitar REAKT_HARDWARE_VALIDATED. LED GPIO23 es propuesta: REAKT_LED_ENABLED=0
+por defecto porque el usuario todavía no tiene LEDs ni fuente. Cinco WS2812B solo
+tras adquirirlos/verificar circuito; no alimentar desde GPIO ni regulador3V3.
 
-- lectura no bloqueante del pulsador NA con `INPUT_PULLUP` cuando se configure un GPIO verificado;
-- detección de transición estable, antirrebote y un único evento hasta la liberación;
-- estados conceptuales del nodo;
-- inicialización ESP-NOW sin inventar MAC, canal ni peer;
-- punto de integración para WS2812B sin escribir en GPIO todavía no confirmados.
-
-El protocolo v1 no está implementado porque `Docs/packet-protocol.md` todavía
-lo declara TBD. El nodo no mide fuerza ni intensidad de impacto.
+Callback encola, loop valida peer/sesión/secuencia y confirma comandos sin repetir
+estímulos. Reacción se mide localmente tras show y al confirmar debounce20ms.
+Sin LEDs habilitados los eventos son diagnósticos, no medición de reacción visual.
+Ver Docs/mvp-installation.md y Docs/mvp-physical-tests.md. No se probó en placa.

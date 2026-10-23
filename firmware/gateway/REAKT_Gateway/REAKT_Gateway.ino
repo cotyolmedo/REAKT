@@ -1,203 +1,107 @@
-/*
-  REAKT - ESP32 gateway (base de transporte)
-
-  El protocolo de paquetes v1, la interfaz App <-> gateway, la politica de
-  canal y las MAC de los nodos siguen TBD. Este sketch recibe tramas opacas,
-  las encola y deja su validacion semantica fuera del callback de ESP-NOW.
-*/
-
-#include <Arduino.h>
-#include <WiFi.h>
-#include <esp_now.h>
-
-namespace Config {
-constexpr uint32_t SERIAL_BAUD = 115200;
-constexpr uint32_t DIAGNOSTIC_INTERVAL_MS = 5000;
-constexpr uint32_t RECOVERY_INTERVAL_MS = 5000;
-constexpr size_t RX_QUEUE_CAPACITY = 8;
-constexpr size_t MAX_ESPNOW_PAYLOAD = 250;
+#include <ReaktRadio.h>
+#include <WebSocketsServer.h>
+#include <ArduinoJson.h>
+#include <esp_system.h>
+#include "Config.h"
+using namespace reakt;
+constexpr uint8_t Channel=6;
+const uint8_t Nodes[2][6]={REAKT_NODE1_MAC,REAKT_NODE2_MAC};
+Radio radio;Pending pending[2];Dedup events[2];Score score;WebSocketsServer ws(81);
+uint32_t seq=0,session=0,roundId=0,totalRounds=0,limitMs=1500,lastBroadcast=0,nextAt=0,roundAt=0;
+uint8_t targetNode=0;bool ready=false,active=false,waiting=false;
+String sessionId,phase="idle",lastError="",lastCommand;
+struct Event{uint32_t round;uint8_t node;Type type;uint32_t us;};
+Event history[64];size_t eventCount=0;
+String snapshot(){
+ DynamicJsonDocument doc(16384);
+ doc["v"]=1;doc["type"]="snapshot";doc["session_id"]=sessionId;doc["status"]=phase;doc["active"]=active;
+ doc["round"]=roundId;doc["rounds"]=totalRounds;doc["limit_ms"]=limitMs;doc["target"]=targetNode;
+ doc["hits"]=score.hits;doc["misses"]=score.misses;doc["early"]=score.early;doc["mean_us"]=score.meanUs();doc["error"]=lastError;
+ JsonArray nodes=doc.createNestedArray("nodes");for(int i=0;i<2;i++)if(configuredMac(Nodes[i]))nodes.add(i+1);
+ JsonArray list=doc.createNestedArray("events");
+ for(size_t i=0;i<eventCount;i++){auto o=list.createNestedObject();o["id"]=sessionId+":"+String(i+1);o["round"]=history[i].round;o["node"]=history[i].node;o["kind"]=history[i].type==Type::Hit?"hit":history[i].type==Type::Miss?"miss":"early";o["reaction_us"]=history[i].us;}
+ auto diag=doc.createNestedObject("diagnostics");diag["rx_dropped"]=uint32_t(radio.dropped);diag["invalid"]=radio.invalid;diag["send_errors"]=radio.sendErrors;
+ String out;serializeJson(doc,out);return out;
 }
-
-enum class GatewayState : uint8_t {
-  Starting,
-  EspNowReady,
-  CommunicationError
-};
-
-struct ReceivedFrame {
-  uint8_t sender[6] = {};
-  uint8_t data[Config::MAX_ESPNOW_PAYLOAD] = {};
-  uint16_t length = 0;
-};
-
-struct GatewayRuntime {
-  GatewayState state = GatewayState::Starting;
-  volatile uint32_t receivedPackets = 0;
-  volatile uint32_t invalidPackets = 0;
-  volatile uint32_t droppedPackets = 0;
-  volatile uint32_t failedTransmissions = 0;
-  uint32_t lastDiagnosticMs = 0;
-  uint32_t lastInitAttemptMs = 0;
-};
-
-GatewayRuntime gateway;
-ReceivedFrame rxQueue[Config::RX_QUEUE_CAPACITY];
-volatile uint8_t rxHead = 0;
-volatile uint8_t rxTail = 0;
-portMUX_TYPE rxMux = portMUX_INITIALIZER_UNLOCKED;
-
-const char* gatewayStateName(GatewayState state) {
-  switch (state) {
-    case GatewayState::Starting: return "starting";
-    case GatewayState::EspNowReady: return "ESP-NOW ready";
-    case GatewayState::CommunicationError: return "communication error";
+Frame command(uint8_t node,Type type){Frame f;f.type=type;f.node=node;f.session=session;f.seq=nextSeq(seq);f.round=roundId;f.limit=limitMs;return f;}
+void sendSnapshot(uint8_t client){String payload=snapshot();ws.sendTXT(client,payload);}
+void broadcast(){String payload=snapshot();ws.broadcastTXT(payload);lastBroadcast=millis();}
+void stop(const String& why){
+ active=false;waiting=false;phase=why;
+ for(int i=0;i<2;i++)if(configuredMac(Nodes[i])){pending[i]={};pending[i].begin(command(i+1,Type::Cancel));}
+ broadcast();
+}
+void startRound(){
+ if(roundId>=totalRounds){stop("completed");return;}
+ uint8_t options[2];uint8_t count=0;for(int i=0;i<2;i++)if(configuredMac(Nodes[i]))options[count++]=i+1;
+ if(!count){lastError="no configured peers";stop("interrupted");return;}
+ targetNode=options[esp_random()%count];roundId++;roundAt=millis();waiting=true;
+ // Inform every peer of the round, so non-target presses can be reported as Early.
+ for(int i=0;i<2;i++)if(configuredMac(Nodes[i]))pending[i].begin(command(i+1,(i+1)==targetNode?Type::Activate:Type::Cancel));
+ broadcast();
+}
+bool roundPeersAcknowledged(){for(auto& p:pending)if(p.active)return false;return true;}
+void onCommand(uint8_t client,uint8_t* payload,size_t len){
+ StaticJsonDocument<768> d;
+ if(len>700||deserializeJson(d,payload,len)||d["v"]!=1||!d["id"].is<const char*>()||!d["command"].is<const char*>()){ws.sendTXT(client,"{\"type\":\"error\",\"error\":\"invalid command\"}");return;}
+ String id=d["id"].as<String>(),cmd=d["command"].as<String>();
+ if(id.length()<1||id.length()>64)return;
+ if(id==lastCommand){sendSnapshot(client);return;}
+ if(cmd=="status"){sendSnapshot(client);return;}
+ if(cmd=="stop"){lastCommand=id;if(active)stop("cancelled");return;}
+ if(cmd!="start"&&cmd!="manual")return;
+ if(active){ws.sendTXT(client,"{\"type\":\"error\",\"error\":\"session already active\"}");return;}
+ if(!d["rounds"].is<int>()||!d["limit_ms"].is<int>())return;
+ int rounds=d["rounds"],limit=d["limit_ms"];
+ if(rounds<1||rounds>50||limit<100||limit>10000)return;
+ lastCommand=id;
+ // UUID-shaped identifier from independent hardware RNG; no wall-clock dependency.
+ uint32_t a=esp_random(),b=esp_random(),c=esp_random(),e=esp_random();
+ char uuid[37];snprintf(uuid,sizeof(uuid),"%08lx-%04lx-4%03lx-8%03lx-%04lx%08lx",(unsigned long)a,(unsigned long)(b>>16),(unsigned long)(b&0xfff),(unsigned long)(c&0xfff),(unsigned long)(c>>16),(unsigned long)e);
+ sessionId=uuid;session=esp_random();if(!session)session=1;
+ roundId=0;totalRounds=cmd=="manual"?1:rounds;limitMs=limit;eventCount=0;score={};lastError="";phase=cmd=="manual"?"manual":"running";active=true;waiting=false;nextAt=millis();
+ for(int i=0;i<2;i++){events[i]={};pending[i]={};}
+ broadcast();
+}
+void setup(){
+ Serial.begin(115200);WiFi.mode(WIFI_AP_STA);WiFi.disconnect();
+ Serial.printf("REAKT gateway STATION MAC=%s\n",WiFi.macAddress().c_str());
+ if(strlen(REAKT_AP_PASSWORD)<12||!configuredMac(Nodes[0])){Serial.println("BLOCKED: fill LocalConfig password and node1 station MAC");return;}
+ if(configuredMac(Nodes[1])&&!memcmp(Nodes[0],Nodes[1],6)){Serial.println("duplicate peer MAC");return;}
+ if(!WiFi.softAP("REAKT-MVP",REAKT_AP_PASSWORD,Channel)||!radio.begin()){Serial.println("AP/radio init failed");return;}
+ for(int i=0;i<2;i++)if(configuredMac(Nodes[i])&&!radio.peer(Nodes[i],Channel)){Serial.println("peer registration failed");return;}
+ ws.begin();ws.onEvent([](uint8_t client,WStype_t type,uint8_t* data,size_t len){if(type==WStype_CONNECTED)sendSnapshot(client);else if(type==WStype_TEXT)onCommand(client,data,len);});
+ ready=true;Serial.printf("AP=%s WebSocket port 81; channel=%u\n",WiFi.softAPIP().toString().c_str(),Channel);
+}
+void loop(){
+ if(!ready)return;ws.loop();Received rx;
+ while(radio.pop(rx)){
+  Frame f=rx.frame;int index=f.node-1;
+  if(index<0||index>=2||!configuredMac(Nodes[index])||memcmp(rx.mac,Nodes[index],6)||f.session!=session)continue;
+  if(f.type==Type::Ack){pending[index].ack(f);continue;}
+  if(f.type!=Type::Hit&&f.type!=Type::Miss&&f.type!=Type::Early)continue;
+  // ACK only syntactically/semantically acceptable events, even duplicates.
+  if(f.round<1||f.round>totalRounds)continue;
+  if(f.type==Type::Hit&&(f.value>=limitMs*1000u||f.value==0))continue;
+  if(f.type!=Type::Hit&&f.value!=0)continue;
+  Frame ack=f;ack.type=Type::Ack;ack.value=f.seq;ack.seq=nextSeq(seq);radio.send(Nodes[index],ack);
+  if(!active||!events[index].accept(f.seq))continue;
+  if(f.type==Type::Early){
+   if(f.round>0 && f.round<=roundId && eventCount<64-totalRounds+roundId-(waiting?1:0)){
+    score.add(f.type,0);history[eventCount++]={f.round,f.node,f.type,0};broadcast();
+   }
+   continue;
   }
-  return "unknown";
-}
-
-bool enqueueReceivedFrame(const esp_now_recv_info_t* info,
-                          const uint8_t* data,
-                          int length) {
-  portENTER_CRITICAL(&rxMux);
-  const uint8_t nextHead = (rxHead + 1) % Config::RX_QUEUE_CAPACITY;
-  if (nextHead == rxTail) {
-    portEXIT_CRITICAL(&rxMux);
-    return false;
-  }
-
-  memcpy(rxQueue[rxHead].sender, info->src_addr, sizeof(rxQueue[rxHead].sender));
-  memcpy(rxQueue[rxHead].data, data, static_cast<size_t>(length));
-  rxQueue[rxHead].length = static_cast<uint16_t>(length);
-  rxHead = nextHead;
-  portEXIT_CRITICAL(&rxMux);
-  return true;
-}
-
-bool dequeueReceivedFrame(ReceivedFrame& frame) {
-  portENTER_CRITICAL(&rxMux);
-  if (rxTail == rxHead) {
-    portEXIT_CRITICAL(&rxMux);
-    return false;
-  }
-
-  frame = rxQueue[rxTail];
-  rxTail = (rxTail + 1) % Config::RX_QUEUE_CAPACITY;
-  portEXIT_CRITICAL(&rxMux);
-  return true;
-}
-
-void onEspNowSent(const wifi_tx_info_t*, esp_now_send_status_t status) {
-  if (status != ESP_NOW_SEND_SUCCESS) {
-    gateway.failedTransmissions++;
-  }
-}
-
-void onEspNowReceived(const esp_now_recv_info_t* info,
-                      const uint8_t* data,
-                      int length) {
-  if (info == nullptr || info->src_addr == nullptr || data == nullptr ||
-      length <= 0 || length > static_cast<int>(Config::MAX_ESPNOW_PAYLOAD)) {
-    gateway.invalidPackets++;
-    return;
-  }
-
-  if (!enqueueReceivedFrame(info, data, length)) {
-    gateway.droppedPackets++;
-    return;
-  }
-
-  gateway.receivedPackets++;
-}
-
-bool initializeEspNow() {
-  gateway.lastInitAttemptMs = millis();
-  WiFi.mode(WIFI_STA);
-  WiFi.disconnect();
-
-  if (esp_now_init() != ESP_OK) {
-    gateway.state = GatewayState::CommunicationError;
-    return false;
-  }
-
-  esp_now_register_send_cb(onEspNowSent);
-  esp_now_register_recv_cb(onEspNowReceived);
-  gateway.state = GatewayState::EspNowReady;
-  return true;
-}
-
-// Usar unicamente despues de documentar MAC, canal y politica de peers.
-bool registerNodePeer(const uint8_t macAddress[6], uint8_t channel) {
-  if (macAddress == nullptr || gateway.state != GatewayState::EspNowReady ||
-      channel == 0) {
-    return false;
-  }
-
-  esp_now_peer_info_t peer = {};
-  memcpy(peer.peer_addr, macAddress, sizeof(peer.peer_addr));
-  peer.channel = channel;
-  peer.encrypt = false;
-  return esp_now_add_peer(&peer) == ESP_OK;
-}
-
-void recoverTransportIfNeeded() {
-  if (gateway.state != GatewayState::CommunicationError) return;
-
-  const uint32_t now = millis();
-  if (now - gateway.lastInitAttemptMs < Config::RECOVERY_INTERVAL_MS) return;
-
-  Serial.println("Retrying ESP-NOW initialization...");
-  esp_now_deinit();
-  initializeEspNow();
-}
-
-void receiveApplicationCommands() {
-  // TODO: implementar cuando se acuerde la interfaz App <-> gateway.
-}
-
-void processNodeEvents() {
-  ReceivedFrame frame;
-  while (dequeueReceivedFrame(frame)) {
-    // TODO: validar version, tipo, nodo, secuencia y longitud del protocolo v1.
-    // El payload permanece opaco hasta que Docs/packet-protocol.md sea final.
-    (void)frame;
-  }
-}
-
-void updateOutputs() {
-  // TODO: no hay GPIO del gateway confirmado.
-}
-
-void reportDiagnostics() {
-  const uint32_t now = millis();
-  if (now - gateway.lastDiagnosticMs < Config::DIAGNOSTIC_INTERVAL_MS) return;
-  gateway.lastDiagnosticMs = now;
-
-  Serial.print("Gateway state: ");
-  Serial.print(gatewayStateName(gateway.state));
-  Serial.print(" | received: ");
-  Serial.print(gateway.receivedPackets);
-  Serial.print(" | invalid: ");
-  Serial.print(gateway.invalidPackets);
-  Serial.print(" | dropped: ");
-  Serial.print(gateway.droppedPackets);
-  Serial.print(" | send failures: ");
-  Serial.println(gateway.failedTransmissions);
-}
-
-void setup() {
-  Serial.begin(Config::SERIAL_BAUD);
-  Serial.println();
-  Serial.println("REAKT gateway starting");
-
-  if (!initializeEspNow()) {
-    Serial.println("ESP-NOW initialization failed; retry scheduled.");
-  }
-}
-
-void loop() {
-  recoverTransportIfNeeded();
-  receiveApplicationCommands();
-  processNodeEvents();
-  updateOutputs();
-  reportDiagnostics();
+  if(!waiting||f.round!=roundId||f.node!=targetNode)continue;
+  pending[index].active=false;score.add(f.type,f.value);
+  if(eventCount<64)history[eventCount++]={f.round,f.node,f.type,f.value};
+  waiting=false;nextAt=millis()+500+(esp_random()%1000);broadcast();
+ }
+ for(int i=0;i<2;i++){
+  if(pending[i].due(millis()))radio.send(Nodes[i],pending[i].frame);
+  if(pending[i].failed){pending[i].failed=false;if(active){lastError="ESP-NOW ACK timeout";stop("interrupted");}}
+ }
+ if(active&&waiting&&uint32_t(millis()-roundAt)>limitMs+2500){lastError="node event timeout";stop("interrupted");}
+ if(active&&!waiting&&roundPeersAcknowledged()&&int32_t(millis()-nextAt)>=0)startRound();
+ if(uint32_t(millis()-lastBroadcast)>=1000){broadcast();Serial.printf("status=%s round=%lu hit=%lu miss=%lu rxdrop=%lu\n",phase.c_str(),(unsigned long)roundId,(unsigned long)score.hits,(unsigned long)score.misses,(unsigned long)radio.dropped);}
 }

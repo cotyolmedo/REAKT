@@ -1,210 +1,60 @@
-/*
-  REAKT - ESP32 node (estructura de entrada y estados)
-
-  GPIO, cantidad de WS2812B, MAC del gateway, canal y protocolo v1 siguen TBD.
-  El sketch compila sin activar hardware desconocido y deja la configuración
-  concentrada en Config para habilitarla después de medir/verificar la placa.
-*/
-
-#include <Arduino.h>
-#include <WiFi.h>
-#include <esp_now.h>
+#include <Adafruit_NeoPixel.h>
 #include <esp_timer.h>
-
-namespace Config {
-constexpr uint32_t SERIAL_BAUD = 115200;
-constexpr uint32_t DEBOUNCE_MS = 20;  // valor inicial de ensayo; no validado
-constexpr int8_t BUTTON_GPIO = -1;    // TBD: pulsador NA a GND
-constexpr int8_t LED_GPIO = -1;       // TBD: datos WS2812B
-constexpr uint16_t LED_COUNT = 0;     // TBD
-constexpr size_t RX_QUEUE_CAPACITY = 4;
-constexpr size_t MAX_ESPNOW_PAYLOAD = 250;
+#include <ReaktRadio.h>
+#include "Config.h"
+using namespace reakt;
+constexpr uint8_t Channel=6,NodeId=REAKT_NODE_ID;
+const uint8_t GatewayMac[6]=REAKT_GATEWAY_MAC;
+Radio radio;Pending outbound;Dedup commands;Button button;Target target;
+Adafruit_NeoPixel leds(5,REAKT_LED_GPIO,NEO_GRB+NEO_KHZ800);
+uint32_t seq=0,session=0,lastLog=0;bool ready=false;
+uint32_t retired[8]={};uint8_t retiredPos=0;
+void light(uint32_t color){if(REAKT_LED_ENABLED){leds.fill(color);leds.show();}}
+void ack(const Frame& f){Frame a=f;a.type=Type::Ack;a.value=f.seq;a.seq=nextSeq(seq);radio.send(GatewayMac,a);}
+bool retiredSession(uint32_t s){for(auto old:retired)if(old==s)return true;return false;}
+void report(Type type,uint32_t us){
+ Frame f;f.type=type;f.node=NodeId;f.session=session;f.seq=nextSeq(seq);f.round=target.round;f.value=us;
+ if(!outbound.begin(f))Serial.println("event backpressure; not overwriting pending event");
 }
-
-enum class NodeState : uint8_t {
-  Initializing,
-  Ready,
-  WaitingStimulus,
-  TargetActive,
-  EventRegistered,
-  Error
-};
-
-enum class LightState : uint8_t { Off, Waiting, Target, Hit, Error };
-
-struct ButtonRuntime {
-  bool rawLevel = true;
-  bool stableLevel = true;
-  bool armed = true;
-  uint32_t lastTransitionMs = 0;
-};
-
-struct NodeRuntime {
-  NodeState state = NodeState::Initializing;
-  LightState light = LightState::Off;
-  uint32_t buttonEvents = 0;
-  uint64_t lastEventUs = 0;
-  uint32_t receivedCommands = 0;
-  uint32_t invalidCommands = 0;
-  uint32_t droppedCommands = 0;
-  uint32_t failedTransmissions = 0;
-};
-
-struct ReceivedFrame {
-  uint8_t sender[6] = {};
-  uint8_t data[Config::MAX_ESPNOW_PAYLOAD] = {};
-  uint16_t length = 0;
-};
-
-ButtonRuntime button;
-NodeRuntime node;
-ReceivedFrame rxQueue[Config::RX_QUEUE_CAPACITY];
-volatile uint8_t rxHead = 0;
-volatile uint8_t rxTail = 0;
-portMUX_TYPE rxMux = portMUX_INITIALIZER_UNLOCKED;
-
-const char* stateName(NodeState state) {
-  switch (state) {
-    case NodeState::Initializing: return "initializing";
-    case NodeState::Ready: return "ready";
-    case NodeState::WaitingStimulus: return "waiting stimulus";
-    case NodeState::TargetActive: return "target active";
-    case NodeState::EventRegistered: return "event registered";
-    case NodeState::Error: return "error";
+void setup(){
+ Serial.begin(115200);WiFi.mode(WIFI_STA);WiFi.disconnect();
+ Serial.printf("REAKT node id=%u station MAC=%s\n",NodeId,WiFi.macAddress().c_str());
+ if(!REAKT_HARDWARE_VALIDATED||NodeId<1||NodeId>2||!configuredMac(GatewayMac)){Serial.println("BLOCKED: validate LocalConfig hardware/MAC");return;}
+ pinMode(REAKT_BUTTON_GPIO,INPUT_PULLUP);button.init(digitalRead(REAKT_BUTTON_GPIO)==HIGH,millis());
+ if(REAKT_LED_ENABLED){leds.begin();leds.setBrightness(32);light(0);}
+ Serial.println(REAKT_LED_ENABLED?"LED output enabled":"DIAGNOSTIC ONLY: no physical visual stimulus");
+ if(esp_wifi_set_channel(Channel,WIFI_SECOND_CHAN_NONE)!=ESP_OK||!radio.begin()||!radio.peer(GatewayMac,Channel)){Serial.println("radio init failed; restart after diagnosis");return;}
+ ready=true;
+}
+void loop(){
+ if(!ready)return;
+ Received rx;
+ while(radio.pop(rx)){
+  Frame f=rx.frame;
+  if(memcmp(rx.mac,GatewayMac,6)||f.node!=NodeId)continue;
+  if(f.type==Type::Ack){outbound.ack(f);continue;}
+  if(f.type!=Type::Activate&&f.type!=Type::Cancel)continue;
+  if(f.session!=session){
+   if(retiredSession(f.session))continue;
+   if(session)retired[retiredPos++%8]=session;
+   session=f.session;commands={};outbound={};target.active=false;light(0);
   }
-  return "unknown";
-}
-
-void setLight(LightState next) {
-  node.light = next;
-  // TODO: controlar WS2812B cuando GPIO, cantidad, alimentación y librería
-  // estén confirmados. No se escribe en un GPIO TBD.
-}
-
-void registerButtonEvent(uint32_t nowMs) {
-  node.buttonEvents++;
-  node.lastEventUs = static_cast<uint64_t>(esp_timer_get_time());
-  node.state = NodeState::EventRegistered;
-  Serial.print("Button event #");
-  Serial.print(node.buttonEvents);
-  Serial.print(" at ms ");
-  Serial.println(nowMs);
-  // TODO: serializar/enviar evento sólo cuando el protocolo v1 esté acordado.
-}
-
-bool enqueueGatewayFrame(const esp_now_recv_info_t* info, const uint8_t* data, int length) {
-  portENTER_CRITICAL(&rxMux);
-  const uint8_t nextHead = (rxHead + 1) % Config::RX_QUEUE_CAPACITY;
-  if (nextHead == rxTail) {
-    portEXIT_CRITICAL(&rxMux);
-    return false;
-  }
-
-  memcpy(rxQueue[rxHead].sender, info->src_addr, sizeof(rxQueue[rxHead].sender));
-  memcpy(rxQueue[rxHead].data, data, static_cast<size_t>(length));
-  rxQueue[rxHead].length = static_cast<uint16_t>(length);
-  rxHead = nextHead;
-  portEXIT_CRITICAL(&rxMux);
-  return true;
-}
-
-bool dequeueGatewayFrame(ReceivedFrame& frame) {
-  portENTER_CRITICAL(&rxMux);
-  if (rxTail == rxHead) {
-    portEXIT_CRITICAL(&rxMux);
-    return false;
-  }
-  frame = rxQueue[rxTail];
-  rxTail = (rxTail + 1) % Config::RX_QUEUE_CAPACITY;
-  portEXIT_CRITICAL(&rxMux);
-  return true;
-}
-
-void updateButton() {
-  if (Config::BUTTON_GPIO < 0) return;
-
-  const uint32_t now = millis();
-  const bool rawLevel = digitalRead(Config::BUTTON_GPIO) == HIGH;
-  if (rawLevel != button.rawLevel) {
-    button.rawLevel = rawLevel;
-    button.lastTransitionMs = now;
-  }
-
-  if (now - button.lastTransitionMs < Config::DEBOUNCE_MS ||
-      button.stableLevel == button.rawLevel) {
-    return;
-  }
-
-  button.stableLevel = button.rawLevel;
-  if (!button.stableLevel) {
-    if (button.armed) {
-      button.armed = false;
-      registerButtonEvent(now);
-    }
-  } else {
-    // El rearme requiere liberación estable; no hay repetición por pulsación larga.
-    button.armed = true;
-    node.state = NodeState::Ready;
-  }
-}
-
-bool initializeEspNow() {
-  WiFi.mode(WIFI_STA);
-  WiFi.disconnect();
-  if (esp_now_init() != ESP_OK) return false;
-  esp_now_register_recv_cb([](const esp_now_recv_info_t* info, const uint8_t* data, int length) {
-    if (info == nullptr || info->src_addr == nullptr || data == nullptr ||
-        length <= 0 || length > static_cast<int>(Config::MAX_ESPNOW_PAYLOAD)) {
-      node.invalidCommands++;
-      return;
-    }
-    if (!enqueueGatewayFrame(info, data, length)) {
-      node.droppedCommands++;
-      return;
-    }
-    node.receivedCommands++;
-  });
-  // TODO: registrar callback de envío y peer del gateway cuando estén definidos.
-  // TODO: registrar peer del gateway cuando su MAC/canal estén definidos.
-  return true;
-}
-
-void processGatewayCommands() {
-  ReceivedFrame frame;
-  while (dequeueGatewayFrame(frame)) {
-    // TODO: validar aquí versión, tipo, nodo, secuencia y payload del protocolo v1.
-    // No se cambia el estado por bytes cuyo significado aún no fue acordado.
-    (void)frame;
-  }
-}
-
-void setup() {
-  Serial.begin(Config::SERIAL_BAUD);
-  Serial.println();
-  Serial.println("REAKT node starting");
-
-  if (Config::BUTTON_GPIO >= 0) {
-    pinMode(Config::BUTTON_GPIO, INPUT_PULLUP);
-    button.rawLevel = digitalRead(Config::BUTTON_GPIO) == HIGH;
-    button.stableLevel = button.rawLevel;
-  } else {
-    Serial.println("Button GPIO is TBD; input acquisition disabled.");
-  }
-
-  if (!initializeEspNow()) {
-    node.state = NodeState::Error;
-    Serial.println("ESP-NOW initialization failed.");
-    return;
-  }
-
-  node.state = NodeState::Ready;
-  setLight(LightState::Off);
-  Serial.print("Node state: ");
-  Serial.println(stateName(node.state));
-}
-
-void loop() {
-  processGatewayCommands();
-  updateButton();
-  // TODO: procesar órdenes del gateway y controlar la máquina de estímulo.
+  ack(f);
+  if(!commands.accept(f.seq))continue;
+  if(f.type==Type::Cancel){target.active=false;target.round=f.round;target.session=f.session;outbound={};light(0);continue;}
+  // Advancing round is an implicit ACK for the previous round event.
+  if(outbound.active && outbound.frame.session==f.session && outbound.frame.round<f.round)outbound={};
+  // An accepted command starts only once; retransmissions cannot reset its clock.
+  light(leds.Color(0,80,0));target.activate(f,uint64_t(esp_timer_get_time()));
+  Serial.printf("stimulus round=%lu LED=%d\n",(unsigned long)f.round,REAKT_LED_ENABLED);
+ }
+ const uint64_t now=uint64_t(esp_timer_get_time());
+ if(button.update(digitalRead(REAKT_BUTTON_GPIO)==HIGH,millis()) && session){
+  uint32_t us;Type result=target.press(now,us);light(0);
+  if(!outbound.active)report(result,us);
+ }
+ if(target.expired(now)){target.active=false;light(0);report(Type::Miss,0);}
+ if(outbound.due(millis()))radio.send(GatewayMac,outbound.frame);
+ if(outbound.failed){outbound.failed=false;target.active=false;light(0);Serial.println("event ACK exhausted; session needs restart");}
+ if(uint32_t(millis()-lastLog)>=5000){lastLog=millis();Serial.printf("node session=%lu round=%lu target=%d dropped=%lu invalid=%lu txerr=%lu\n",(unsigned long)session,(unsigned long)target.round,target.active,(unsigned long)radio.dropped,(unsigned long)radio.invalid,(unsigned long)radio.sendErrors);}
 }

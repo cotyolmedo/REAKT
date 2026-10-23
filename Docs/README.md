@@ -45,3 +45,29 @@ exista un cambio de arquitectura.
 - `BLOCKED`: depende de una decisión, pieza o validación externa.
 
 No marcar elementos como `DONE` sin evidencia verificable.
+
+## MVP de entrega 2026-11-06
+
+La especificación posterior del usuario concreta WebSocket local, WROOM-32 y uno
+o dos nodos en el primer MVP. Consultar primero:
+
+- [Instalación y pinout propuesto](mvp-installation.md).
+- [Bitácora de implementación y aprobaciones](implementation-log.md).
+- [Pruebas físicas pendientes](mvp-physical-tests.md).
+- [Informe técnico escolar](mvp-school-report.md).
+
+Las referencias anteriores a cinco nodos son la ampliación prevista. Hoy solo
+hay placas y pulsador; no hay validación física de WS2812B ni alimentación.
+
+## Entrega para el colegio
+
+- [Estado final](ESTADO-FINAL-MVP.md).
+- [Guía del viernes 23/10/2026](GUIA-COLEGIO-2026-10-23.md).
+- [Planilla de resultados sin completar](registro-pruebas-colegio.md).
+
+La continuación instaló Flutter, resolvió lock y aprobó17tests; los bloqueos de SDK
+descriptos en entradas previas son históricos. El estado final es la referencia
+para APK/acceso remoto y para distinguir software de validación física.
+
+- [Resumen de entrega y referencia Git](RESUMEN-ENTREGA.md).
+- [Prompt para retomar desde la computadora del colegio](PROMPT-PARA-MANANA.md).
