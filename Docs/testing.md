@@ -1,5 +1,23 @@
 # Estrategia y registro de pruebas REAKT
 
+## Referencia actual — 23/10/2026
+
+Verificación de integración ejecutada en Windows: Flutter3.47.4 con
+`pub get --enforce-lockfile`, `analyze --no-pub` sin problemas y21tests aprobados;
+simulador WebSocket2tests aprobados en venv con websockets15.0.1. Arduino core3.3.4:
+nodo Off887975bytes/44792RAM, Digital888275/44792, gateway929487/48324;
+compilaciones exit0, sin carga en esta verificación. WebSockets2.7.2,
+ArduinoJson7.4.3 y ReaktCore local. Sintaxis Node/PowerShell, enlaces de entrada,
+diff/check y exclusión de configuraciones locales comprobados. Código Flutter
+productivo y tests idénticos a las ramas APK/guardado local; solo cambian sus guías.
+
+La app 0.3.0 aprobó análisis y 21 pruebas; APK debug publicado con firma/SHA256,
+configuración Supabase y endpoint gateway comprobados dentro del archivo descargado.
+Evidencia y workflows: [publicación Android](android-release-2026-10-23.md).
+RLS remoto fue probado con datos sintéticos revertidos; no es login desde teléfono
+ni segundo login real. Circuito, radio, Android y diez sesiones físicas pendientes.
+Las entradas inferiores son bitácora histórica. Para ejecutar: [PROBAR-HOY](PROBAR-HOY.md).
+
 ## Criterio
 
 Avanzar de componentes aislados hacia integración. Una prueba solo se considera
@@ -167,3 +185,21 @@ archivo oficial verificado contra el índice Android instaló correctamente. No 
 cambiaron hashes esperados ni se desactivaron verificaciones. Las primeras pruebas
 widget de integración requerían avanzar fake microtasks entre IO real; harness
 corregido y suite completa aprobada. Los logs locales permanecen en build/.
+
+## Colegio 23/10/2026
+
+PROBADO: aplicación de migración remota, tres tablas RLS/nueve políticas,
+anon sin grants y authenticated sin DELETE; lectura autenticada sin filas propias.
+PROBADO: lectura MAC ROM del gateway COM4 (30:c6:f7:92:d0:9c).
+PENDIENTE: Auth/login real, upserts/aislamiento remoto con dos usuarios, GPIO/radio,
+LED, Android físico, diez sesiones y compilaciones en esta PC.
+Evidencia y diferencias de toolchain: [registro](CONTINUACION-COLEGIO-2026-10-23.md).
+
+### Cierre posterior de software
+
+Cuenta Auth confirmada y sesiones Auth presentes; smoke RLS remoto aprobado con
+datos sintéticos revertidos (cero filas restantes). Auth API HTTP200 y anon REST
+HTTP401. Analyze sin problemas y17tests aprobados en copia para Flutter3.47.4,
+sin modificar lock de referencia. Compilaron gateway/core3.3.4 y nodo LED digital
+y deshabilitado. No es prueba Android/radio/circuito.
+[Resultados, comandos y límites](CIERRE-SOFTWARE-2026-10-23.md).

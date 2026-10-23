@@ -2,6 +2,11 @@
 // Set 1 only after checking board and button wiring.
 // No LEDs available yet: keep LED output disabled.
 #define REAKT_LED_ENABLED 0
+// For a verified single digital LED + series resistor, set DIGITAL=1.
+// Keep ENABLED=0 until the actual GPIO, polarity and circuit are checked.
+#define REAKT_LED_DIGITAL 0
+#define REAKT_LED_COUNT 5
+#define REAKT_LED_ACTIVE_HIGH 1
 #define REAKT_HARDWARE_VALIDATED 0
 #define REAKT_NODE_ID 1
 #define REAKT_BUTTON_GPIO 18

@@ -1,5 +1,12 @@
 # REAKT Backend
 
+## Estado actual — 23/10/2026
+
+El esquema MVP está aplicado en Supabase remoto y RLS fue comprobado mediante
+transacciones revertidas. Auth/API públicos comprobados; login/sincronización de
+Android y segundo login real pendientes. No repetir la migración para usar el APK.
+Ver [backend/README](../backend/README.md) y [PROBAR-HOY](PROBAR-HOY.md).
+
 ## Technology
 
 Intended backend:

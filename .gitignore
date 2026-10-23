@@ -1,4 +1,5 @@
 # Local editor and tool artifacts
+.school-work/
 *.lck
 *~
 __pycache__/

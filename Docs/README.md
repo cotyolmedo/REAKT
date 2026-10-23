@@ -3,6 +3,13 @@
 Esta carpeta distingue requisitos, decisiones, implementación y evidencia de
 pruebas del proyecto.
 
+## Empezar por el estado actual
+
+[PROBAR-HOY.md](PROBAR-HOY.md) reúne firmware, APK 0.3.0, montaje y pruebas en
+orden. [android-release-2026-10-23.md](android-release-2026-10-23.md) registra la
+publicación y configuración verificadas. Los documentos de entrega anteriores
+se conservan como historia y no sustituyen ese estado.
+
 ## Mapa documental
 
 | Archivo | Contenido |
@@ -12,9 +19,9 @@ pruebas del proyecto.
 | `architecture.md` | Arquitectura y responsabilidades |
 | `hardware.md` | Inventario, interfaces físicas y pendientes |
 | `firmware.md` | Convenciones y comportamiento embebido |
-| `packet-protocol.md` | Protocolo común todavía no finalizado |
-| `app.md` | Arquitectura prevista de Flutter |
-| `backend.md` | Arquitectura prevista de Supabase/PostgreSQL |
+| `packet-protocol.md` | Contrato MVP v1 implementado; máximo dos nodos |
+| `app.md` | Arquitectura Flutter y adaptación funcional 0.3.0 |
+| `backend.md` | Arquitectura Supabase/PostgreSQL y evidencia enlazada |
 | `development.md` | Flujo de desarrollo |
 | `testing.md` | Estrategia, evidencia y verificaciones realizadas |
 | `roadmap.md` | Fases y estado real |
@@ -65,9 +72,11 @@ hay placas y pulsador; no hay validación física de WS2812B ni alimentación.
 - [Guía del viernes 23/10/2026](GUIA-COLEGIO-2026-10-23.md).
 - [Planilla de resultados sin completar](registro-pruebas-colegio.md).
 
-La continuación instaló Flutter, resolvió lock y aprobó17tests; los bloqueos de SDK
-descriptos en entradas previas son históricos. El estado final es la referencia
-para APK/acceso remoto y para distinguir software de validación física.
+La publicación posterior usa Flutter3.47.4 y aprueba21tests. Los bloqueos de SDK
+descriptos en entradas previas son históricos. PROBAR-HOY y android-release son
+las referencias actuales para APK/acceso remoto y límites de validación física.
 
 - [Resumen de entrega y referencia Git](RESUMEN-ENTREGA.md).
 - [Prompt para retomar desde la computadora del colegio](PROMPT-PARA-MANANA.md).
+- [Cierre software del23/10, verificación Supabase y estimación MVP](CIERRE-SOFTWARE-2026-10-23.md).
+- [Próximo armado en protoboard con LED común](MVP-PROTOBOARD.md).

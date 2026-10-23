@@ -1,5 +1,18 @@
 # REAKT Flutter Application
 
+## Estado actual — 23/10/2026
+
+Flutter 0.3.0 adapta el demo Impacto con Inicio, Entrenar, Historial, Progreso y
+Perfil. Conserva GatewayLink, TrainingSnapshot, LocalStore y CloudSync; configura
+rondas/tiempo, manda start/manual/stop y calcula progreso desde sesiones guardadas.
+No inventa métricas ni presencia de nodos. MVP máximo dos nodos; ampliación a cinco
+pendiente. El contrato terminal no distingue manual/reflejos: historial usa Sesión.
+
+Flutter 3.47.4/Dart 3.13.3, 21 tests y APK Android 7+ publicado con configuración
+pública Supabase. Conexión física y sincronización en teléfono pendientes.
+Ver [guía actual](PROBAR-HOY.md), [app/README](../app/README.md) y
+[evidencia de publicación](android-release-2026-10-23.md).
+
 ## Purpose
 
 The Flutter application is the user-facing control and visualization layer.

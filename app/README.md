@@ -16,7 +16,15 @@ flutter run
 flutter build apk --debug
 ```
 
-Android requiere SDK/NDK/JDK compatibles con `android/`. En esta PC no se encontró Android SDK: no se generó APK nuevo. No hay scaffold ni validación iOS/web/Windows; las pruebas de widgets corren en Windows con SQLite FFI.
+Android requiere SDK/NDK/JDK compatibles con `android/`. La PC no tiene Android SDK;
+el APK se compiló en GitHub Actions. No hay scaffold ni validación iOS/web/Windows;
+las pruebas de widgets corren en Windows con SQLite FFI y en Linux mediante CI.
+
+[Descargar APK 0.3.0](https://github.com/cotyolmedo/REAKT/releases/download/v0.3.0-demo.4.1/REAKT-0.3.0-android.apk),
+[release y SHA256](https://github.com/cotyolmedo/REAKT/releases/tag/v0.3.0-demo.4.1).
+Requiere Android 7.0/API24+, Gradle8.14.3, AGP8.11.1, Kotlin2.2.20 y JDK17.
+Configuración pública Supabase inyectada al compilar. APK debug; exportar historial
+antes de cambiar instalación o firma. [Estado actual](../Docs/PROBAR-HOY.md).
 
 ## Uso
 
@@ -29,10 +37,19 @@ Android requiere SDK/NDK/JDK compatibles con `android/`. En esta PC no se encont
 
 ## Compatibilidad
 
-La arquitectura prevista tiene cinco nodos, pero **el contrato MVP remoto admite dos peers**. El firmware local conserva cambios previos ajenos a esta adaptación: comprobar compatibilidad antes de una prueba física. `nodes` son peers configurados, no presencia confirmada. Ver [contrato MVP](https://github.com/cotyolmedo/REAKT/blob/3f34294/Docs/packet-protocol.md).
+La arquitectura prevista tiene cinco nodos, pero **el contrato MVP admite dos peers**.
+El repositorio integrado contiene gateway y nodo REAKT compatibles con ese contrato;
+el nodo incluye salida digital, WS2812B o deshabilitada. Configurar y validar las
+placas antes de una prueba física. `nodes` son peers configurados, no presencia
+confirmada. Ver [contrato MVP](../Docs/packet-protocol.md) y
+[guía actual](../Docs/PROBAR-HOY.md).
 
 Los demás modos quedan pendientes. El contrato terminal no distingue manual/reflejos: el historial lo llama «Sesión».
 
-Supabase usa `SUPABASE_URL` y `SUPABASE_ANON_KEY` por `--dart-define` o archivo público excluido de Git. Nunca agregar service_role ni contraseñas al código. Se conserva la advertencia de asignación de sesiones sin propietario a la cuenta al sincronizar. Tablas/RLS y pruebas remotas siguen siendo requisitos externos.
+Supabase usa `SUPABASE_URL` y `SUPABASE_ANON_KEY` por `--dart-define` o archivo público
+excluido de Git. El APK publicado ya incluye esa configuración pública. Nunca agregar
+service_role ni contraseñas al código. Las sesiones sin propietario se asignan a la
+cuenta al sincronizar. Esquema y RLS remotos comprobados; pendiente sincronización
+desde Android y aislamiento con dos logins reales.
 
 Evidencia en `../Docs/testing.md`. La opción de tests `--dart-define=REAKT_CAPTURE_UI=true` genera capturas con datos sintéticos en `../.school-work/flutter-preview/`; usa fuentes Windows únicamente para esa captura opcional.

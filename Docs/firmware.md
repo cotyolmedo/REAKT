@@ -1,5 +1,12 @@
 # Firmware REAKT
 
+## Implementación actual — 23/10/2026
+
+MVP de uno o dos nodos y gateway implementado según [protocolo v1](packet-protocol.md).
+Nodo con pulsador, antirrebote20ms, ACK/reintentos y salida digital/WS2812B/off;
+gateway con SoftAP canal6 y WebSocket81. Cinco nodos siguen siendo ampliación.
+Compilado, sin integración física validada. [Guía operativa](PROBAR-HOY.md).
+
 ## Destinos
 
 - Un ESP32 gateway.
@@ -17,7 +24,7 @@ la versión del core deben registrarse con cada compilación relevante.
   temporización y errores.
 - Mantener callbacks de radio breves: validar límites, copiar/encolar y procesar
   fuera del callback.
-- No interpretar payloads hasta definir `Docs/packet-protocol.md`.
+- Interpretar y validar payloads según `Docs/packet-protocol.md`, ya definido para el MVP.
 
 ## Pulsador
 

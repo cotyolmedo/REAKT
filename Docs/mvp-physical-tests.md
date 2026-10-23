@@ -1,5 +1,10 @@
 # Matriz de pruebas físicas — pendiente de hardware
 
+Estado integrado: APK 0.3.0 disponible y esquema/API/RLS remotos comprobados.
+Las verificaciones de esta matriz siguen requiriendo placas y teléfono reales.
+Procedimiento actual en [PROBAR-HOY](PROBAR-HOY.md); sin LEDs puede probarse radio
+y pulsador, y un LED común verificado sirve para el ensayo de banco simplificado.
+
 Registrar fecha, firmware/commit, placa, core, MAC reales (solo registro local),
 pinout verificado, alimentación, procedimiento, esperado, real y evidencia. No
 marcar PROBADO por compilar. Meta: diez sesiones consecutivas sin fallos críticos.
@@ -18,9 +23,9 @@ marcar PROBADO por compilar. Meta: diez sesiones consecutivas sin fallos crític
 | Reconectar app | App compilada, AP | Sesión continúa en gateway, snapshot recupera eventos | PENDIENTE DE HARDWARE: Android físico |
 | Reiniciar gateway | App y gateway | No inventar continuidad; sesión anterior queda local no completada | PENDIENTE DE HARDWARE: Android físico |
 | SQLite | App instalada | Cerrar/reabrir conserva historial; no borrar datos | PENDIENTE DE HARDWARE: Android físico |
-| Sincronización | Auth/esquema remoto revisado | Repetir upsert sin duplicados, RLS entre dos usuarios | BLOQUEADO: acceso Supabase |
+| Sincronización | Teléfono con Internet y cuentas reales | Repetir upsert sin duplicados, RLS entre dos usuarios | PENDIENTE: Android y dos logins reales |
 | Segundo nodo | Tercera placa disponible | IDs/MAC distintos, objetivos alternan aleatoriamente | PENDIENTE DE HARDWARE |
-| Diez sesiones físicas | Circuito completo | Diez x diez rondas, sin bloqueo ni duplicación; logs guardados | BLOQUEADO: componentes y app |
+| Diez sesiones físicas | Circuito completo | Diez x diez rondas, sin bloqueo ni duplicación; logs guardados | PENDIENTE: circuito e integración física |
 
 La simulación de diez sesiones C++ prueba componentes de protocolo, no satisface
 la meta de diez sesiones físicas. Ensayar energización LEDs antes de sesiones de

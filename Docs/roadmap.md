@@ -1,5 +1,14 @@
 # Hoja de ruta REAKT
 
+## Estado integrado — 23/10/2026
+
+- App 0.3.0 y APK publicados, análisis/21 tests y firma/SHA256 verificados.
+- Supabase remoto aplicado; Auth/API/RLS comprobados con transacciones revertidas.
+- Firmware nodo con salida digital/WS2812B/deshabilitada y gateway compilados.
+- Pendientes: configuración/carga de placas, radio, circuito LED, Android físico,
+  sincronización desde teléfono, aislamiento con dos logins y diez sesiones físicas.
+- [Procedimiento actual](PROBAR-HOY.md). Las entradas inferiores conservan el historial.
+
 ## Estado actual
 
 Fase inicial e incremental. Hay documentación, una interfaz Flutter de
@@ -96,3 +105,21 @@ un sistema integrado ni hardware vigente validado.
 Flutter dejó de estar bloqueado: SDK/lock instalados, análisis y17tests aprobados.
 Panel de banco Chromium probado y exportación de historial agregada. Build APK y
 artefactos finales en ESTADO-FINAL-MVP.md; Supabase y pruebas físicas siguen separados.
+
+## Avance colegio 23/10/2026
+
+- DONE: inspección de Supabase y aplicación compatible de migración aprobada;
+  metadata RLS/grants verificada. Auth/sincronización real siguen IN PROGRESS.
+- DONE: identificación ROM gateway COM4/MAC real; programación y radio pendientes.
+- Aceptado por usuario: MVP en protoboard con pulsador y un LED. Tipo/circuito y
+  adaptación para LED común pendientes; salida permanece deshabilitada.
+- Trabajo aislado en .school-work/REAKT desde 6e4eec6; original preservado.
+- [Detalle y pendientes](CONTINUACION-COLEGIO-2026-10-23.md).
+
+### Cierre de etapa software
+
+Auth confirmado, RLS remoto y API pública probados; salida LED común implementada
+y compilada, gateway compilado,17tests Flutter y analyze aprobados en copia local.
+MVP estimado60% por entregables (no por horas); hardware/cadena física no completados.
+Sigue armado por usuario, configuración real, carga, radio, Android y diez sesiones.
+[Criterio y evidencia](CIERRE-SOFTWARE-2026-10-23.md).

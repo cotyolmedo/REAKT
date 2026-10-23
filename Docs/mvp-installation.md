@@ -1,10 +1,13 @@
 # Instalación y operación del MVP
 
+> Entrada actual: [PROBAR-HOY.md](PROBAR-HOY.md). Esta guía conserva las versiones
+> de firmware originales; para el banco con LED común ver [MVP-PROTOBOARD](MVP-PROTOBOARD.md).
+
 ## Estado y alcance
 
 Firmware nodo/gateway compilado para ESP32 Dev Module, Arduino-ESP32 **2.0.17**.
-No se cargó en una placa desde este entorno. Flutter instalado: pub get, lock resuelto, análisis y diecisiete tests aprobados.
-Estado actual del APK en ESTADO-FINAL-MVP.md; esta guía documenta el procedimiento. No considerar completa la integración física.
+No se cargó en una placa desde este entorno. Flutter 3.47.4: lock resuelto, análisis y 21 tests aprobados.
+Estado actual del APK en android-release-2026-10-23.md. No considerar completa la integración física.
 
 Actualmente hay placas y pulsador; faltan WS2812B y alimentación de LEDs. No
 habilitar LED output hasta conseguirlos y verificar conexiones. Se puede probar
@@ -55,14 +58,14 @@ Espressif y SHA-512 de ctags; no se deshabilitó TLS ni verificación de artefac
 
 ## Flutter Android
 
-1. Instalar Flutter estable (referencia **3.29.3**, Dart >=3.7), JDK17 y Android
+1. Para desarrollar instalar Flutter **3.47.4** (ver app/.fvmrc), JDK17 y Android
    SDK compatible; aceptar licencias con `flutter doctor --android-licenses`.
    Revisar `flutter doctor -v`. NDK **27.0.12077973** fijado por requisitos de plugins.
-   Gradle wrapper 8.10.2 conserva checksum de distribución.
+   Gradle wrapper 8.14.3 conserva checksum de distribución; AGP8.11.1/Kotlin2.2.20.
 2. Desde `app/`: `flutter pub get --enforce-lockfile`, `flutter analyze`, `flutter test`,
    `flutter build apk --debug`. Conservar `pubspec.lock` incluido para reproducibilidad.
 3. Con un teléfono Android USB habilitado para depuración: `flutter devices`,
-   luego `flutter run`. El scaffold Android usa `ar.edu.reakt`, minSdk23; release
+   luego `flutter run`. El scaffold Android usa `ar.edu.reakt`, minSdk24 (Android7+); release
    signing queda fuera del MVP (no publicar sin una configuración propia).
 4. Entrenamiento offline funciona sin definir Supabase. Para la nube usar URL
    HTTPS y clave **pública** anon/publishable del proyecto mediante
@@ -82,9 +85,9 @@ Espressif y SHA-512 de ctags; no se deshabilitó TLS ni verificación de artefac
    reintentar cada 20 s con usuario autenticado; el botón permite repetirlo.
 
 **Limitaciones actuales:** pruebas físicas Android pendientes; ver estado del APK en
-ESTADO-FINAL-MVP.md. El proyecto remoto
-Supabase requiere inspección y acceso; el usuario ya aprobó la migración preparada
-si no hay conflictos. No se creó el usuario de pruebas remoto. Si el inicio de
+android-release-2026-10-23.md. Supabase remoto tiene migración aplicada,
+cuenta confirmada y pruebas RLS revertidas; falta sincronización desde Android.
+No volver a ejecutar la migración para usar el APK. Si el inicio de
 Supabase falla, la app conserva entrenamiento local y permite reabrir con Internet.
 Historial en curso tras reinicio de gateway queda local, sin inventar cierre ni
 sincronizarlo como completado. No desinstalar/borrar datos de la app para solucionar

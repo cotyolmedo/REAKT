@@ -1,5 +1,9 @@
 # Mañana en el colegio — viernes 23 de octubre de 2026
 
+> Guía histórica de preparación. Para el estado integrado y el orden vigente usar
+> [PROBAR-HOY.md](PROBAR-HOY.md): APK 0.3.0 publicado, Supabase aplicado y nodo con
+> salida digital opcional. Las secciones antiguas de SDK/migración no deben repetirse.
+
 ## Objetivo alcanzable con lo que tienen
 
 Con **dos ESP32 y un pulsador** pueden comprobar programación, MAC reales,

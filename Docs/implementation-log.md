@@ -223,3 +223,19 @@ exitoso), PROBADO (check ejecutado), PENDIENTE DE HARDWARE, BLOQUEADO (externo).
 - downloads/ incluye ambos ZIP, README comparativo, manifest.json y SHA256SUMS.txt.
   No se utiliza GitHub Releases/API, cuyo acceso desde este entorno devolvió403.
   Publicación mediante Git normal, sin force push ni servicios pagos nuevos.
+## 11. Colegio 23/10/2026
+
+Migración Supabase autorizada aplicada tras inspección compatible (versión remota
+20261023120712); metadata RLS/grants verificada. Gateway COM4 identificado por ROM,
+MAC 30:c6:f7:92:d0:9c, ESP32-D0WDQ6. No flash ni prueba radio. Configuración pública
+local ignorada y formulario Auth preparados. Registro/login requieren usuario.
+Detalle de comandos, bloqueos y alcance: [continuación](CONTINUACION-COLEGIO-2026-10-23.md).
+
+### Etapa software cerrada antes del armado
+
+Usuario completó registro; cuenta confirmada en servidor. Pruebas RLS reales con
+rol authenticated aprobadas y revertidas; otra identidad SQL sintética, sin segundo
+login real. Prueba HTTP pública aprobada. Salida LED digital implementada y compilada,
+nodo deshabilitado y gateway también compilados con core3.3.4. Analyze y17tests
+Flutter aprobados en copia con dependencias de SDK3.47.4; lock original intacto.
+Usuario armará circuito después. [Cierre y estimación MVP60%](CIERRE-SOFTWARE-2026-10-23.md).

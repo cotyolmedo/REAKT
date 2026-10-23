@@ -2,7 +2,7 @@ name: REAKT Android APK
 
 on:
   push:
-    branches: [codex/android-demo-v0.3.0]
+    branches: [main, codex/android-demo-v0.3.0, codex/integracion-reakt-20261023]
     paths: ['app/**', '.github/workflows/android-apk.yml']
   workflow_dispatch:
 
@@ -64,6 +64,7 @@ jobs:
           if-no-files-found: error
 
   publish:
+    if: github.event_name == 'workflow_dispatch'
     needs: build
     runs-on: ubuntu-24.04
     permissions:

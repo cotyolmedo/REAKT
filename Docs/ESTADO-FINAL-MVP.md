@@ -1,5 +1,10 @@
 # Estado de entrega REAKT — 22/10/2026
 
+> Archivo histórico de la entrega 0.2.0. El estado vigente está en
+> [PROBAR-HOY.md](PROBAR-HOY.md) y la publicación 0.3.0 en
+> [android-release-2026-10-23.md](android-release-2026-10-23.md).
+> Los bloqueos de Supabase y generación de APK que siguen fueron resueltos después.
+
 Objetivo: llevar al colegio el viernes23/10 una base reproducible y comprobar
 primero radio/pulsador. Fecha límite global: 6/11/2026.
 
