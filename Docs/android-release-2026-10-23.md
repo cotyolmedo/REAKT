@@ -18,4 +18,6 @@ Workflow https://github.com/cotyolmedo/REAKT/actions/runs/39965490097: success; 
 
 La prueba SQL transaccional remota de RLS fue aprobada y revertida; no quedaron sesiones/eventos sintéticos. Falta iniciar sesión en el teléfono y probar sincronización desde la app. Placas todavía sin configurar: no se declara conexión física.
 
+Auditoría del archivo publicado: https://github.com/cotyolmedo/REAKT/actions/runs/39967134053 aprobada. Descarga pública, SHA256 y firma cotejados; URL/clave pública de Supabase y endpoint gateway comprobados en el kernel Dart compilado. La copia parcial en la PC se conserva con extensión `.partial` por la lentitud de descarga; usar el enlace público del APK completo.
+
 La compilación con Flutter 3.47.4 requiere actualizar el proyecto anterior: Gradle 8.14.3 (checksum oficial), AGP 8.11.1, Kotlin 2.2.20 y Android mínimo 7.0/API24. No se usa `--android-skip-build-dependency-validation`.
