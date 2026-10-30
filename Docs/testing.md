@@ -299,3 +299,10 @@ Revisión de diff: solo rol de Mendez Mia y denominación del pie en REAKT_webv2
 Las siete operaciones de actualización Notion finalizaron sin errores ni warnings;
 se conservaron subpáginas, bases de datos y planificación original. No se modificaron
 porcentajes de bases de datos ni se declararon nuevas pruebas físicas.
+
+### 2026-10-30 — Foto de Mendez Mia
+
+Fotografía original copiada a assets/team/mendez-mia.jpg (52362 bytes).
+Navegador local: imagen cargada, dimensiones naturales 1170×1505 y tarjeta revisada
+visualmente. Se reemplazaron las iniciales y el aviso de foto pendiente, sin cambiar
+el rol. No se alteraron los píxeles del archivo aportado.

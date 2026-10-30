@@ -182,3 +182,8 @@ versión/tamaño y enlace al APK. Verificado en navegador y anchos 390/320 px.
 DONE: rol de Mendez Mia y pie curricular corregidos. Actualizadas siete páginas
 Notion: Dashboard, Equipo, Aplicación, Software, Recursos, Informe técnico y Galería.
 Se enlazan web pública/release y se distinguen implementación actual y planes.
+
+### 2026-10-30 — Equipo completo con fotos
+
+DONE: fotografía de Mendez Mia incorporada al carrusel web; los cuatro integrantes
+tienen fotografía aportada por el usuario.

@@ -247,3 +247,8 @@ Por indicación del usuario, Mendez Mia figura como HARDWARE - INVESTIGACIÓN.
 Pie web: «Aplicaciones de Electrónica Digital III - Lenguajes Electrónicos» y
 «Estado general en desarrollo». Notion actualizado con roles confirmados, web,
 release 0.3.1 y evidencia actual, preservando la planificación histórica.
+
+### 2026-10-30 — Fotografía de Mendez Mia
+
+Se incorpora la fotografía original adjuntada por el usuario en la tarjeta de
+Mendez Mia, reemplazando iniciales y aviso de foto pendiente. Se conserva su rol.
