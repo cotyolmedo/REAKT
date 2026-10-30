@@ -225,3 +225,10 @@ se conservan como evidencia histórica; no se retocan para simular una nueva ver
 GitHub Pages habilitado con GitHub Actions. Se publica únicamente la web V2 como
 index.html, sus assets y manifest. Cambios posteriores de estos archivos en main
 activan publicación automática en la misma URL. Ver web-publication.md.
+
+### 2026-10-30 — Release Android 0.3.1
+
+El usuario solicita compilar y crear release sobre main, sin nuevas ramas.
+Fuente de la app integrada en main (36207cf); rama temporal de compilación eliminada.
+Distribución mediante release v0.3.1 y copia APK en Downloads; no se instala ni
+se desinstala automáticamente. Ver android-release-2026-10-30.md.

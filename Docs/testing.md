@@ -270,3 +270,9 @@ GET https://cotyolmedo.github.io/REAKT/ devolvió HTTP200; comparación de bytes
 HTML público con REAKT_webv2.html: idénticos. Símbolo, marca escrita, tres fotos
 de integrantes y cuatro capturas Flutter devolvieron HTTP200. La URL pública se
 abrió en el navegador de Codex. El sitio admite futuras publicaciones automáticas.
+
+### 2026-10-30 — Compilación Android 0.3.1
+
+GitHub Actions 41065794583 completed/success, fuente 36207cf. Completados análisis,
+tests Flutter, APK debug Android 7+, verificación de firma y artefacto descargable.
+No equivale a instalación ni prueba física de esta versión en el teléfono.

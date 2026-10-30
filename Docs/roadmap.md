@@ -165,3 +165,9 @@ público en https://cotyolmedo.github.io/REAKT/.
 Publicación completada: DONE. Workflow 41062712396 finalizó success, sitio público
 HTTP200 y HTML idéntico byte a byte a REAKT_webv2.html. URL estable:
 https://cotyolmedo.github.io/REAKT/. Nueve imágenes referenciadas verificadas HTTP200.
+
+### 2026-10-30 — APK actualizado
+
+DONE: workflow 41065794583 compila APK 0.3.1+4 con identidad actualizada,
+análisis/tests/firma aprobados. Fuente en main; rama temporal eliminada.
+Release y archivo local: android-release-2026-10-30.md.

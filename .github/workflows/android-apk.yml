@@ -2,7 +2,7 @@ name: REAKT Android APK
 
 on:
   push:
-    branches: [main, codex/android-demo-v0.3.0, codex/integracion-reakt-20261023, codex/apk-brand-20261030]
+    branches: [main]
     paths: ['app/**', '.github/workflows/android-apk.yml']
   workflow_dispatch:
 
@@ -79,7 +79,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           SOURCE_SHA: ${{ github.sha }}
-          RELEASE_TAG: v0.3.0-demo.${{ github.run_number }}.${{ github.run_attempt }}
+          RELEASE_TAG: v0.3.1-demo.${{ github.run_number }}.${{ github.run_attempt }}
         run: |
           cat > notes.md <<'EOF'
           REAKT Flutter: Inicio, Entrenar, Historial, Progreso y Perfil inspirados en el demo.
@@ -90,4 +90,4 @@ jobs:
 
           Antes de cambiar de instalación, exportar el historial JSON. La firma debug de esta compilación puede diferir de APKs anteriores; no desinstalar sin guardar los datos.
           EOF
-          gh release create "$RELEASE_TAG" dist/* --target "$SOURCE_SHA" --title 'REAKT 0.3.0 · demo Android' --notes-file notes.md --prerelease
+          gh release create "$RELEASE_TAG" dist/* --target "$SOURCE_SHA" --title 'REAKT 0.3.1 · demo Android' --notes-file notes.md --prerelease
