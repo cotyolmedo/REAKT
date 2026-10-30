@@ -232,3 +232,11 @@ El usuario solicita compilar y crear release sobre main, sin nuevas ramas.
 Fuente de la app integrada en main (36207cf); rama temporal de compilación eliminada.
 Distribución mediante release v0.3.1 y copia APK en Downloads; no se instala ni
 se desinstala automáticamente. Ver android-release-2026-10-30.md.
+
+### 2026-10-30 — Sección de descarga Android
+
+Botón persistente «Descargar app» en cabecera enlaza a #descargar, sin iniciar
+transferencias. La sección presenta la app, instrucciones y un segundo enlace
+que resuelve el APK de /releases/latest mediante la API pública de GitHub.
+Muestra tag/tamaño reales y valida host/ruta del asset. Si la consulta falla o
+la última release carece de APK, ofrece la última release en GitHub como alternativa.

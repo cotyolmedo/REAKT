@@ -281,3 +281,10 @@ Publicación completada: release pública v0.3.1 con APK de 156193355 bytes,
 SHA256SUMS.txt, BUILD-INFO.txt y signature-verification.txt. Workflow de publicación
 41067732968 success. APK local en Downloads; SHA256 cotejado con CI, ZIP íntegro
 y assets de marca idénticos a los originales. Rama temporal eliminada; trabajo en main.
+
+### 2026-10-30 — Descarga Android en web
+
+Navegador local: botón superior navega a #descargar sin descargar archivos.
+Consulta real de API resolvió v0.3.1, 156,2 MB y el APK oficial de esa release.
+Anchos 390 y 320 px: cabecera con logo, descarga y menú sin desborde horizontal;
+sección móvil revisada visualmente. No se inició otra descarga del APK.

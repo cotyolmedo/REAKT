@@ -171,3 +171,8 @@ https://cotyolmedo.github.io/REAKT/. Nueve imágenes referenciadas verificadas H
 DONE: workflow 41065794583 compila APK 0.3.1+4 con identidad actualizada,
 análisis/tests/firma aprobados. Fuente en main; rama temporal eliminada.
 Release y archivo local: android-release-2026-10-30.md.
+
+### 2026-10-30 — Descarga de app desde la web
+
+DONE: cabecera con acceso a sección propia de descarga; consulta de última release,
+versión/tamaño y enlace al APK. Verificado en navegador y anchos 390/320 px.
