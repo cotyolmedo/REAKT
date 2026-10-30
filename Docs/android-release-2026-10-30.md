@@ -31,3 +31,13 @@ Workflow `41065794583`: `completed/success`. Aprobados configuración pública,
 análisis, tests Flutter, compilación Android, verificación de firma y subida de
 artefacto. Se descarga y compara el SHA256 con el generado por CI; se comprueban
 integridad ZIP del APK y coincidencia exacta de ambos assets de marca.
+
+Archivo descargado: 156193355 bytes. SHA256:
+`6571fc196ac555d6f8b569adc40b3555db32eda068075bcbd30f1ede2d95ef40`.
+Integridad ZIP y assets originales: aprobados. Copia local guardada en Downloads.
+
+[Release pública v0.3.1](https://github.com/cotyolmedo/REAKT/releases/tag/v0.3.1).
+APK, SHA256SUMS, BUILD-INFO y reporte de firma adjuntos. Publicación de assets
+completada por workflow `41067732968` (`success`). El primer intento de crear la
+release desde Actions fue rechazado HTTP403; se creó mediante la sesión GitHub
+autorizada y Actions adjuntó el artefacto existente, sin recompilarlo.

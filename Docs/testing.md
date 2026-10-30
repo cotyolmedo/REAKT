@@ -276,3 +276,8 @@ abrió en el navegador de Codex. El sitio admite futuras publicaciones automáti
 GitHub Actions 41065794583 completed/success, fuente 36207cf. Completados análisis,
 tests Flutter, APK debug Android 7+, verificación de firma y artefacto descargable.
 No equivale a instalación ni prueba física de esta versión en el teléfono.
+
+Publicación completada: release pública v0.3.1 con APK de 156193355 bytes,
+SHA256SUMS.txt, BUILD-INFO.txt y signature-verification.txt. Workflow de publicación
+41067732968 success. APK local en Downloads; SHA256 cotejado con CI, ZIP íntegro
+y assets de marca idénticos a los originales. Rama temporal eliminada; trabajo en main.
