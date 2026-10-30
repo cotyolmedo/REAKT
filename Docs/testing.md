@@ -216,3 +216,51 @@ HTTP401. Analyze sin problemas y17tests aprobados en copia para Flutter3.47.4,
 sin modificar lock de referencia. Compilaron gateway/core3.3.4 y nodo LED digital
 y deshabilitado. No es prueba Android/radio/circuito.
 [Resultados, comandos y límites](CIERRE-SOFTWARE-2026-10-23.md).
+
+## 2026-10-30 — Verificación visual del equipo web V2
+
+Revisado en navegador local: foto cargada (ancho natural 960 px), nombre y rol
+legibles sobre degradado, dos columnas en escritorio y una a viewport 390×844.
+Las cuatro tarjetas móviles miden 351×438,75 px; sin desborde horizontal del documento.
+Hover implementado solo para puntero compatible y sin preferencia de movimiento
+reducido. No se ejecutaron pruebas físicas de Safari/iPhone ni se publicó la web.
+
+### 2026-10-30 — Carrusel del equipo
+
+Probado en navegador local: flecha siguiente desplaza tarjetas; anterior se habilita
+tras avanzar y siguiente se deshabilita al final. Tecla End llega al extremo.
+Foto Pereyra cargada (1170 px de ancho natural). Viewport 390×844: carrusel
+351 px de ancho, sin desborde horizontal del documento; foto, nombre y rol legibles.
+No se realizó prueba táctil en dispositivo físico ni publicación.
+
+### 2026-10-30 — Galería Flutter y Palma
+
+Verificado en navegador: cuatro capturas cargadas, enlaces a originales y tarjeta
+Palma con fotografía (ancho natural 1200 px), nombre y rol legibles en escritorio.
+A viewport 390×844, galería de 351 px con pista de 1143 px sin desborde horizontal
+del documento. Captura visual de escritorio en build/previews/capturas-flutter.png.
+No se realizaron pruebas táctiles físicas ni se publicaron cambios.
+
+### 2026-10-30 — Botón del repositorio
+
+Verificado visualmente en navegador local el bloque de Evidencia y el href exacto
+https://github.com/cotyolmedo/REAKT. Enlace con target _blank, noopener/noreferrer y
+nombre accesible que anuncia nueva pestaña. git diff --check sin errores de formato.
+Captura: build/previews/boton-repositorio.png. Sin publicación ni commit.
+
+### 2026-10-30 — Logo y marca originales
+
+Flutter SDK local: flutter --no-version-check analyze --no-pub sin problemas;
+flutter --no-version-check test --no-pub: 21 tests aprobados. Render adicional mediante
+test/navigation_test.dart, caso width 390.0 con REAKT_CAPTURE_UI=true: aprobado;
+inicio.png inspeccionado visualmente (datos sintéticos del test, no mediciones).
+Web V2 inspeccionada en escritorio y viewport 390×844: assets cargados y sin desborde
+horizontal. PNG originales identificados por cabecera: símbolo 1254×1254 RGBA,
+marca escrita 2048×768 RGB. Icono Android enlazado en manifest; compilación APK y
+launcher en dispositivo físico pendientes. No se modificó ni publicó ningún APK.
+
+### 2026-10-30 — Configuración de publicación web
+
+API GitHub Pages confirmó build_type workflow y URL https://cotyolmedo.github.io/REAKT/.
+La publicación fue solicitada expresamente por el usuario. Verificación HTTP del
+sitio público pendiente hasta completar el workflow.

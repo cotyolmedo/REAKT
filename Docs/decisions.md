@@ -183,3 +183,45 @@ Implementación posterior: nodo admite LED digital de polaridad configurable o
 WS2812B de cantidad configurable, conservando ENABLED=0 por defecto. Compiló
 variante digital/core3.3.4. Cuenta Auth confirmada y RLS remoto probado mediante
 transacción revertida; circuito y app Android físicos todavía pendientes.
+
+## 2026-10-30 — Presentación del equipo en la web V2
+
+Por pedido del usuario, tarjetas individuales verticales con fotografía protagonista,
+nombre al pie y rol en tamaño menor. Chirino Olmedo Constantino usa la foto provista
+por el usuario y el rol «Equipo REAKT - SOFTWARE - FIRMWARE». Los demás conservan
+rol por definir e iniciales hasta incorporar sus fotografías. Dos columnas en
+escritorio y una en móvil; efectos de hover respetan movimiento reducido.
+
+### 2026-10-30 — Carrusel y perfil de Pereyra
+
+La presentación del equipo V2 pasa a carrusel horizontal con ajuste por tarjeta,
+flechas y navegación por teclado, sin avance automático. Pereyra Mia Pilar usa
+la fotografía adjunta y el rol indicado: Equipo REAKT - SOFTWARE - UX/UI.
+
+### 2026-10-30 — Capturas Flutter y perfil de Palma
+
+Se incorporan las cuatro capturas originales aportadas por el usuario como galería
+Inicio/Historial/Progreso/Perfil, con enlaces al archivo completo y desplazamiento
+horizontal en móvil. No se interpretan sus métricas como nuevas pruebas físicas.
+Palma Huenteleo Justino usa su foto adjunta y Equipo REAKT - HARDWARE - INVESTIGACIÓN.
+
+### 2026-10-30 — Acceso al repositorio público
+
+Bloque al cierre de Evidencia: «Explorá nuestro código» y enlace al repositorio
+https://github.com/cotyolmedo/REAKT en nueva pestaña. Botón rojo con respuesta
+hover y flecha animada, respetando movimiento reducido. Se usa «repositorio público»
+sin atribuir una licencia no verificada.
+
+### 2026-10-30 — Identidad oficial aportada por el usuario
+
+Se conservan los PNG originales de símbolo y marca escrita, sin aproximar su fuente
+ni modificar sus píxeles. Se aplican en cabecera/portada/pie y favicon de ambas webs,
+manifest web, cabecera/inicio Flutter e icono Android. Los efectos web respetan
+movimiento reducido. Ver assets/brand/README.md. Capturas previas y APK publicado
+se conservan como evidencia histórica; no se retocan para simular una nueva versión.
+
+### 2026-10-30 — Publicación web autorizada por el usuario
+
+GitHub Pages habilitado con GitHub Actions. Se publica únicamente la web V2 como
+index.html, sus assets y manifest. Cambios posteriores de estos archivos en main
+activan publicación automática en la misma URL. Ver web-publication.md.

@@ -129,3 +129,35 @@ y compilada, gateway compilado,17tests Flutter y analyze aprobados en copia loca
 MVP estimado60% por entregables (no por horas); hardware/cadena física no completados.
 Sigue armado por usuario, configuración real, carga, radio, Android y diez sesiones.
 [Criterio y evidencia](CIERRE-SOFTWARE-2026-10-23.md).
+
+## 2026-10-30 — Tarjetas del equipo web V2
+
+DONE: tarjetas ampliadas en REAKT_webv2.html, fotografía local de Chirino Olmedo
+Constantino y rol indicado por el usuario. Diseño visual revisado en navegador
+a ancho de escritorio y móvil. Pendiente: fotografías y roles de los otros integrantes.
+
+### 2026-10-30 — Carrusel del equipo
+
+DONE: carrusel horizontal con flechas y teclado; fotografía, nombre completo y
+rol de Pereyra Mia Pilar incorporados. Verificación visual en escritorio y móvil.
+
+### 2026-10-30 — Material visual del usuario
+
+DONE: cuatro capturas Flutter en Evidencia, ampliables, y foto/rol de Palma en el
+carrusel. Continúa pendiente la foto y el rol de Mendez Mia.
+
+### 2026-10-30 — Acceso GitHub en la web
+
+DONE: mensaje y botón dinámico hacia el repositorio público al final de Evidencia.
+
+### 2026-10-30 — Nueva identidad visual
+
+DONE: integración de logo/marca originales en web V1/V2 y Flutter, assets declarados
+e icono Android referenciado. Web revisada en escritorio y viewport móvil; Flutter
+analyze y 21 tests aprobados, inicio renderizado con nuevo logo. Pendiente: compilar
+nuevo APK y verificar icono/instalación en Android físico; renovar capturas reales.
+
+### 2026-10-30 — GitHub Pages
+
+IN PROGRESS: Pages habilitado, workflow preparado; pendiente verificar despliegue
+público en https://cotyolmedo.github.io/REAKT/.

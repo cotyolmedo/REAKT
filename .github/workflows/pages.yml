@@ -1,0 +1,51 @@
+name: Publish REAKT website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'REAKT_webv2.html'
+      - 'assets/**'
+      - 'manifest.webmanifest'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Prepare public website
+        run: |
+          mkdir -p _site
+          cp REAKT_webv2.html _site/index.html
+          cp REAKT_webv2.html _site/REAKT_webv2.html
+          cp -R assets _site/assets
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path('manifest.webmanifest').read_text())
+          manifest['start_url'] = './'
+          Path('_site/manifest.webmanifest').write_text(json.dumps(manifest))
+          Path('_site/.nojekyll').touch()
+          PY
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

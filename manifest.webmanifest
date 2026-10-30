@@ -6,5 +6,8 @@
   "display": "standalone",
   "background_color": "#070707",
   "theme_color": "#070707",
-  "lang": "es"
+  "lang": "es",
+  "icons": [
+    { "src": "assets/brand/reakt-symbol.png", "sizes": "1254x1254", "type": "image/png", "purpose": "any" }
+  ]
 }
