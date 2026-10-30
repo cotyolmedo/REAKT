@@ -1,0 +1,61 @@
+name: Release verified REAKT APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful Android APK workflow run
+        required: true
+        type: string
+      source_sha:
+        description: Exact source commit built by that run
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      RUN_ID: ${{ inputs.run_id }}
+    steps:
+      - name: Verify build provenance
+        run: |
+          gh api "repos/$GH_REPO/actions/runs/$RUN_ID" > run.json
+          python3 - <<'PY'
+          import json, os
+          run = json.load(open('run.json'))
+          assert run['conclusion'] == 'success'
+          assert run['head_sha'] == os.environ['SOURCE_SHA']
+          assert run['path'] == '.github/workflows/android-apk.yml'
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: REAKT-android
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: dist
+      - name: Verify checksum and publish release
+        run: |
+          cd dist
+          sha256sum --check SHA256SUMS.txt
+          cat > ../notes.md <<'EOF'
+          Actualización de identidad visual: logo y marca oficiales en cabecera, inicio e icono Android.
+
+          APK debug 0.3.1+4 para Android 7 o posterior, con configuración pública de Supabase. Conserva entrenamiento, historial, progreso y sincronización. No incluye contraseñas ni claves privilegiadas.
+
+          Análisis, tests Flutter, compilación y firma verificados por GitHub Actions. Se adjuntan checksum SHA256, información de compilación y verificación de firma.
+
+          Antes de reemplazar una instalación anterior, exportá el historial JSON: la firma debug puede diferir. No se instala ni se desinstala automáticamente.
+          EOF
+          printf '\nFuente: %s\nBuild: https://github.com/%s/actions/runs/%s\n' "$SOURCE_SHA" "$GH_REPO" "$RUN_ID" >> ../notes.md
+          gh release create v0.3.1 ./* --target "$SOURCE_SHA" --title 'REAKT 0.3.1 · Identidad visual actualizada' --notes-file ../notes.md --draft
+          gh release edit v0.3.1 --draft=false --latest
