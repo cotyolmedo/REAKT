@@ -288,3 +288,7 @@ Navegador local: botón superior navega a #descargar sin descargar archivos.
 Consulta real de API resolvió v0.3.1, 156,2 MB y el APK oficial de esa release.
 Anchos 390 y 320 px: cabecera con logo, descarga y menú sin desborde horizontal;
 sección móvil revisada visualmente. No se inició otra descarga del APK.
+
+Publicación verificada: sitio público HTTP200 con #descargar; consulta desde la
+página pública resolvió el APK v0.3.1. Cabecera superior enlaza a la sección y el
+segundo enlace al archivo de GitHub. Trabajo publicado en main, sin crear ramas.
