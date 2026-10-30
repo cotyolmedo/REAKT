@@ -240,3 +240,10 @@ transferencias. La sección presenta la app, instrucciones y un segundo enlace
 que resuelve el APK de /releases/latest mediante la API pública de GitHub.
 Muestra tag/tamaño reales y valida host/ruta del asset. Si la consulta falla o
 la última release carece de APK, ofrece la última release en GitHub como alternativa.
+
+### 2026-10-30 — Roles y denominación curricular
+
+Por indicación del usuario, Mendez Mia figura como HARDWARE - INVESTIGACIÓN.
+Pie web: «Aplicaciones de Electrónica Digital III - Lenguajes Electrónicos» y
+«Estado general en desarrollo». Notion actualizado con roles confirmados, web,
+release 0.3.1 y evidencia actual, preservando la planificación histórica.

@@ -292,3 +292,10 @@ sección móvil revisada visualmente. No se inició otra descarga del APK.
 Publicación verificada: sitio público HTTP200 con #descargar; consulta desde la
 página pública resolvió el APK v0.3.1. Cabecera superior enlaza a la sección y el
 segundo enlace al archivo de GitHub. Trabajo publicado en main, sin crear ramas.
+
+### 2026-10-30 — Correcciones y sincronización Notion
+
+Revisión de diff: solo rol de Mendez Mia y denominación del pie en REAKT_webv2.html.
+Las siete operaciones de actualización Notion finalizaron sin errores ni warnings;
+se conservaron subpáginas, bases de datos y planificación original. No se modificaron
+porcentajes de bases de datos ni se declararon nuevas pruebas físicas.

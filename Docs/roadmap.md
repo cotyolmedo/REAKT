@@ -176,3 +176,9 @@ Release y archivo local: android-release-2026-10-30.md.
 
 DONE: cabecera con acceso a sección propia de descarga; consulta de última release,
 versión/tamaño y enlace al APK. Verificado en navegador y anchos 390/320 px.
+
+### 2026-10-30 — Web y documentación Notion
+
+DONE: rol de Mendez Mia y pie curricular corregidos. Actualizadas siete páginas
+Notion: Dashboard, Equipo, Aplicación, Software, Recursos, Informe técnico y Galería.
+Se enlazan web pública/release y se distinguen implementación actual y planes.
