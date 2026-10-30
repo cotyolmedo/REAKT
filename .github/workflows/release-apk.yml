@@ -57,5 +57,5 @@ jobs:
           Antes de reemplazar una instalación anterior, exportá el historial JSON: la firma debug puede diferir. No se instala ni se desinstala automáticamente.
           EOF
           printf '\nFuente: %s\nBuild: https://github.com/%s/actions/runs/%s\n' "$SOURCE_SHA" "$GH_REPO" "$RUN_ID" >> ../notes.md
-          gh release create v0.3.1 ./* --target "$SOURCE_SHA" --title 'REAKT 0.3.1 · Identidad visual actualizada' --notes-file ../notes.md --draft
-          gh release edit v0.3.1 --draft=false --latest
+          gh release view v0.3.1
+          gh release upload v0.3.1 ./*
