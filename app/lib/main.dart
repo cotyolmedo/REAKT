@@ -239,20 +239,30 @@ class _TrainingPageState extends State<TrainingPage>
     final views = [_home, _training, _history, _progress, _profile];
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.sports_mma, color: ReaktColors.soft),
-            SizedBox(width: 10),
-            Text(
-              'REAKT',
-              style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 3),
+            Image.asset(
+              'assets/brand/reakt-symbol.png',
+              width: 36,
+              height: 36,
+              excludeFromSemantics: true,
+            ),
+            const SizedBox(width: 8),
+            Image.asset(
+              'assets/brand/reakt-wordmark.png',
+              width: 126,
+              height: 28,
+              fit: BoxFit.cover,
+              semanticLabel: 'REAKT',
             ),
           ],
         ),
         actions: [
           IconButton(
             onPressed: () => navigate(1),
-            tooltip: link.connected ? 'Gateway conectada' : 'Gateway sin conexión',
+            tooltip: link.connected
+                ? 'Gateway conectada'
+                : 'Gateway sin conexión',
             icon: Icon(link.connected ? Icons.wifi : Icons.wifi_off, size: 18),
           ),
         ],
@@ -339,7 +349,12 @@ class _TrainingPageState extends State<TrainingPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.sports_mma, size: 48, color: ReaktColors.soft),
+            Image.asset(
+              'assets/brand/reakt-symbol.png',
+              width: 64,
+              height: 64,
+              semanticLabel: 'Logo REAKT',
+            ),
             const SizedBox(height: 24),
             const Text(
               'CADA RESPUESTA CUENTA',

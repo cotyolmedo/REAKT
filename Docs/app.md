@@ -1,5 +1,12 @@
 # REAKT Flutter Application
 
+## Identidad visual — 30/10/2026
+
+Logo y marca originales aportados por el usuario incorporados como assets en
+cabecera e inicio. Android referencia el símbolo como icono de lanzamiento.
+La app publicada 0.3.0 y sus capturas existentes corresponden a la versión previa;
+estos cambios requieren una nueva compilación para aparecer en el teléfono.
+
 ## Estado actual — 23/10/2026
 
 Flutter 0.3.0 adapta el demo Impacto con Inicio, Entrenar, Historial, Progreso y

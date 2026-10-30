@@ -2,7 +2,7 @@ name: REAKT Android APK
 
 on:
   push:
-    branches: [main, codex/android-demo-v0.3.0, codex/integracion-reakt-20261023]
+    branches: [main, codex/android-demo-v0.3.0, codex/integracion-reakt-20261023, codex/apk-brand-20261030]
     paths: ['app/**', '.github/workflows/android-apk.yml']
   workflow_dispatch:
 
@@ -51,11 +51,11 @@ jobs:
       - name: Verify and package
         run: |
           mkdir -p dist
-          cp build/app/outputs/flutter-apk/app-debug.apk dist/REAKT-0.3.0-android.apk
+          cp build/app/outputs/flutter-apk/app-debug.apk dist/REAKT-0.3.1-android.apk
           APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
-          "$APKSIGNER" verify --verbose dist/REAKT-0.3.0-android.apk > dist/signature-verification.txt
+          "$APKSIGNER" verify --verbose dist/REAKT-0.3.1-android.apk > dist/signature-verification.txt
           cd dist
-          sha256sum REAKT-0.3.0-android.apk > SHA256SUMS.txt
+          sha256sum REAKT-0.3.1-android.apk > SHA256SUMS.txt
           printf 'Source commit: %s\nSupabase: configured (public anon key only)\nGateway: ws://192.168.4.1:81; boards not configured yet\nBuild: debug, Android minSdk 24\nPhysical integration: pending\n' "$GITHUB_SHA" > BUILD-INFO.txt
       - uses: actions/upload-artifact@v4
         with:
