@@ -161,3 +161,7 @@ nuevo APK y verificar icono/instalación en Android físico; renovar capturas re
 
 IN PROGRESS: Pages habilitado, workflow preparado; pendiente verificar despliegue
 público en https://cotyolmedo.github.io/REAKT/.
+
+Publicación completada: DONE. Workflow 41062712396 finalizó success, sitio público
+HTTP200 y HTML idéntico byte a byte a REAKT_webv2.html. URL estable:
+https://cotyolmedo.github.io/REAKT/. Nueve imágenes referenciadas verificadas HTTP200.
