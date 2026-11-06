@@ -12,7 +12,7 @@ física del piezo, el montaje final y la refactorización Flutter siguen pendien
 Base: `origin/main` en `c41c62d1c95877bccd2171884142ef7f0d4bb628`, checkout
 inicial limpio. Rama: `chore/reorganizacion-2026-11`. La etiqueta local
 `respaldo/reorganizacion-main-20261106` apunta al SHA base. Había 145 archivos
-rastreados. El diff completo y su número final de rutas se obtienen con
+rastreados. El diff previo a este informe afectó 88 rutas y se consulta con
 `git diff --name-status -M origin/main...HEAD`; Git detecta los movimientos.
 `main` no se modificó. La nueva estructura usa `docs/` por subsistema,
 `tests/historicas/`, `web/`, `assets/marca/`, `assets/aplicacion/` y
@@ -96,14 +96,22 @@ un despliegue real de GitHub Pages. Los tests de PostgreSQL son locales.
 
 ## I. Commits
 
-Consultar `git log --oneline origin/main..HEAD`. Se separaron la integración piezo,
-el inventario inicial, los movimientos estructurales y este cierre de validación.
+| SHA | Propósito |
+|---|---|
+| `816289e` | Integración funcional piezo y diagnósticos |
+| `cb3afe3` | Inventario y plan inicial |
+| `cdcd424` | Movimientos y reparación de rutas |
+| `714a88c` | Informe de verificación inicial |
+
+El cierre posterior se consulta con `git log --oneline origin/main..HEAD`.
 
 ## J. Riesgos y pendientes
 
 GitHub GraphQL respondió `Forbidden` al consultar Releases, por lo que no se pudo
 verificar distribución alternativa para los ZIP 0.2.0 y se conservaron. Los
 documentos archivados mencionan rutas y estados históricos por trazabilidad.
+La rama se publicó, pero `gh pr create` recibió el mismo `Forbidden` de GraphQL;
+el PR requiere abrirse desde la interfaz de GitHub con la rama ya disponible.
 Las pruebas sintéticas del piezo no sustituyen medición de señal, protección
 eléctrica ni ensayo de diez sesiones físicas. Las dependencias PlatformIO/Flutter
 deben instalarse para cerrar compilaciones. No se escribieron secretos ni MAC.
@@ -121,6 +129,9 @@ finalmente servicios locales, sync Supabase y gateway. Conservar `app/lib/main.d
 
 Revisar el diff de la rama frente a `main`, sus movimientos y los resultados de
 CI del PR. En una máquina con PlatformIO/Flutter, compilar ambos objetivos y APK.
+Crear el PR desde
+`https://github.com/cotyolmedo/REAKT/pull/new/chore/reorganizacion-2026-11`;
+el texto de propuesta quedó preparado localmente en `/tmp/reakt-pr-reorganizacion.md`.
 Si el PR está aprobado, fusionarlo mediante la interfaz de GitHub sin reescribir
 historial. Solo después de verificar main y las referencias exclusivas, decidir
 el archivo o eliminación de ramas redundantes; nunca borrar Releases ni binarios
