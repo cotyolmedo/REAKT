@@ -5,7 +5,7 @@ REAKT es un proyecto integrador de electrónica de la E.E.S.T. N.º 4. Arquitect
 
 ## Hardware vigente
 - Un ESP32 central y cinco ESP32 periféricos; modelo exacto de placa y pinout: TBD.
-- Entrada principal de cada nodo: pulsador mecánico normalmente abierto (NA). El piezoeléctrico queda descartado del diseño vigente.
+- Entrada principal de cada nodo: disco piezoeléctrico por solicitud del 06/11/2026, con señal acondicionada y protección del ADC pendientes de validar. El pulsador NA queda como banco histórico.
 - Salida visual: LED RGB direccionable WS2812B; número de LED, alimentación y GPIO: TBD.
 - Alimentación recargable prevista; batería, regulador, protección y power-path: TBD.
 - La carcasa hexagonal está en fase conceptual, no constituye un diseño mecánico validado.

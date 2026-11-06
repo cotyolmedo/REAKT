@@ -252,3 +252,37 @@ release 0.3.1 y evidencia actual, preservando la planificación histórica.
 
 Se incorpora la fotografía original adjuntada por el usuario en la tarjeta de
 Mendez Mia, reemplazando iniciales y aviso de foto pendiente. Se conserva su rol.
+
+### 2026-11-06 — Sustitución del pulsador por disco piezoeléctrico
+
+Por solicitud explícita del usuario se reemplaza la entrada del nodo por ADC1
+en ESP32 clásico, sin alterar el protocolo v1 ni el gateway/app. Detección por
+umbral, histéresis, bloqueo y reposo no bloqueantes; timestamp al finalizar la
+muestra que cruza el umbral. La validación anterior del pulsador no valida el
+nuevo circuito. GPIO, acondicionamiento y protección quedan pendientes: entrada
+bloqueada hasta configuración local explícita. Valores de sensibilidad iniciales,
+sin calibración ni medida de fuerza. Ver [piezo-node.md](piezo-node.md).
+Se conservan intactos los ensayos históricos, incluso los de ESP32-C3.
+
+### 2026-11-06 — Asignación IO34 / IO13
+
+Por indicación del usuario: piezo en IO34 y LED en IO13. Actualizados defaults, ejemplo y configuración local; se conserva LED digital del banco. PIEZO_VALIDATED sigue en 0: resistencias de 1 MΩ en paralelo y 10 kΩ serie informadas, protección de picos y calibración pendientes.
+
+### 2026-11-06 — Prueba autorizada con LED IO33
+
+Usuario pide habilitar prueba y corrige LED a IO33; piezo conserva IO34. Se agrega REAKT_PIEZO_BENCH_TEST, separado de PIEZO_VALIDATED: local en 1 por solicitud; default/ejemplo en 0. La validación eléctrica permanece en 0 y serie advierte al iniciar. No se certifica protección por fotografía/resistencias. Ver piezo-node.md.
+
+### 2026-11-06 — Muestreo y diagnóstico del piezo (umbral 600)
+
+Usuario confirma ESP32 clásico, piezo IO34, LED IO33, picos 0..48 en reposo y
+solicita explícitamente umbral 600. RELEASE=50, bloqueo80ms y reposo30ms son
+valores iniciales sin calibración física de golpes. ADC12/ADC_11db, línea base
+fija0, sin promedio/adaptación, polling nominal500us con medición de huecos.
+Los intervalos sin muestras no acreditan reposo continuo. Se instrumentan
+adquisición, procesamiento, tiempo previo al envío y backpressure sin cambiar
+protocolo ni gateway. Diagnóstico250ms con descarte si no cabe en buffer serie.
+El usuario afirma haber verificado protección/rango; no hay mediciones propias.
+Carga condicionada además a identificar la placa y respaldar su flash.
+La configuración local previa de LED digital se preserva. Se corrige el helper
+Windows para que Off/Digital/Pixels se imponga a LocalConfig, evitando confundir
+compilaciones de WS2812B con digital. Se conserva el MVP1..2 nodos, sin ampliar a5.

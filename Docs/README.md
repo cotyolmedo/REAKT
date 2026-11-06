@@ -5,6 +5,10 @@ pruebas del proyecto.
 
 ## Empezar por el estado actual
 
+Migración vigente del nodo: [piezo IO34 / LED IO33](piezo-node.md), con umbral 600,
+diagnóstico y procedimiento físico A–I. El banco con pulsador conserva valor
+histórico y no acredita pruebas físicas del piezo.
+
 [PROBAR-HOY.md](PROBAR-HOY.md) reúne firmware, APK 0.3.0, montaje y pruebas en
 orden. [android-release-2026-10-23.md](android-release-2026-10-23.md) registra la
 publicación y configuración verificadas. Los documentos de entrega anteriores

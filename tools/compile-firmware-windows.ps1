@@ -11,9 +11,9 @@ $reaktOutput = Join-Path $reaktRoot ('build/windows-' + $Target.ToLower() + '-' 
 $reaktArguments = @('compile', '--fqbn', $Fqbn, '--library', (Join-Path $reaktRoot 'firmware/libraries/ReaktCore'), '--build-path', $reaktOutput, '-j', '2')
 if ($Target -eq 'Node') {
   $reaktFlags = switch ($Led) {
-    'Off' { '-DREAKT_LED_ENABLED=0' }
-    'Digital' { '-DREAKT_LED_ENABLED=1 -DREAKT_LED_DIGITAL=1' }
-    'Pixels' { '-DREAKT_LED_ENABLED=1 -DREAKT_LED_DIGITAL=0' }
+    'Off' { '-DREAKT_BUILD_LED_ENABLED=0' }
+    'Digital' { '-DREAKT_BUILD_LED_ENABLED=1 -DREAKT_BUILD_LED_DIGITAL=1' }
+    'Pixels' { '-DREAKT_BUILD_LED_ENABLED=1 -DREAKT_BUILD_LED_DIGITAL=0' }
   }
   $reaktArguments += @('--build-property', ('compiler.cpp.extra_flags=' + $reaktFlags))
 }

@@ -1,3 +1,5 @@
+> Actualización 06/11/2026: el firmware de nodos pasa a disco piezoeléctrico por solicitud del usuario. Ver [configuración, protección y pruebas pendientes](piezo-node.md). Las referencias al banco con pulsador debajo conservan evidencia histórica.
+
 # Hardware REAKT
 
 ## Banco actual — 23/10/2026

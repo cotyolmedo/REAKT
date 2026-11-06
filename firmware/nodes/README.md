@@ -1,3 +1,5 @@
+> Actualización 06/11/2026: el nodo usa disco piezoeléctrico. Ver [configuración y pruebas](../../Docs/piezo-node.md). El pulsador descrito debajo es histórico. La entrada nueva requiere GPIO ADC1 y validación propios antes de cargar.
+
 # Nodo MVP
 
 La versión integrada admite LED digital con polaridad configurable, WS2812B con

@@ -1,5 +1,12 @@
 # Protocolo REAKT MVP v1
 
+Actualización 06/11/2026: el nodo usa disco piezoeléctrico sin cambiar campos ni
+codificaciones. Hit/Early/Miss también representan golpes. El timestamp nuevo
+corresponde al final de la lectura ADC que alcanza el umbral, sin antirrebote de
+20 ms; el criterio del pulsador que aparece debajo es histórico. Rearme por
+histéresis, reposo continuo y bloqueo temporal, según [piezo-node.md](piezo-node.md).
+Las sesiones de ambas entradas no tienen latencias de adquisición equivalentes.
+
 Implementado en `firmware/libraries/ReaktCore/src/ReaktCore.h`. Decisión concretada
 por la especificación del MVP suministrada el 22/10/2026. No es compatible con
 ensayos históricos. Compilación original con Arduino-ESP32 2.0.17; banco posterior
