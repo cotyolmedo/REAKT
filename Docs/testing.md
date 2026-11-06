@@ -374,3 +374,32 @@ el marcador #line que añade Arduino. Digital905467bytes/44952RAM y
 WS2812B921587bytes/45684RAM, ambos aprobados. Diff staged sin errores; gateway y
 ReaktCore sin modificaciones. Commit0fc6e1a publicado en
 codex/piezo-io34-diagnostics-20261106; main no se fusionó. Web/PNG ajenos excluidos.
+
+### 2026-11-06 — Carga física del nodo1 en COM4
+
+Tras BOOT sostenido, ROM identificó ESP32-D0WDQ6-V3 revisión3.1, cristal40MHz,
+flash4MB y MAC exactamente igual a NODE1_MAC privado del gateway. El COM4 actual
+es nodo1; el númeroCOM histórico no identifica el rol. Respaldo completo privado:
+.school-work/backups/piezo-20261106-110715/node1-before-upload-4MB.bin,
+4194304bytes leídos a115200 en379,8s, SHA256
+B96F702AD8DE7FBDF6FFAC9511E401A524ECFB8EEF4A052476E79958685E6C14.
+Tabla de particiones idéntica a la compilada, app0 a0x10000, tamaño0x140000.
+
+Esptool5.1.0 cargó únicamente la aplicación digital905616bytes en0x10000 en53,7s:
+Hash of data verified. SHA256 binario
+9FA22301090BF49AB99CBEA835B9923DBAB50492A3A4F6D55CE41F8384AFA293.
+Se releyeron los primeros65536bytes ANTES del arranque: idénticos al respaldo,
+incluidos bootloader, particiones, NVS y otadata. No se hizo erase-all ni se
+programó el gateway. Respaldo, lectura posterior y logs ignorados por Git.
+
+Reset RTS y captura8s: arranque piezo-v2/nodo1, GPIO34/threshold600/release50,
+LED habilitado (digitalIO33), sin error de inicialización radio. Sesión0 sin
+gateway; no acredita entrega ESP-NOW. Reposo solicitado60s:240 diagnósticos,
+hits0→0, peak0, gap_us máximo610, missed0, adc_us máximo311, detect_us máximo9,
+busy0 y logskip0. Son tiempos internos máximos, no latencia física total.
+
+Se solicitó ensayo de10golpes separados>=1s. Primera captura45s: hits0→0, peak0,
+sin confirmación de ejecución física todavía. No se interpreta como10golpes
+perdidos ni como prueba aprobada. Gateway/app todavía no listos según usuario.
+Pendientes golpes individuales/fuertes/consecutivos, vibración, LED visual,
+integración, reinicio de ambos y ensayo prolongado/meta99%.

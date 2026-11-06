@@ -210,3 +210,10 @@ Pruebas nativas y simulaciones aprobadas. Protección confirmada por usuario,
 sin evidencia de medición del agente. COM4 ejecuta sketch Lectura/Pico; entrada
 al cargador falló (0x13). Identificación MAC/rol, respaldo flash, carga y pruebas
 físicas A–I pendientes de intervención BOOT y disponibilidad de gateway/nodo.
+
+### 2026-11-06 — Nodo piezo cargado
+
+DONE para identificación nodo1/COM4, respaldo4MB, carga app0 con hash y arranque
+piezo-v2 verificado. Reposo60s observado sin incremento de hits; detección de golpes
+pendiente de ejecución confirmada. IN PROGRESS para validación física integrada:
+gateway/app no listos; faltan pruebasB–I y meta99% medida. Ver testing e informe.

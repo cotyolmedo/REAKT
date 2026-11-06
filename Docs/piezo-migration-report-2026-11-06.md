@@ -25,7 +25,7 @@ de HEAD; `base-commit.txt`, `status.txt` y `preexisting.patch` permiten reconstr
 el origen y los cambios. La exportación general por git archive se interrumpió
 por una descarga de objetos pendiente: `committed-source.zip` está vacío, NO es
 un respaldo válido. El respaldo recuperable es la copia de carpetas y
-`committed-node/`, no ese ZIP. No hay respaldo nuevo de flash física todavía.
+`committed-node/`, no ese ZIP. El respaldo posterior de flash física se registra en F.
 
 ## B. Modificaciones
 
@@ -128,19 +128,37 @@ Para la variante WS2812B se instaló Adafruit NeoPixel1.12.3. Se conserva LED di
 en la configuración local; compilar WS2812B no confirma qué salida está conectada.
 Resultados de builds finales se registran en [testing.md](testing.md).
 
-Inventario USB actual: COM4, Silicon Labs CP210x VID10C4/PIDEA60; COM1 es UART
-interno, no una segunda placa. No está presente el nodo histórico COM19. COM4
-ejecuta el sketch Lectura/Pico; no el gateway reconocible por logs.
-`esptool5.1.0 --port COM4 --baud115200 read-mac` falló con Wrong boot mode0x13.
-No se obtuvo ROM/MAC actuales ni se confirmó su rol. Se pidió BOOT+EN/RESET para
-entrar al cargador; no se programa una placa basándose en su númeroCOM histórico.
+Inventario USB: COM4 CP210x, COM1 UART interno. Tras mantener BOOT durante la
+conexión se identificó ESP32-D0WDQ6-V3 revisión3.1, cristal40MHz y flash4MB.
+La MAC leída coincide exactamente con NODE1_MAC del gateway privado: COM4 es
+el nodo1, no el gateway histórico. No se publican esas MAC en el informe.
 
-No se cargó firmware, no se borró flash/NVS y no se verificó arranque del firmware
-nuevo. Se permite continuar carga al identificar MAC/rol, respaldar flash y disponer
-de la conexión eléctrica verificada. Solo una placa USB visible impide además
-atribuir un ensayo completo de gateway+nodo sin localizar el otro dispositivo.
-Computer Use: skill leída; node_repl requerida no disponible en esta sesión.
-Se usaron CLI y lectura serie .NET; no se simularon acciones de Arduino IDE.
+Se leyó toda la flash antes de escribir:4194304bytes a115200baudios en379,8s.
+Archivo privado `.school-work/backups/piezo-20261106-110715/node1-before-upload-4MB.bin`,
+SHA256 `B96F702AD8DE7FBDF6FFAC9511E401A524ECFB8EEF4A052476E79958685E6C14`.
+La tabla de particiones coincide byte a byte con la compilada, app0 comienza
+0x10000 y tiene0x140000bytes; metadatos de arranque seleccionan app0.
+
+Carga esptool5.1.0 del binario digital de905616bytes, solo aplicación a0x10000:
+PASS, `Hash of data verified`,53,7s. SHA256 del binario cargado:
+`9FA22301090BF49AB99CBEA835B9923DBAB50492A3A4F6D55CE41F8384AFA293`.
+Después se releyeron0x0000..0xffff: los65536bytes coinciden con el respaldo,
+incluidos bootloader, tabla, NVS y otadata. No se borraron configuraciones ni
+se reescribió el firmware del gateway. Respaldo y logs permanecen privados.
+
+Reinicio por RTS y monitor115200: arranque piezo-v2, nodo1, GPIO34,
+threshold600/release50, LED habilitado. Radio inicializa sin error; sesión0
+sin gateway. La salida cargada es LED digital enIO33, no WS2812B.
+Captura de60s en reposo solicitado:240 diagnósticos, hits0→0, pico0,
+gap máximo610us, missed0, adc_us máximo311, detect_us máximo9,
+busy0 y logskip0. Estos tiempos son máximos internos, no latencia física.
+
+Primera captura45s para10golpes: hits0→0 y pico0; todavía no hay confirmación
+de golpes físicos realizados, así que la detección permanece pendiente. El usuario
+indicó que el gateway/app todavía no están listos, por lo que la integración
+ESP-NOW y la observación visual de estímulos siguen pendientes. COM19 no está
+presente. Computer Use: skill leída; node_repl requerida no disponible. Se usaron
+CLI y serie.NET, sin simular acciones de Arduino IDE.
 
 ## G. GitHub
 
@@ -162,9 +180,9 @@ logs, backups y builds están ignorados y no se publican.
 | Compatibilidad protocolo y deduplicación | Verificada en código y simulaciones; radio físico pendiente |
 | LED digital y WS2812B | Comportamiento de salida preservado; nuevo cableado pendiente de ensayo |
 | Protección eléctrica | Verificación informada por usuario; sin mediciones propias |
-| ROM/MAC/rol actual, respaldo flash y carga | Bloqueados por entrada manual al cargador/identificación |
-| Arranque nuevo y pruebas físicas A–I | No realizados |
+| ROM/MAC/rol actual, respaldo flash y carga | Verificados: nodo1 COM4, carga y hash aprobados |
+| Arranque nuevo y reposo60s | Verificados en nodo1; resto de A–I pendiente |
 | Meta99%, separación mínima y latencia física | No medidas; no garantizadas |
 
-La migración no se declara completamente terminada: faltan carga, arranque y
+La migración no se declara completamente terminada: faltan
 ensayos físicos integrados conforme a los criterios solicitados.

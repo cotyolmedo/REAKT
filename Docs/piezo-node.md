@@ -135,7 +135,19 @@ El mínimo físico entre golpes y latencia total requieren medición; los tests
 sintéticos solo demuestran reglas lógicas. El protocolo permite un Hit por ronda;
 un segundo golpe en esa ronda es Early, no un segundo Hit de entrenamiento.
 
-Para carga manual: cerrar monitor, mantener BOOT, tocar EN/RESET, soltar BOOT y
-leer MAC con esptool. COM4 existe pero el primer intento devolvió Wrong boot mode
-0x13: no hay identificación de ROM/MAC ni respaldo de flash actuales todavía.
-No sobrescribir por asumir que COM4 conserva el rol histórico de gateway.
+## Carga realizada y siguiente ensayo
+
+Se identificó COM4 mediante BOOT sostenido: ESP32-D0WDQ6-V3 revisión3.1,
+flash4MB y MAC coincidente con nodo1 privado. Se guardaron4MB completos y se
+cargó solo app0 a0x10000, con hash aprobado. Bootloader, particiones, NVS y
+metadatos OTA permanecieron byte a byte iguales en la lectura posterior.
+Arranque piezo-v2 y diagnóstico600/50 verificados. Salida actual: LED digitalIO33.
+
+Una captura de60s mostró hits0→0/pico0 y cero períodos de muestreo omitidos;
+no acredita todavía respuesta a golpes. El ensayo solicitado de10golpes está
+pendiente de confirmar ejecución y correlacionar el contador. Gateway/app no
+están listos según el usuario, por lo que la pruebaF sigue pendiente.
+
+Para una próxima carga manual, cerrar monitor, sostener BOOT durante conexión
+y soltar cuando esptool identifique la placa. No asumir rol por númeroCOM.
+Consultar informe y testing para respaldo, hashes, resultados y pendientes.
