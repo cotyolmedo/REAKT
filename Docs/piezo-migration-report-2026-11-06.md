@@ -145,8 +145,10 @@ Se usaron CLI y lectura serie .NET; no se simularon acciones de Arduino IDE.
 ## G. GitHub
 
 Rama de trabajo: `codex/piezo-io34-diagnostics-20261106`, originada en c41c62d.
-Commit/push autorizados por el pedido, sin merge a main. El hash y resultado de
-publicación se informan al finalizar; el título del commit identifica esta entrega.
+Commit de implementación: `0fc6e1aac977cf1f00eacf7326c4f3a1076f78a7`,
+`feat: migrate node impacts to IO34 piezo with diagnostics and IO33 LED`.
+Push de ese commit completado en origin con upstream configurado, sin merge a main.
+Esta actualización documental registra el resultado después de publicar la implementación.
 Solo se incluyen firmware, pruebas, herramientas y documentación relacionadas.
 REAKT_web.html y los dos PNG ajenos permanecen sin confirmar. Configuración local,
 logs, backups y builds están ignorados y no se publican.

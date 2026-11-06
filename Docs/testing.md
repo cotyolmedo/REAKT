@@ -368,3 +368,9 @@ Wrong boot mode0x13. No se conoce ROM/MAC/rol actual de esa placa, no se leyó s
 flash ni se cargó firmware. Se pidió entrada manual BOOT+EN/RESET. No se declaran
 aprobadas pruebas físicas A–I,99%, mínimo entre golpes ni latencia total.
 Informe y procedimiento: piezo-migration-report-2026-11-06.md y piezo-node.md.
+
+Revisión final: Config de ambos builds coincide con la fuente final excluyendo
+el marcador #line que añade Arduino. Digital905467bytes/44952RAM y
+WS2812B921587bytes/45684RAM, ambos aprobados. Diff staged sin errores; gateway y
+ReaktCore sin modificaciones. Commit0fc6e1a publicado en
+codex/piezo-io34-diagnostics-20261106; main no se fusionó. Web/PNG ajenos excluidos.
