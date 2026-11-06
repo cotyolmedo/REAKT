@@ -6,6 +6,20 @@ Base funcional recuperada de [cotyolmedo/REAKT](https://github.com/cotyolmedo/RE
 
 ## Ejecutar
 
+### Organización del código
+
+`lib/main.dart` conserva las importaciones y reúne los módulos `part` de inicio,
+aplicación, tema, navegación y pantalla de entrenamiento. `lib/application/`
+contiene el arranque y `ReaktApp`; `lib/presentation/` contiene el tema, los destinos
+de navegación, la pantalla actual, componentes y el modelo de sesión. Los servicios
+SQLite, Supabase y gateway siguen en `lib/services/`. El uso de `part` conserva las
+clases públicas `ReaktApp` y `TrainingPage` en la biblioteca `main.dart`, importada
+por las pruebas y la aplicación. No se cambió el flujo visual ni de datos.
+
+Esta extracción requiere `flutter analyze`, `flutter test` y compilación Android en
+un entorno con Flutter. El workflow Android ahora se activa también en los PR que
+modifiquen la app y no publica una Release en ese evento.
+
 SDK verificado: Flutter 3.47.4 / Dart 3.13.3 (`.fvmrc`). Mínimo Flutter 3.35 / Dart 3.9 por las APIs actuales de presentación. Lock resuelto con el SDK verificado.
 
 ```sh

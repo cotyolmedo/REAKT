@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths: ['app/**', '.github/workflows/android-apk.yml']
+  pull_request:
+    paths: ['app/**', '.github/workflows/android-apk.yml']
   workflow_dispatch:
 
 permissions:
