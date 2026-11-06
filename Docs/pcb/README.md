@@ -26,7 +26,6 @@
 | `gateway-pcb.md` | Diferencias y diseño de placa central |
 | `bom-preliminar.md` | Lista de materiales y alternativas |
 | `verificacion-pcb.md` | Ensayos y criterios de aceptación |
-| `plan-codex.md` | Instrucciones ejecutables para Codex, límites y entregables |
 | `../diseno-mecanico.md` | Mecánica y coordinación CAD ↔ PCB |
 
 ## Puertas de decisión antes de fabricar

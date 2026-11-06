@@ -55,8 +55,6 @@ Use feature branches when a change is large enough to isolate safely.
 
 Codex should operate within the repository rules in `AGENTS.md`.
 
-For complex tasks, use `.agent/PLANS.md`.
-
 Codex must not automatically commit/push unless explicitly instructed.
 
 ## Local secrets

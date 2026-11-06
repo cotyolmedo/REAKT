@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'REAKT_webv2.html'
+      - 'index.html'
       - 'assets/**'
       - 'manifest.webmanifest'
       - '.github/workflows/pages.yml'
@@ -32,8 +32,8 @@ jobs:
       - name: Prepare public website
         run: |
           mkdir -p _site
-          cp REAKT_webv2.html _site/index.html
-          cp REAKT_webv2.html _site/REAKT_webv2.html
+          cp index.html _site/index.html
+          cp index.html _site/REAKT_webv2.html
           cp -R assets _site/assets
           python3 - <<'PY'
           import json

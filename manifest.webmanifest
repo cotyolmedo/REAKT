@@ -1,7 +1,7 @@
 {
   "name": "REAKT | Sistema de Entrenamiento Inteligente",
   "short_name": "REAKT",
-  "start_url": "./REAKT_web.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#070707",

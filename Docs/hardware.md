@@ -6,7 +6,7 @@ GatewayCOM4 ESP32-D0WDQ6 y nodoCOM19 ESP32-D0WDQ6-V3, flash4MB, alimentados por
 USB. PulsadorNA GPIO18→GND y LED común con resistencia GPIO23→ánodo/cátodo→GND
 confirmados por usuario y probados funcionalmente desde Android. Refiere solo al
 banco de un nodo; no cierra la placa comercial, medidas ni pinout final de PCB.
-El MVP usa ESP-NOW canal6 y WebSocket81. Ver [evidencia](banco-2026-10-23.md).
+El MVP usa ESP-NOW canal6 y WebSocket81.
 
 ## Inventario vigente
 

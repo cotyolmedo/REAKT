@@ -51,7 +51,7 @@ Row Level Security must be considered for user-owned data.
 
 The final schema is not yet frozen.
 
-All schema decisions should be recorded in `Docs/decisions.md`.
+Describe schema changes and their validation in the corresponding commit or pull request.
 
 ## Integration
 
