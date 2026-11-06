@@ -7,3 +7,6 @@ c++ -std=c++17 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -Ifi
 
 c++ -std=c++17 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -Ifirmware/libraries/ReaktCore/src tests/link_sim_test.cpp -o build/link-sim-test
 ./build/link-sim-test
+
+c++ -std=c++17 -Wall -Wextra -Werror -pedantic -fsanitize=address,undefined -Ifirmware/libraries/ReaktCore/src Tests/piezo_test.cpp -o build/piezo-test
+./build/piezo-test

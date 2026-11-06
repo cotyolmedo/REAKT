@@ -1,5 +1,10 @@
 # REAKT
 
+Actualización 06/11/2026: entrada de nodos migrada a piezoeléctrico en IO34 y LED
+en IO33 para ESP32 clásico. Umbral inicial 600 elegido por usuario; diagnóstico y
+pruebas en [guía de piezo](Docs/piezo-node.md). Compilación y simulaciones no
+sustituyen validación física; el banco con pulsador descrito debajo es histórico.
+
 MVP de entrenamiento interactivo de la E.E.S.T. N.º4. Entrega objetivo: **6 de
 noviembre de 2026**. Flutter Android ↔ WebSocket local ↔ ESP32 gateway WROOM-32 ↔
 ESP-NOW ↔ uno o dos nodos con pulsadorNA y salida prevista de cinco WS2812B.

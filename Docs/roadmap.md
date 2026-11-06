@@ -187,3 +187,26 @@ Se enlazan web pública/release y se distinguen implementación actual y planes.
 
 DONE: fotografía de Mendez Mia incorporada al carrusel web; los cuatro integrantes
 tienen fotografía aportada por el usuario.
+
+### 2026-11-06 — Entrada piezoeléctrica
+
+IN PROGRESS: adquisición analógica y detector no bloqueante implementados en nodos;
+protocolo v1 conservado. Pendientes GPIO real, circuito protegido, calibración,
+carga y pruebas de golpes/ruido con Android. Ver [piezo-node.md](piezo-node.md).
+
+### 2026-11-06 — Asignación IO34 / IO13
+
+IN PROGRESS: pines del nodo definidos por usuario, piezo IO34 y LED IO13; configuración actualizada. Pendientes protección eléctrica, calibración y ensayo físico; entrada bloqueada hasta validación.
+
+### 2026-11-06 — Banco piezo IO34 / LED IO33
+
+IN PROGRESS: modo de prueba habilitado localmente por solicitud del usuario y LED actualizado a IO33. Pendientes protección medida, carga, calibración y ensayo físico.
+
+### 2026-11-06 — Diagnóstico y verificación de migración
+
+IN PROGRESS: umbral600 elegido por usuario; detector con histéresis600/50,
+bloqueo80ms, reposo30ms, ADC12, nominal2kHz y diagnóstico no bloqueante.
+Pruebas nativas y simulaciones aprobadas. Protección confirmada por usuario,
+sin evidencia de medición del agente. COM4 ejecuta sketch Lectura/Pico; entrada
+al cargador falló (0x13). Identificación MAC/rol, respaldo flash, carga y pruebas
+físicas A–I pendientes de intervención BOOT y disponibilidad de gateway/nodo.

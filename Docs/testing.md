@@ -306,3 +306,65 @@ Fotografía original copiada a assets/team/mendez-mia.jpg (52362 bytes).
 Navegador local: imagen cargada, dimensiones naturales 1170×1505 y tarjeta revisada
 visualmente. Se reemplazaron las iniciales y el aviso de foto pendiente, sin cambiar
 el rol. No se alteraron los píxeles del archivo aportado.
+
+### 2026-11-06 — Detector piezoeléctrico
+
+Ejecutados en Windows con MinGW de CodeBlocks, C++17 y
+`-Wall -Wextra -Werror -pedantic` (sin sanitizers):
+
+- `Tests/piezo_test.cpp`: PASS arranque alto, umbral, oscilaciones, histéresis,
+  reposo, bloqueo, rearme y desbordamiento de millis.
+- `Tests/core_test.cpp`: PASS protocolo, CRC, rangos, deduplicación, ACK/reintento,
+  antirrebote histórico, vencimiento y puntuación.
+- `Tests/link_sim_test.cpp`: PASS diez sesiones simuladas de diez rondas con
+  pérdida de comandos/eventos/ACK y duplicados. No son ensayos físicos.
+
+Arduino CLI, `esp32:esp32:esp32`, core3.3.4 y ReaktCore1.0.0: compilación del nodo
+con LED digital y configuración local existente aprobada (895851 bytes flash,
+44880 bytes RAM). Esa configuración mantiene bloqueada la entrada nueva porque
+no tiene GPIO/protección de piezo validados. También aprobó la compilación de la
+ruta analógica habilitada con flags de prueba `REAKT_PIEZO_GPIO=34` y
+`REAKT_PIEZO_VALIDATED=1` (904591 bytes flash, 44880 bytes RAM). GPIO34 es un dato
+de compilación, no una asignación ni validación del montaje. No se modificó la
+configuración local ni se programaron placas.
+Pendientes circuito protegido, calibración, muestreo bajo carga y pruebas físicas
+de [piezo-node.md](piezo-node.md). Los ensayos antiguos no validan esta entrada.
+
+### 2026-11-06 — Pines solicitados IO34 / IO13
+
+Verificados defaults, ejemplo y LocalConfig: piezo IO34, LED IO13 y PIEZO_VALIDATED=0. Compilación Arduino CLI ESP32 core3.3.4 con LED digital aprobada: 895851 bytes flash y 44880 bytes RAM. Entrada permanece bloqueada hasta validar protección. No se cargaron placas; prueba física del nuevo cableado pendiente.
+
+### 2026-11-06 — Compilación de prueba IO34 / IO33
+
+Arduino CLI ESP32 core3.3.4, LED digital: PASS con PIEZO_BENCH_TEST=1 y PIEZO_VALIDATED=0 en configuración local. Flash 904675 bytes; RAM 44880 bytes. Revisados IO34/IO33 en defaults, ejemplo y local. git diff --check sin errores. No se ejecutaron pruebas eléctricas ni se programó el nodo; la compilación no certifica protección.
+
+### 2026-11-06 — Muestreo instrumentado y umbral 600
+
+Usuario confirma ESP32 común, reposo con picos0..48, protección/rango verificados
+por él y umbral de impacto600. No se aportaron valores eléctricos/oscilogramas.
+Configuración: IO34 piezo, IO33 LED; RELEASE50, bloqueo80ms, reposo30ms, base0,
+ADC12/ADC_11db, polling nominal500us, diagnóstico250ms con bufferTX512 y descarte
+si no cabe. Frecuencia efectiva, captura de pulsos breves y latencia física pendientes.
+
+MinGW CodeBlocks C++17, -Wall -Wextra -Werror -pedantic, sin sanitizers:
+- piezo_test PASS: casos de arranque, umbral600, ruido<=48, ringing, histéresis,
+  bloqueo/reposo, recuperación de saturación, intervalos no observados, wrap y
+  dos eventos sintéticos con81ms de separación cuando hubo reposo suficiente.
+- 1000 impactos sintéticos:1000 eventos y cero adicionales en la señal construida.
+  No se transforma este resultado en tasa de detección de golpes reales.
+- Integración nativa Target/encode/decode/Dedup: PASS Hit/Early/Miss,32bytes y nodo.
+- core_test PASS; link_sim_test PASS10sesiones de10rondas con pérdidas/duplicados.
+
+Se corrigió el helper Windows: flags REAKT_BUILD_LED_* prevalecen después de
+LocalConfig. El primer build llamado Pixels aún compilaba digital por redefinición
+local; NO se cuenta como compilación WS2812B. El build posterior sí incluyó
+Adafruit NeoPixel1.12.3:921587bytes flash/45684RAM; digital905467bytes/44952RAM.
+Core3.3.4, FQBN esp32:esp32:esp32, ReaktCore1.0.0; resultados de compilación,
+no verificación física de LED ni sensor.
+
+Solo COM4 USB CP210x visible y COM1 UART interno. Captura3s del sketch previo
+mostró Lectura0/Pico0, sin golpes etiquetados. read-mac con esptool5.1.0 falló:
+Wrong boot mode0x13. No se conoce ROM/MAC/rol actual de esa placa, no se leyó su
+flash ni se cargó firmware. Se pidió entrada manual BOOT+EN/RESET. No se declaran
+aprobadas pruebas físicas A–I,99%, mínimo entre golpes ni latencia total.
+Informe y procedimiento: piezo-migration-report-2026-11-06.md y piezo-node.md.
