@@ -1,30 +1,17 @@
-# Supabase REAKT — esquema remoto aplicado y RLS verificado
+# Backend Supabase REAKT
 
-Estado actualizado23/10/2026: conector operativo, migración aplicada tras inspección,
-cuenta de prueba confirmada y pruebas remotas RLS transaccionales aprobadas.
-Sincronización desde Android físico confirmada por usuario y consulta remota:
-11sesiones,11resultados,28eventos, sin sesiones sin resultado. Usuario confirmó
-repetición sin duplicados. Un segundo login real y su aislamiento siguen pendientes.
-Los apartados siguientes conservan el procedimiento y la evidencia histórica;
-el cierre actual está en [CIERRE-SOFTWARE](../Docs/historial-entrega.md).
+La app conserva las sesiones en SQLite y sincroniza mediante Auth y RLS.
+No volver a ejecutar la migración si el esquema ya está aplicado.
 
-## Cambio autorizado condicionalmente
+## Esquema
 
-**Aprobación recibida el 2026-10-22:** aplicar `migrations/20261022_001_reakt_mvp.sql` solo después de revisar
-las tablas, políticas y migraciones existentes del proyecto correcto.
-**Justificación:** persistir sesiones, métricas y eventos autenticados e idempotentes.
-**Recursos:** tres tablas nuevas `public.reakt_sessions`, `reakt_results`,
-`reakt_events`; índices, claves foráneas y nueve políticas RLS. No altera tablas
-existentes ni elimina datos. Si ya existen los nombres, la transacción falla.
-**Riesgos:** conflicto con un esquema existente, datos declarados por el cliente
-(no prueba antifraude), copias locales sensibles sin cifrado de base de datos,
-upserts independientes pueden dejar una sesión parcialmente sincronizada hasta
-el siguiente reintento. No cambia los ajustes globales de Auth.
-**Alternativas:** adaptar al esquema existente tras inspección, o mantener SQLite
-sin nube. **Sin acceso/inspección:** entrenamiento y guardado local siguen disponibles;
-la sincronización remota no se considera habilitada.
+`migrations/20261022_001_reakt_mvp.sql` define las tablas `reakt_sessions`,
+`reakt_results` y `reakt_events`, sus índices, claves foráneas y políticas RLS.
+`inspect-readonly.sql` inspecciona el esquema sin modificar datos.
+`remote-rls-smoke.sql` comprueba las políticas; revisar su contenido y ejecutarlo
+solo en el proyecto correcto y con autorización para pruebas de base de datos.
 
-## Operación tras aprobación
+## Configuración y operación
 
 1. Conectar Supabase, identificar inequívocamente el proyecto reakt y leer esquema,
    RLS, migraciones y configuración Auth. No copiar claves administrativas al cliente.
@@ -46,23 +33,7 @@ SQLite conserva los datos ante fallos de nube; `synced=1` solo se escribe al
 terminar todos los upserts. El payload exacto forma parte del ACK local para no
 marcar sincronizada una versión que cambió durante una petición.
 
-## Continuación: proyecto identificado por el usuario
 
-URL pública: https://hvaoezcsgqepcttaznof.supabase.co. Auth health y REST
-root devolvieron rechazo CONNECT403 del proxy, sin respuesta HTTP del servicio.
-El dominio exacto y SUPABASE_URL quedaron guardados en el draft; falta aplicar
-la configuración y conectar acceso autorizado. No se inspeccionó esquema remoto.
-`inspect-readonly.sql` permite inspección metadata en SQL Editor sin escribir datos.
-Once tests PostgreSQL locales aprobaron, incluido ese script. No sustituyen una
-prueba Supabase real. La autorización condicional previa se mantiene vigente.
-
-## Actualización 23/10/2026
-
-El bloqueo anterior se resolvió: conector operativo y proyecto correcto inspeccionado.
-Aplicada migración exacta autorizada sin conflictos (20261023120712, reakt_mvp).
-RLS/grants verificados. Auth sin usuarios al inicio; falta registro/login real y
-pruebas de escritura/aislamiento. Configuración pública local app/supabase-public.json
-ignorada por Git. Formulario de banco: ejecutar `node tools/auth-local/server.mjs`
-desde la raíz y abrir http://127.0.0.1:8766. Introducir contraseña solo localmente.
-No se corrigieron advertencias de funciones preexistentes fuera del alcance autorizado.
-Ver [registro](../Docs/historial-entrega.md).
+Para el formulario local de autenticación, ejecutar desde la raíz
+`node tools/auth-local/server.mjs` y abrir http://127.0.0.1:8766.
+La contraseña se introduce únicamente en el formulario local.

@@ -93,7 +93,7 @@ No declarar el módulo apto para golpes fuertes hasta completar ensayos instrume
 Entrada digital normalmente abierta, preferentemente conectada a GND con `INPUT_PULLUP` cuando el GPIO elegido lo permita. El evento debe incluir ID de nodo, secuencia y marca temporal local; contemplar sincronización/compensación para métricas entre nodos. ESP-NOW permanece como enlace inalámbrico. No confundir intensidad del golpe con tiempo de pulsación: **el sistema no mide fuerza**. Documentar en interfaz y backend la naturaleza binaria de cada impacto.
 
 ## 11. Requisitos escolares y trazabilidad
-El repositorio `Docs/requirements.md` requiere carcasa terminada, prototipo funcional, evidencia de ensayos y documentación del circuito. Este diseño contribuye a dichos entregables, pero no sustituye pruebas físicas ni la verificación de requisitos de sensores. Mantener documentación de campo y fotografías reales.
+Este diseño no sustituye las pruebas físicas. Los requisitos escolares, ensayos y fotografías se mantienen en la carpeta de campo externa.
 
 ## 12. Pendientes para liberar versión V1
 - Confirmar modelo exacto y dimensiones de «ESP32 32-s kit».
@@ -113,4 +113,4 @@ El repositorio `Docs/requirements.md` requiere carcasa terminada, prototipo func
 - `hardware/mechanical/STL/` (piezas exportadas con revisión).
 - `hardware/mechanical/BOM.md` (lista de materiales, proveedores y costos).
 - `tests/mecanica/` (protocolos, resultados y fotos de ensayos).
-- Actualizar `Docs/hardware.md`, `Docs/architecture.md`, `Docs/decisions.md`, `Docs/testing.md` y `Docs/roadmap.md` con referencias a esta especificación.
+- Actualizar las instrucciones técnicas de hardware y arquitectura si cambia esta especificación.

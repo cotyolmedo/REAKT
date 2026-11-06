@@ -7,12 +7,11 @@ local → gateway ESP32 → ESP-NOW → nodos con pulsador**.
 
 1. [Descargar APK 0.3.1 y checksums](https://github.com/cotyolmedo/REAKT/releases/tag/v0.3.1).
 2. Seguir la [guía de puesta en marcha](Docs/PROBAR-HOY.md).
-3. Montar el [banco de pruebas](Docs/MVP-PROTOBOARD.md) y registrar los
-   [resultados físicos](Docs/mvp-physical-tests.md).
+3. Montar el [banco de pruebas](Docs/MVP-PROTOBOARD.md) y seguir el
+   [procedimiento de pruebas](Docs/mvp-physical-tests.md).
 
 [Web del proyecto](https://cotyolmedo.github.io/REAKT/) ·
-[Documentación](Docs/README.md) ·
-[Evidencia de la versión 0.3.1](Docs/android-release-2026-10-30.md)
+[Documentación](Docs/README.md)
 
 ## Estructura
 
@@ -24,9 +23,9 @@ local → gateway ESP32 → ESP-NOW → nodos con pulsador**.
 | `hardware/` | CAD y PCB conceptuales; pendientes de validación |
 | `tests/` | Pruebas de software; `historical/` conserva ensayos antiguos |
 | `tools/` | Compilación, simulación, diagnóstico y exportación |
-| `Docs/` | Guías, requisitos, decisiones y evidencia |
+| `Docs/` | Documentación técnica de uso y desarrollo |
 | `index.html`, `assets/`, `manifest.webmanifest` | Sitio público |
-| `.github/`, `.agent/`, `.codex/` | Automatización y desarrollo |
+| `.github/`, `.codex/` | Automatización y desarrollo |
 
 ## Estado comprobado
 
@@ -47,5 +46,4 @@ Las instrucciones de cada componente están en su README.
 - Flutter: seguir [app/README.md](app/README.md).
 
 Dependencias Python en `tools/requirements-dev.txt`. Configuración local y claves
-se mantienen fuera de Git. Los binarios se distribuyen en Releases; las entregas
-antiguas y planes se agrupan en [el historial](Docs/historial-entrega.md).
+se mantienen fuera de Git. Los binarios se distribuyen en Releases. La carpeta de campo se mantiene aparte.

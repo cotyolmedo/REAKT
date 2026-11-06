@@ -32,4 +32,4 @@ Banco real probado: gateway COM4 y nodo COM19 por USB, pulsador NA en GPIO18 y
 LED común con resistencia en GPIO23. WS2812B, alimentación recargable y ampliación
 a cinco nodos siguen pendientes. Las métricas sin estímulo físico sirven solo
 para diagnóstico; la calibración independiente de tiempos tampoco se ha realizado.
-Ver [registro de pruebas](banco-2026-10-23.md) para evidencia y límites.
+Los resultados se documentan en la carpeta de campo externa.

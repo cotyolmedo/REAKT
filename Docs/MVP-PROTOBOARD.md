@@ -1,6 +1,6 @@
-# Próxima etapa: banco en protoboard
+# Montaje en protoboard
 
-Alcance autorizado el 23/10/2026: un gateway, un nodo, pulsador NA y un LED.
+Montaje mínimo: un gateway, un nodo, pulsador NA y un LED.
 No requiere carcasa, PCB ni batería para este ensayo. Su aprobación escolar final
 sigue dependiendo de los requisitos y del docente.
 
@@ -8,8 +8,7 @@ sigue dependiendo de los requisitos y del docente.
 
 Identificar la placa del nodo, pinout y LED disponibles con el docente. GPIO18
 (pulsador) y GPIO23 (LED) son propuestas, no conexiones físicamente verificadas.
-El gateway conectado fue identificado como ESP32-D0WDQ6, COM4,
-MAC station/base 30:c6:f7:92:d0:9c. La MAC del nodo aún falta.
+Identificar las MAC station reales de ambas placas antes de configurarlas.
 
 Para LED común de dos patas: GPIO verificado → resistencia serie → ánodo LED;
 cátodo → GND del nodo. Calcular resistencia según 3,3 V, tensión directa del LED
@@ -47,13 +46,12 @@ Estos comandos solo compilan. La configuración LocalConfig prevalece si redefin
 los macros del compilador; conservar coherencia entre archivo y variante elegida.
 Las compilaciones de banco con hardware deshabilitado no son imágenes listas para
 entrenar. Antes de cargar: identificar ambas placas/puertos, respaldar firmware
-existente y completar las MAC y contraseña AP locales. COM4 necesitó BOOT manual
-para leer la ROM; no se grabó firmware en esta etapa.
+existente y completar las MAC y contraseña AP locales.
 
 ## Ensayo cuando esté armado
 
-Seguir historial-entrega.md y mvp-physical-tests.md: pulsación única,
+Seguir [el procedimiento de pruebas](mvp-physical-tests.md): pulsación única,
 mantener/liberar, timeout, detener, pérdida de radio y reconexión. Empezar con panel
 de diagnóstico; después Android y sincronización con Internet. Guardar JSON y logs
-en registro-pruebas-colegio.md. Meta: diez sesiones físicas consecutivas.
+en la carpeta de campo externa. Meta: diez sesiones físicas consecutivas.
 Sin LED funcional, clasificar como prueba de comunicaciones/pulsador.

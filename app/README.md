@@ -53,4 +53,4 @@ cuenta al sincronizar. Esquema y RLS remotos comprobados; sincronización Androi
 probada en banco con registros remotos y repetición sin duplicados confirmada por
 usuario. Aislamiento con dos logins reales pendiente.
 
-Evidencia en `../Docs/testing.md`. La opción de tests `--dart-define=REAKT_CAPTURE_UI=true` genera capturas con datos sintéticos en `../.school-work/flutter-preview/`; usa fuentes Windows únicamente para esa captura opcional.
+La opción de tests `--dart-define=REAKT_CAPTURE_UI=true` genera capturas con datos sintéticos en `../.school-work/flutter-preview/`; usa fuentes Windows únicamente para esa captura opcional.

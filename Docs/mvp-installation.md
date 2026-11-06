@@ -7,9 +7,9 @@
 
 Firmware nodo/gateway compilado para ESP32 Dev Module, Arduino-ESP32 **2.0.17**.
 La referencia original de core es2.0.17. El banco actual se compiló con core3.3.4,
-se cargó en gateway/nodo y pasó el ensayo básico desde Android; ver banco-2026-10-23.md.
+para gateway y nodo.
 Flutter3.47.4: lock resuelto, análisis y21tests aprobados.
-Estado actual del APK en android-release-2026-10-23.md. No considerar completa la integración física.
+APK disponible en [Releases](https://github.com/cotyolmedo/REAKT/releases/tag/v0.3.1). La compilación no verifica la integración física.
 
 El banco actual usa LED común con resistencia y pulsador; WS2812B y su alimentación
 siguen pendientes. Habilitar salida solo tras verificar el circuito real. No
@@ -86,8 +86,7 @@ Espressif y SHA-512 de ctags; no se deshabilitó TLS ni verificación de artefac
    con Internet, iniciar sesión del usuario de pruebas y sincronizar. La app intenta
    reintentar cada 20 s con usuario autenticado; el botón permite repetirlo.
 
-**Limitaciones actuales:** pruebas físicas Android pendientes; ver estado del APK en
-android-release-2026-10-23.md. Supabase remoto tiene migración aplicada,
+**Limitaciones:** la validación física depende del montaje real. Supabase remoto tiene migración aplicada,
 cuenta confirmada y pruebas RLS revertidas; sincronización desde Android comprobada
 en el banco del23/10, con datos remotos verificados y repetición sin duplicados.
 No volver a ejecutar la migración para usar el APK. Si el inicio de

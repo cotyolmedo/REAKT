@@ -25,4 +25,3 @@ eléctricas o mecánicas como pulsaciones independientes.
 **Documentación de campo:** registro escolar de avances, evidencia y trabajo
 técnico real.
 
-**ExecPlan:** plan vivo en `.agent/` para un cambio complejo.
