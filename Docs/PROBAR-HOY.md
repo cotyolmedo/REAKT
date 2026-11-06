@@ -1,14 +1,12 @@
-# Probar REAKT — estado actual 23/10/2026
+# Probar REAKT — guía operativa vigente (actualizada al 05/11/2026)
 
-Esta es la entrada operativa actual. Las entregas del 22/10, guías anteriores y
-bitácoras conservan estados históricos. No repetir migraciones ni compilar un APK
-antiguo siguiendo un bloqueo ya resuelto.
+Esta es la entrada operativa vigente. Las guías y bitácoras fechadas en octubre se conservan como evidencia histórica; no volver a instalar un APK anterior ni repetir migraciones ya aplicadas. La aplicación actual es 0.3.1+4; el firmware MVP y las verificaciones físicas descritas siguen sujetos a sus registros.
 
 ## Qué está listo y qué falta
 
-- Flutter 0.3.0: Inicio, Entrenar, Historial, Progreso y Perfil; WebSocket, SQLite,
+- Flutter 0.3.1: Inicio, Entrenar, Historial, Progreso y Perfil; WebSocket, SQLite,
   exportación y sincronización autenticada. Análisis y 21 pruebas aprobados en la
-  publicación; [APK y evidencia](android-release-2026-10-23.md).
+  publicación; [APK y evidencia](android-release-2026-10-30.md).
 - Gateway y nodo MVP implementados y compilados, sin validación física completa.
   Un gateway y uno o dos nodos; cinco nodos y otros modos son ampliaciones.
 - Nodo con pulsador NA y salida deshabilitada, LED común o WS2812B. Modelo de placa,
@@ -70,7 +68,7 @@ y conservar logs. Sin LED funcional no registrar reacción visual.
 
 ## 4. Probar el APK actual
 
-Instalar [REAKT 0.3.0 para Android 7+](https://github.com/cotyolmedo/REAKT/releases/download/v0.3.0-demo.4.1/REAKT-0.3.0-android.apk).
+Instalar [REAKT 0.3.1 para Android 7+](https://github.com/cotyolmedo/REAKT/releases/download/v0.3.1/REAKT-0.3.1-android.apk).
 Es debug; conservar historial JSON antes de cambiar una instalación previa.
 No hace falta instalar Flutter para usar el APK. Si se recompila, usar
 `app/.fvmrc` (Flutter 3.47.4), `app/pubspec.lock` y [app/README.md](../app/README.md),
