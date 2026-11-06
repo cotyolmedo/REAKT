@@ -22,13 +22,13 @@ Los conteos son `git rev-list origin/main..rama`. Los archivos históricos y bin
 
 ## Inventario de impacto
 
-- 145 archivos rastreados al inicio, incluidos cuatro workflows, dos sketches históricos en `Tests/`, pruebas automáticas en `tests/`, dos HTML principales y dos ZIP 0.2.0 en `downloads/`.
+- 145 archivos rastreados al inicio, incluidos cuatro workflows, dos sketches históricos en `tests/historicas/`, pruebas automáticas en `tests/`, dos HTML principales y dos ZIP 0.2.0 en `downloads/`.
 - `platformio.ini` depende de `firmware/` y de `main.cpp` en gateway/nodo.
 - Flutter depende de `app/lib`, `app/test` y recursos bajo `app/assets/brand`.
 - Pages copia `REAKT_webv2.html`, `manifest.webmanifest` y `assets/`; el enlace público histórico `/REAKT_webv2.html` debe conservarse.
 - Los HTML usan rutas relativas `assets/brand`, `assets/app`, `assets/team`; se verificarán tras mover el sitio.
 - Los ZIP históricos suman cerca de 88 MB; sus enlaces públicos pueden existir fuera del repositorio. Se conservarán salvo distribución alternativa comprobada.
-- `Docs/` contiene estado vigente y documentación de octubre. Se moverá conservando el contenido; los informes fechados irán al archivo histórico.
+- `docs/` contiene estado vigente y documentación de octubre. Se moverá conservando el contenido; los informes fechados irán al archivo histórico.
 
 ## Orden y controles
 

@@ -2,7 +2,7 @@
 
 App Android adaptada al [demo Impacto](https://app.jotform.com/262674524369669): fondo oscuro/bordó, tarjetas negras y acciones rojas. Inicio, Entrenar, Historial, Progreso y Perfil. Se inspeccionaron el inicio y menú públicos el 23/10/2026; Entrenamiento redirige al login Jotform. La cabecera usa degradado e icono Material en lugar de redistribuir la foto del demo.
 
-Base funcional recuperada de [cotyolmedo/REAKT](https://github.com/cotyolmedo/REAKT/tree/3f34294/app), verificando hashes. La adaptación visual conserva WebSocket, SQLite, exportación JSON y Supabase Auth/outbox. La integración posterior de firmware y las pruebas con placas están en [PROBAR-HOY](../Docs/PROBAR-HOY.md).
+Base funcional recuperada de [cotyolmedo/REAKT](https://github.com/cotyolmedo/REAKT/tree/3f34294/app), verificando hashes. La adaptación visual conserva WebSocket, SQLite, exportación JSON y Supabase Auth/outbox. La integración posterior de firmware y las pruebas con placas están en [PROBAR-HOY](../docs/inicio/PROBAR-HOY.md).
 
 ## Ejecutar
 
@@ -24,7 +24,7 @@ las pruebas de widgets corren en Windows con SQLite FFI y en Linux mediante CI.
 [release y SHA256](https://github.com/cotyolmedo/REAKT/releases/tag/v0.3.0-demo.4.1).
 Requiere Android 7.0/API24+, Gradle8.14.3, AGP8.11.1, Kotlin2.2.20 y JDK17.
 Configuración pública Supabase inyectada al compilar. APK debug; exportar historial
-antes de cambiar instalación o firma. [Estado actual](../Docs/PROBAR-HOY.md).
+antes de cambiar instalación o firma. [Estado actual](../docs/inicio/PROBAR-HOY.md).
 
 ## Uso
 
@@ -41,8 +41,8 @@ La arquitectura prevista tiene cinco nodos, pero **el contrato MVP admite dos pe
 El repositorio integrado contiene gateway y nodo REAKT compatibles con ese contrato;
 el nodo incluye salida digital, WS2812B o deshabilitada. Configurar y validar las
 placas antes de una prueba física. `nodes` son peers configurados, no presencia
-confirmada. Ver [contrato MVP](../Docs/packet-protocol.md) y
-[guía actual](../Docs/PROBAR-HOY.md).
+confirmada. Ver [contrato MVP](../docs/arquitectura/packet-protocol.md) y
+[guía actual](../docs/inicio/PROBAR-HOY.md).
 
 Los demás modos quedan pendientes. El contrato terminal no distingue manual/reflejos: el historial lo llama «Sesión».
 
@@ -53,4 +53,4 @@ cuenta al sincronizar. Esquema y RLS remotos comprobados; sincronización Androi
 probada en banco con registros remotos y repetición sin duplicados confirmada por
 usuario. Aislamiento con dos logins reales pendiente.
 
-Evidencia en `../Docs/testing.md`. La opción de tests `--dart-define=REAKT_CAPTURE_UI=true` genera capturas con datos sintéticos en `../.school-work/flutter-preview/`; usa fuentes Windows únicamente para esa captura opcional.
+Evidencia en `../docs/validacion/testing.md`. La opción de tests `--dart-define=REAKT_CAPTURE_UI=true` genera capturas con datos sintéticos en `../.school-work/flutter-preview/`; usa fuentes Windows únicamente para esa captura opcional.

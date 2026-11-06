@@ -9,7 +9,7 @@ resueltas.
 ## 2. Estado inicial
 
 - `Docs1/` y `firmware1/` contenían una actualización paralela no integrada.
-- `Docs/` y `firmware/` seguían describiendo parcialmente ESP32-C3/piezo.
+- `docs/` y `firmware/` seguían describiendo parcialmente ESP32-C3/piezo.
 - Había un lock de KiCad y bytecode Python rastreados.
 - Faltaba `.gitignore` y un README principal.
 - La actualización paralela incluía referencias a sus propias rutas, ADR
@@ -17,7 +17,7 @@ resueltas.
 
 ## 3. Requisitos
 
-- Conservar `Tests/` históricos.
+- Conservar `tests/historicas/` históricos.
 - Integrar firmware no bloqueante de gateway y nodos.
 - Mantener placa, GPIO, MAC, protocolo, alimentación e interfaz de app como
   `TBD` cuando corresponda.
@@ -31,13 +31,13 @@ resueltas.
 
 ## 5. Diseño
 
-`Docs/` y `firmware/` son las únicas rutas vigentes. `Tests/` conserva los
+`docs/` y `firmware/` son las únicas rutas vigentes. `tests/historicas/` conserva los
 ensayos anteriores. Los artefactos de ingeniería preliminar viven bajo
-`Docs/pcb/` y `hardware/`, claramente etiquetados como conceptuales.
+`docs/pcb/` y `hardware/`, claramente etiquetados como conceptuales.
 
 ## 6. Implementación
 
-- [x] Integrar los documentos únicos de `Docs1/` en `Docs/`.
+- [x] Integrar los documentos únicos de `Docs1/` en `docs/`.
 - [x] Reconciliar arquitectura, hardware, protocolo, roadmap y pruebas.
 - [x] Integrar el firmware de nodo y mejorar la cola del gateway.
 - [x] Corregir referencias `Docs1/`/`firmware1/` y numeración ADR.
@@ -56,7 +56,7 @@ ensayos anteriores. Los artefactos de ingeniería preliminar viven bajo
 
 ## 8. Documentación
 
-Se actualizan `Docs/decisions.md`, `Docs/roadmap.md` y `Docs/testing.md` junto a
+Se actualizan `docs/arquitectura/decisions.md`, `docs/especificaciones/roadmap.md` y `docs/validacion/testing.md` junto a
 los archivos de arquitectura afectados.
 
 ## 9. Riesgos y reversión

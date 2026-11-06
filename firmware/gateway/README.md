@@ -10,6 +10,6 @@ Crea Wi-Fi REAKT-MVP canal6 y WebSocket en puerto81. Coordina hasta50 rondas,
 selecciona un peer aleatorio y confirma eventos. Reintentos120ms x8; agotamiento
 o evento ausente interrumpe sesión. Snapshot completo cada segundo y al reconectar.
 Retiene solo la última sesión en RAM; no cortar alimentación antes de recuperarla.
-Ver Docs/packet-protocol.md y Docs/mvp-installation.md. GatewayCOM4 y nodoCOM19
+Ver docs/arquitectura/packet-protocol.md y docs/inicio/mvp-installation.md. GatewayCOM4 y nodoCOM19
 cargados; ensayo básico desde Android comprobado en
-[registro](../../Docs/banco-2026-10-23.md). Pruebas de fiabilidad extendida pendientes.
+[registro](../../docs/validacion/banco-2026-10-23.md). Pruebas de fiabilidad extendida pendientes.

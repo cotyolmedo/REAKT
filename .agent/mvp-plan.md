@@ -27,4 +27,4 @@ Protocolo, arquitectura, ADR, instalación, pinout, pruebas, bitácora y aprobac
 ## Risks and rollback
 Radio sin cifrar (banco aislado), desconexiones y energía WS2812B. Mantener respaldo completo; no borrar evidencia histórica. Migración remota pendiente, no aplicada.
 ## Status
-Implementación local preparada; dos builds ESP32 y pruebas disponibles aprobadas. No se declara integración completa. Análisis/tests Flutter aprobados. Validaciones remotas y físicas bloqueadas; build APK registrado en el estado final. Aprobación de migración recibida de forma condicional, sin aplicación remota. Ver Docs/implementation-log.md y Docs/testing.md.
+Implementación local preparada; dos builds ESP32 y pruebas disponibles aprobadas. No se declara integración completa. Análisis/tests Flutter aprobados. Validaciones remotas y físicas bloqueadas; build APK registrado en el estado final. Aprobación de migración recibida de forma condicional, sin aplicación remota. Ver docs/historial/implementation-log.md y docs/validacion/testing.md.

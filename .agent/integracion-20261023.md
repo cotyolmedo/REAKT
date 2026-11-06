@@ -22,7 +22,7 @@ con respaldo previo de cambios ajenos y rama histórica local.
 ## Validación
 Comparación de código Flutter con ambas ramas, analyze/test, compilaciones Arduino
 de nodo Off/Digital y gateway, sintaxis de herramientas, diff/check y revisión de
-archivos secretos excluidos. Registrar resultados en Docs/testing.md antes de cerrar.
+archivos secretos excluidos. Registrar resultados en docs/validacion/testing.md antes de cerrar.
 
 ## Documentación y riesgos
 README y PROBAR-HOY son entradas actuales. Historiales conservados; respaldo
@@ -42,4 +42,4 @@ PILLDROP local con SHA256 comprobado. No publicar configuraciones privadas.
 - [x] Usuario confirmó mantener sin duplicados, timeout5s, stop/LED apagado e historial tras reapertura.
 - [x] Serie confirmó Cancelada con objetivo desactivado y sin errores de radio registrados.
 - [x] Usuario confirmó doble sincronización sin duplicados; SQL remoto:11sesiones/11resultados/28eventos, sin sesiones sin resultado.
-- [x] Integración y banco básico cerrados; límites extendidos documentados en Docs/banco-2026-10-23.md.
+- [x] Integración y banco básico cerrados; límites extendidos documentados en docs/validacion/banco-2026-10-23.md.

@@ -9,10 +9,10 @@ Supabase integration.
 
 ## 2. Current state
 
-- The repository has ESP-NOW exploration sketches under `Tests/`.
+- The repository has ESP-NOW exploration sketches under `tests/historicas/`.
 - The base gateway firmware now exists under `firmware/gateway/`; physical validation is pending.
-- `Docs/packet-protocol.md` keeps the packet fields and encoding as TBD.
-- `Docs/hardware.md` keeps the final gateway board, GPIO map, and power design
+- `docs/arquitectura/packet-protocol.md` keeps the packet fields and encoding as TBD.
+- `docs/hardware/hardware.md` keeps the final gateway board, GPIO map, and power design
   as TBD.
 
 ## 3. Requirements

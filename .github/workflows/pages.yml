@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'REAKT_webv2.html'
+      - 'web/**'
       - 'assets/**'
       - 'manifest.webmanifest'
       - '.github/workflows/pages.yml'
@@ -32,14 +32,16 @@ jobs:
       - name: Prepare public website
         run: |
           mkdir -p _site
-          cp REAKT_webv2.html _site/index.html
-          cp REAKT_webv2.html _site/REAKT_webv2.html
+          sed 's#../assets/#assets/#g' web/index.html > _site/index.html
+          cp _site/index.html _site/REAKT_webv2.html
           cp -R assets _site/assets
           python3 - <<'PY'
           import json
           from pathlib import Path
-          manifest = json.loads(Path('manifest.webmanifest').read_text())
+          manifest = json.loads(Path('web/manifest.webmanifest').read_text())
           manifest['start_url'] = './'
+          for icon in manifest.get('icons', []):
+              icon['src'] = icon['src'].replace('../assets/', 'assets/')
           Path('_site/manifest.webmanifest').write_text(json.dumps(manifest))
           Path('_site/.nojekyll').touch()
           PY
