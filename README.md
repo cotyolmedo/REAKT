@@ -1,51 +1,36 @@
 # REAKT
 
-MVP de entrenamiento interactivo de la E.E.S.T. N.º4. Entrega objetivo: **6 de
-noviembre de 2026**. Flutter Android ↔ WebSocket local ↔ ESP32 gateway WROOM-32 ↔
-ESP-NOW ↔ uno o dos nodos con pulsadorNA y salida prevista de cinco WS2812B.
+Proyecto integrador de entrenamiento interactivo de la E.E.S.T. N.º 4. Fecha objetivo de entrega: **6 de noviembre de 2026**.
 
-## Empezar
+**Versión de aplicación vigente: 0.3.1+4 (Android 7+).** [Descargar APK 0.3.1](https://github.com/cotyolmedo/REAKT/releases/download/v0.3.1/REAKT-0.3.1-android.apk) · [Release y verificación](https://github.com/cotyolmedo/REAKT/releases/tag/v0.3.1) · [Sitio web](https://cotyolmedo.github.io/REAKT/).
 
-- [Estado actual y guía de pruebas del 23/10](Docs/PROBAR-HOY.md): empezar aquí.
-- [APK 0.3.0 publicado y evidencia](Docs/android-release-2026-10-23.md).
-- [Montaje de banco con pulsador y LED opcional](Docs/MVP-PROTOBOARD.md).
+## Arquitectura
 
-- [Instalación, configuración y pinout](Docs/mvp-installation.md).
-- [Pruebas físicas y meta de diez sesiones](Docs/mvp-physical-tests.md).
-- [Protocolo compartido](Docs/packet-protocol.md).
-- [Bitácora y evidencia](Docs/implementation-log.md).
-- [Backend y autorización condicional](backend/README.md).
-- [Informe técnico](Docs/mvp-school-report.md).
+Flutter Android ↔ WebSocket local ↔ ESP32 WROOM-32 gateway ↔ ESP-NOW ↔ uno o dos nodos ESP32 en el MVP. La ampliación propuesta a cinco nodos, LEDs WS2812B y batería recargable aún no está validada.
 
-## Estado real
+## Carpetas principales
 
-App Flutter 0.3.0 implementada, **21 tests aprobados**, APK debug Android 7+ publicado
-y verificado por checksum/firma. Firmware gateway/nodo implementado y compilado;
-el nodo admite salida deshabilitada, LED digital o WS2812B. Supabase remoto tiene
-esquema aplicado y RLS comprobado. Gateway y un nodo ya cargados: primera sesión
-manual con LED/pulsador y acierto en Android comprobada por usuario y serie.
-Sincronización Android comprobada:11sesiones/11resultados/28eventos en Supabase,
-repetición sin duplicados confirmada por usuario. Matriz extendida, dos cuentas
-reales y diez sesiones consecutivas completas siguen pendientes.
-Ver [estado actual](Docs/PROBAR-HOY.md).
+- `app/`: app Flutter 0.3.1, proyecto Android y pruebas.
+- `firmware/`: gateway, nodo y biblioteca compartida. Los `main.cpp` son puentes para PlatformIO, no versiones anteriores.
+- `backend/`: migración SQL, autorización y pruebas de RLS.
+- `hardware/`: diseños conceptuales CAD/PCB, no validados para fabricación.
+- `tests/`: pruebas automatizadas vigentes; `tools/`: herramientas de compilación y diagnóstico.
+- `assets/`: recursos de marca y capturas; `Docs/`: documentación técnica, evidencia y documentos históricos de entrega.
+- `REAKT_webv2.html`: única fuente de la web pública, publicada por GitHub Pages.
 
-El banco actual usa un nodo por USB, pulsadorNA enGPIO18 y LED común con
-resistencia enGPIO23, confirmados por usuario en el ensayo funcional. WS2812B,
-alimentación recargable y pinout final de PCB siguen pendientes. MAC y contraseña
-quedan en configuración local. La configuración pública por defecto no habilita
-hardware; los simuladores no cuentan como evidencia física.
+Los recursos de marca en `assets/brand/` y `app/assets/brand/` se duplican intencionalmente porque web y Flutter los empaquetan por separado. Los APK antiguos ya no están almacenados en `downloads/`; la distribución vigente se hace desde GitHub Releases. Las versiones anteriores siguen recuperables mediante el historial de Git.
 
-## Desarrollo
+## Estado verificado y pendientes
 
-`./tools/test-core.sh`: pruebas C++ y simulación de diez sesiones.
-`python3 tests/test_mock_gateway.py`: contrato del simulador WebSocket.
-`python3 tests/test_backend.py`: migración y RLS en PostgreSQL local aislado.
-Dependencias Python en `tools/requirements-dev.txt`; usar virtualenv. Pruebas SQL
-locales usan pgserver en Linux. El panel de banco solo necesita Python y navegador.
+El informe de banco registra una sesión real con un gateway, un nodo, pulsador en GPIO18 y LED común en GPIO23, y sincronización Android con Supabase de 11 sesiones/11 resultados/28 eventos. Se documentaron 21 tests Flutter aprobados en la publicación anterior. La release 0.3.1 pasó análisis, tests, compilación Android y comprobación de firma en CI, según [evidencia del 30/10](Docs/android-release-2026-10-30.md).
 
-Arduino IDE: sketches en firmware/gateway y firmware/nodes, biblioteca local en
-firmware/libraries. Flutter: `app/`. Los prototipos web HTML y los ensayos históricos
-`Tests/` se conservan. PCB/CAD siguen conceptuales; no son diseños para fabricar.
-Leer `AGENTS.md` y `Docs/README.md` antes de cambiar subsistemas. No hacer push ni
-merge sin autorización para cambios posteriores. Ver [resumen de entrega](Docs/RESUMEN-ENTREGA.md)
-y [prompt para retomar](Docs/PROMPT-PARA-MANANA.md).
+Siguen pendientes las diez sesiones físicas consecutivas, la prueba de aislamiento entre dos cuentas reales, la ampliación de nodos, el LED WS2812B, la alimentación recargable y la validación de PCB/CAD. No confundir simulaciones con mediciones físicas.
+
+## Empezar y desarrollar
+
+- [Guía vigente de pruebas](Docs/PROBAR-HOY.md) y [montaje de protoboard](Docs/MVP-PROTOBOARD.md).
+- [Instalación y pinout](Docs/mvp-installation.md) · [protocolo](Docs/packet-protocol.md) · [pruebas físicas](Docs/mvp-physical-tests.md).
+- [Aplicación Android](app/README.md) · [firmware](firmware/README.md) · [backend](backend/README.md) · [documentación](Docs/README.md).
+- Tests locales: `./tools/test-core.sh`, `python3 tests/test_mock_gateway.py`, `python3 tests/test_backend.py` (dependencias/servicios según documentación). En `app/`: `flutter analyze` y `flutter test`.
+
+No poner credenciales ni MAC reales en Git. Leer [AGENTS.md](AGENTS.md) antes de modificar subsistemas.
