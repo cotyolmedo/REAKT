@@ -72,3 +72,36 @@ Update the plan as implementation progresses.
 If the implementation discovers that the original plan is wrong, update the plan rather than silently diverging from it.
 
 An ExecPlan is not permission to invent requirements. It is a record of an agreed technical approach.
+
+
+## Limpieza del repositorio — 2026-11-06
+
+### Objetivo y estado
+
+Reducir archivos redundantes y facilitar la entrada al proyecto, conservando
+código funcional y evidencia histórica. Base: c41c62d1c95877bccd2171884142ef7f0d4bb628.
+
+### Requisitos y límites
+
+Sin cambios de arquitectura, protocolo o esquema SQL. Mantener ensayos anteriores
+y configuración local fuera de Git. Releases v0.3.1 es la distribución vigente.
+
+### Diseño e implementación
+
+- [x] Consolidar seis guías de entrega y seis planes antiguos.
+- [x] Mover los dos ensayos a tests/historical.
+- [x] Renombrar web vigente a index.html y conservar alias de publicación.
+- [x] Retirar prototipo web anterior y ZIP antiguos; conservar referencias Git.
+- [x] Actualizar índices y referencias relativas.
+
+### Validación y documentación
+
+Revisar enlaces internos, rutas sin colisión de mayúsculas, sintaxis JavaScript,
+manifest y workflow Pages. Comparar fuentes operativas y ensayos con los blobs
+originales. Registrar resultados en testing.md; no afirmar nuevas pruebas físicas.
+
+### Riesgos y reversión
+
+Los enlaces directos a archivos retirados de main deben usar el permalink de la
+base histórica. El sitio conserva el alias anterior. Revertir el commit de limpieza
+restaura la estructura previa sin reescribir el historial.

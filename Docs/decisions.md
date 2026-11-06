@@ -252,3 +252,11 @@ release 0.3.1 y evidencia actual, preservando la planificación histórica.
 
 Se incorpora la fotografía original adjuntada por el usuario en la tarjeta de
 Mendez Mia, reemplazando iniciales y aviso de foto pendiente. Se conserva su rol.
+
+
+## 2026-11-06 — Organización del repositorio
+
+Una fuente web: index.html. Binarios publicados en Releases. Guías antiguas y
+planes consolidados como historia, preservando su contenido. Ensayos anteriores
+en tests/historical para evitar Tests/tests en sistemas sin distinción de mayúsculas.
+No cambia la arquitectura del producto.

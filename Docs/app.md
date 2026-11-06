@@ -90,6 +90,6 @@ bitácora y protocolo antes de atribuir funcionamiento a esta implementación.
 
 Continuación de la misma entrega: SDK instalado, analyze y17tests aprobados.
 Incluye exportación JSON de historial a portapapeles, sin importación automática.
-ESTADO-FINAL-MVP.md conserva la entrega histórica 0.2.0. Para el APK actual 0.3.0
+historial-entrega.md conserva la entrega histórica 0.2.0. Para la evidencia del APK 0.3.0
 y las verificaciones ejecutadas consultar [PROBAR-HOY](PROBAR-HOY.md) y el
 [registro del banco](banco-2026-10-23.md).

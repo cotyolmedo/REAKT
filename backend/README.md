@@ -6,7 +6,7 @@ Sincronización desde Android físico confirmada por usuario y consulta remota:
 11sesiones,11resultados,28eventos, sin sesiones sin resultado. Usuario confirmó
 repetición sin duplicados. Un segundo login real y su aislamiento siguen pendientes.
 Los apartados siguientes conservan el procedimiento y la evidencia histórica;
-el cierre actual está en [CIERRE-SOFTWARE](../Docs/CIERRE-SOFTWARE-2026-10-23.md).
+el cierre actual está en [CIERRE-SOFTWARE](../Docs/historial-entrega.md).
 
 ## Cambio autorizado condicionalmente
 
@@ -65,4 +65,4 @@ pruebas de escritura/aislamiento. Configuración pública local app/supabase-pub
 ignorada por Git. Formulario de banco: ejecutar `node tools/auth-local/server.mjs`
 desde la raíz y abrir http://127.0.0.1:8766. Introducir contraseña solo localmente.
 No se corrigieron advertencias de funciones preexistentes fuera del alcance autorizado.
-Ver [registro](../Docs/CONTINUACION-COLEGIO-2026-10-23.md).
+Ver [registro](../Docs/historial-entrega.md).

@@ -1,3 +1,9 @@
+# Antecedentes del sitio web
+
+El sitio vigente está en [`index.html`](../index.html). La versión inicial se
+retiró del árbol actual; se conserva en el [historial de Git](https://github.com/cotyolmedo/REAKT/blob/c41c62d1c95877bccd2171884142ef7f0d4bb628/REAKT_web.html).
+El texto siguiente es histórico y describe aquella versión.
+
 # Cambios página REAKT
 
 Fecha: 2026-10-09  

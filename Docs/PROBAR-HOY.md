@@ -1,6 +1,7 @@
-# Probar REAKT — estado actual 23/10/2026
+# Probar REAKT — guía de puesta en marcha
 
-Esta es la entrada operativa actual. Las entregas del 22/10, guías anteriores y
+Esta es la entrada operativa. APK vigente: [0.3.1](android-release-2026-10-30.md),
+actualización visual del 30/10; la evidencia de banco siguiente es del 23/10. Las entregas del 22/10, guías anteriores y
 bitácoras conservan estados históricos. No repetir migraciones ni compilar un APK
 antiguo siguiendo un bloqueo ya resuelto.
 
@@ -63,14 +64,15 @@ No hace falta Supabase en el ESP32. Ambos roles usan canal 6.
 ## 3. Probar radio y pulsador
 
 Usar el panel de diagnóstico explicado en la
-[guía de colegio, sección 2](GUIA-COLEGIO-2026-10-23.md). Conectar PC al Wi-Fi
+[guía de colegio archivada, documento 4, sección 2](historial-entrega.md). Conectar PC al Wi-Fi
 REAKT-MVP y panel a `ws://192.168.4.1:81`. Verificar snapshot, prueba manual,
 pulsación única, mantener/soltar, vencimiento, detener y reconectar. Exportar JSON
 y conservar logs. Sin LED funcional no registrar reacción visual.
 
 ## 4. Probar el APK actual
 
-Instalar [REAKT 0.3.0 para Android 7+](https://github.com/cotyolmedo/REAKT/releases/download/v0.3.0-demo.4.1/REAKT-0.3.0-android.apk).
+Instalar [REAKT 0.3.1 para Android 7+](https://github.com/cotyolmedo/REAKT/releases/download/v0.3.1/REAKT-0.3.1-android.apk).
+Comprobar el checksum en [Releases](https://github.com/cotyolmedo/REAKT/releases/tag/v0.3.1).
 Es debug; conservar historial JSON antes de cambiar una instalación previa.
 No hace falta instalar Flutter para usar el APK. Si se recompila, usar
 `app/.fvmrc` (Flutter 3.47.4), `app/pubspec.lock` y [app/README.md](../app/README.md),

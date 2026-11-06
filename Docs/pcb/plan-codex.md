@@ -27,7 +27,7 @@ hardware/datasheets/
 hardware/bom/
 hardware/cad/modulo-hexagonal/
 firmware/nodes/
-Tests/pcb/
+tests/pcb/
 Docs/pcb/
 ```
 

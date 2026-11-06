@@ -93,7 +93,7 @@ Validar camino normal, desconexiones y recuperación antes de la exhibición.
 
 - `git diff --check`: completado sin errores de espacios en blanco.
 - Revisión automatizada de enlaces Markdown locales: 0 enlaces rotos.
-- Búsqueda fuera de `Tests/`: sin referencias a las antiguas rutas paralelas
+- Búsqueda fuera de `tests/historical/`: sin referencias a las antiguas rutas paralelas
   numeradas.
 - Búsqueda en `firmware/`: sin llamadas a `delay()`.
 - Búsqueda de patrones comunes de tokens JWT/API: sin coincidencias.
@@ -134,7 +134,7 @@ Validar camino normal, desconexiones y recuperación antes de la exhibición.
 
 ## Pruebas históricas
 
-Los sketches en `Tests/` con ESP32-C3 o piezoeléctricos son antecedentes. No
+Los sketches en `tests/historical/` con ESP32-C3 o piezoeléctricos son antecedentes. No
 validan los cinco nodos ESP32 con pulsador del diseño actual.
 
 ## Plantilla de evidencia
@@ -206,7 +206,7 @@ anon sin grants y authenticated sin DELETE; lectura autenticada sin filas propia
 PROBADO: lectura MAC ROM del gateway COM4 (30:c6:f7:92:d0:9c).
 PENDIENTE: Auth/login real, upserts/aislamiento remoto con dos usuarios, GPIO/radio,
 LED, Android físico, diez sesiones y compilaciones en esta PC.
-Evidencia y diferencias de toolchain: [registro](CONTINUACION-COLEGIO-2026-10-23.md).
+Evidencia y diferencias de toolchain: [registro](historial-entrega.md).
 
 ### Cierre posterior de software
 
@@ -215,7 +215,7 @@ datos sintéticos revertidos (cero filas restantes). Auth API HTTP200 y anon RES
 HTTP401. Analyze sin problemas y17tests aprobados en copia para Flutter3.47.4,
 sin modificar lock de referencia. Compilaron gateway/core3.3.4 y nodo LED digital
 y deshabilitado. No es prueba Android/radio/circuito.
-[Resultados, comandos y límites](CIERRE-SOFTWARE-2026-10-23.md).
+[Resultados, comandos y límites](historial-entrega.md).
 
 ## 2026-10-30 — Verificación visual del equipo web V2
 
@@ -306,3 +306,18 @@ Fotografía original copiada a assets/team/mendez-mia.jpg (52362 bytes).
 Navegador local: imagen cargada, dimensiones naturales 1170×1505 y tarjeta revisada
 visualmente. Se reemplazaron las iniciales y el aviso de foto pendiente, sin cambiar
 el rol. No se alteraron los píxeles del archivo aportado.
+
+
+## 2026-11-06 — Verificación de limpieza
+
+- Enlaces Markdown locales: sin destinos inexistentes en el árbol propuesto.
+- Rutas: sin colisiones por mayúsculas/minúsculas; Tests pasa a tests/historical.
+- 62 fuentes/configuraciones operativas de app, backend, firmware, tools y tests
+  conservadas sin cambios de contenido (excluye sus README).
+- Dos sketches históricos y HTML vigente conservados exactamente al moverlos.
+- Node.js: sintaxis del script inline del sitio aprobada.
+- Manifest JSON y start_url aprobados; workflow Pages usa index.html y conserva
+  REAKT_webv2.html como alias de salida.
+- Release v0.3.1 consultada: APK, SHA256SUMS, BUILD-INFO y firma publicados.
+- No se recompilaron Flutter/ESP32 ni se ejecutaron ensayos físicos: sus fuentes
+  operativas no cambiaron. Despliegue Pages pendiente de integrar el PR.

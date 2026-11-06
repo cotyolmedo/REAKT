@@ -87,7 +87,7 @@ La tapa debe moverse perpendicular a su plano tanto en horizontal como en vertic
 | Seguridad eléctrica | Medir tensión, corriente y temperatura | Dentro de especificaciones de componentes |
 | Puerto USB-C | Repetir inserción con cargador sujeto | Sin movimiento de PCB ni daño |
 
-No declarar el módulo apto para golpes fuertes hasta completar ensayos instrumentados de resistencia, fijación y retención. Registrar fecha, configuración, mediciones, fallos y fotografías en `Tests/`.
+No declarar el módulo apto para golpes fuertes hasta completar ensayos instrumentados de resistencia, fijación y retención. Registrar fecha, configuración, mediciones, fallos y fotografías en `tests/historical/`.
 
 ## 10. Integración con firmware y aplicación
 Entrada digital normalmente abierta, preferentemente conectada a GND con `INPUT_PULLUP` cuando el GPIO elegido lo permita. El evento debe incluir ID de nodo, secuencia y marca temporal local; contemplar sincronización/compensación para métricas entre nodos. ESP-NOW permanece como enlace inalámbrico. No confundir intensidad del golpe con tiempo de pulsación: **el sistema no mide fuerza**. Documentar en interfaz y backend la naturaleza binaria de cada impacto.
@@ -112,5 +112,5 @@ El repositorio `Docs/requirements.md` requiere carcasa terminada, prototipo func
 - `hardware/mechanical/CAD/` (fuentes CAD editables y STEP).
 - `hardware/mechanical/STL/` (piezas exportadas con revisión).
 - `hardware/mechanical/BOM.md` (lista de materiales, proveedores y costos).
-- `Tests/mecanica/` (protocolos, resultados y fotos de ensayos).
+- `tests/mecanica/` (protocolos, resultados y fotos de ensayos).
 - Actualizar `Docs/hardware.md`, `Docs/architecture.md`, `Docs/decisions.md`, `Docs/testing.md` y `Docs/roadmap.md` con referencias a esta especificación.

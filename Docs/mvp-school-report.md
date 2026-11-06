@@ -34,7 +34,7 @@ WebSocket, panel Chromium y diecisiete pruebas Flutter, incluida UI/WebSocket/SQ
 Solo se dispone de placas y pulsador. LEDs, alimentación y adaptación de nivel
 están pendientes; GPIO18/23 son propuestas. No se probó batería ni cargador, PCB
 ni carcasa de fabricación. Análisis Flutter y diecisiete tests fueron aprobados tras instalar el SDK; el estado
-del APK está en ESTADO-FINAL-MVP.md. Android físico sigue pendiente. Supabase remoto no fue inspeccionado: el usuario autorizó aplicar la
+del APK está en historial-entrega.md. Android físico sigue pendiente. Supabase remoto no fue inspeccionado: el usuario autorizó aplicar la
 migración tras verificar compatibilidad, pero falta conector/acceso.
 
 Primer ensayo físico: identificar placas, configurar MAC reales, validar pulsador

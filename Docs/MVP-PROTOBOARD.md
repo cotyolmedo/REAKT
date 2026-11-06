@@ -52,7 +52,7 @@ para leer la ROM; no se grabó firmware en esta etapa.
 
 ## Ensayo cuando esté armado
 
-Seguir GUIA-COLEGIO-2026-10-23.md y mvp-physical-tests.md: pulsación única,
+Seguir historial-entrega.md y mvp-physical-tests.md: pulsación única,
 mantener/liberar, timeout, detener, pérdida de radio y reconexión. Empezar con panel
 de diagnóstico; después Android y sincronización con Internet. Guardar JSON y logs
 en registro-pruebas-colegio.md. Meta: diez sesiones físicas consecutivas.

@@ -28,7 +28,7 @@ REAKT es un proyecto integrador de electrónica de la E.E.S.T. N.º 4. Arquitect
 - `firmware/gateway/`: coordinador ESP32.
 - `firmware/nodes/`: firmware de nodos ESP32, pendiente de desarrollo/validación.
 - `Docs/`: documentación técnica.
-- `Tests/`: pruebas, incluidas las históricas.
+- `tests/historical/`: pruebas, incluidas las históricas.
 - `app/`, `backend/`: componentes planificados según la estructura efectiva del repositorio.
 - `.agent/`: planificación de cambios extensos.
 

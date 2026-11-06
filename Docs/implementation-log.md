@@ -15,7 +15,7 @@ exitoso), PROBADO (check ejecutado), PENDIENTE DE HARDWARE, BLOQUEADO (externo).
   `tar -tzf` correcto; SHA256
   `f78369747a8e0e5e10f4486661780e22799b6ccfbfdcd4110a2306af445a65db`.
   No contiene .git; metadatos Git existentes se conservaron sin cambios.
-- Plan en `.agent/mvp-plan.md`. No commits, push ni merge.
+- Plan en `.agent/historial.md`. No commits, push ni merge.
 
 ## 2. Protocolo y núcleo portátil — IMPLEMENTADO / PROBADO
 
@@ -151,9 +151,9 @@ exitoso), PROBADO (check ejecutado), PENDIENTE DE HARDWARE, BLOQUEADO (externo).
   local externa al checkout, conservando TLS. Build detectó JRE21 sin javac: instalado
   JDK17 completo Temurin17.0.14+7 con SHA256 oficial verificado y truststore del sistema.
 - Plugins requirieron NDK27.0.12077973 frente al26.3 de Flutter: versión explicitada
-  en Gradle. Build final/APK se registran en ESTADO-FINAL-MVP.md y testing.md.
-- Documentos nuevos: GUIA-COLEGIO-2026-10-23.md, registro-pruebas-colegio.md y
-  ESTADO-FINAL-MVP.md. Se preparó exportador ZIP del árbol actual, incluyendo cambios
+  en Gradle. Build final/APK se registran en historial-entrega.md y testing.md.
+- Documentos nuevos: historial-entrega.md, registro-pruebas-colegio.md y
+  historial-entrega.md. Se preparó exportador ZIP del árbol actual, incluyendo cambios
   sin commit, excluyendo archivos ignorados/configuración local/credenciales, con
   verificación de cada SHA256 y de la integridad del ZIP. No se hizo push.
 
@@ -194,7 +194,7 @@ exitoso), PROBADO (check ejecutado), PENDIENTE DE HARDWARE, BLOQUEADO (externo).
   `Cambios mayores, progreso considerable`.
 - Base local y origin/main coinciden en840c9b3; trabajo local en rama work.
   Se publicará HEAD a main mediante avance rápido normal, sin force push.
-- Agregados RESUMEN-ENTREGA.md y PROMPT-PARA-MANANA.md; actualizadas indicaciones
+- Agregados historial-entrega.md y historial-entrega.md; actualizadas indicaciones
   para obtener el código desde GitHub. Conservado el historial de bloqueos anteriores.
 - Se excluyen SDKs, APK/builds y configuración local de Git. Verificación de push
   mediante comparación del HEAD local con ls-remote después de publicarlo.
@@ -229,7 +229,7 @@ Migración Supabase autorizada aplicada tras inspección compatible (versión re
 20261023120712); metadata RLS/grants verificada. Gateway COM4 identificado por ROM,
 MAC 30:c6:f7:92:d0:9c, ESP32-D0WDQ6. No flash ni prueba radio. Configuración pública
 local ignorada y formulario Auth preparados. Registro/login requieren usuario.
-Detalle de comandos, bloqueos y alcance: [continuación](CONTINUACION-COLEGIO-2026-10-23.md).
+Detalle de comandos, bloqueos y alcance: [continuación](historial-entrega.md).
 
 ### Etapa software cerrada antes del armado
 
@@ -238,4 +238,14 @@ rol authenticated aprobadas y revertidas; otra identidad SQL sintética, sin seg
 login real. Prueba HTTP pública aprobada. Salida LED digital implementada y compilada,
 nodo deshabilitado y gateway también compilados con core3.3.4. Analyze y17tests
 Flutter aprobados en copia con dependencias de SDK3.47.4; lock original intacto.
-Usuario armará circuito después. [Cierre y estimación MVP60%](CIERRE-SOFTWARE-2026-10-23.md).
+Usuario armará circuito después. [Cierre y estimación MVP60%](historial-entrega.md).
+
+
+## 2026-11-06 — Limpieza del repositorio
+
+Consolidadas seis guías de entrega en historial-entrega.md y seis planes en
+.agent/historial.md. Ensayos antiguos movidos de Tests a tests/historical para
+evitar colisiones de nombres en Windows. Sitio vigente renombrado a index.html;
+workflow mantiene el alias público REAKT_webv2.html. Retirados prototipo web
+anterior y ZIP 0.2.0 del árbol actual; recuperables desde Git. Descarga vigente
+en Releases v0.3.1. Sin cambios al código Flutter, firmware o backend.

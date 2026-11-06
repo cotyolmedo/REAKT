@@ -110,7 +110,7 @@ un sistema integrado ni hardware vigente validado.
 
 Flutter dejó de estar bloqueado: SDK/lock instalados, análisis y17tests aprobados.
 Panel de banco Chromium probado y exportación de historial agregada. Build APK y
-artefactos finales en ESTADO-FINAL-MVP.md; Supabase y pruebas físicas siguen separados.
+artefactos finales en historial-entrega.md; Supabase y pruebas físicas siguen separados.
 
 ## Avance colegio 23/10/2026
 
@@ -120,7 +120,7 @@ artefactos finales en ESTADO-FINAL-MVP.md; Supabase y pruebas físicas siguen se
 - Aceptado por usuario: MVP en protoboard con pulsador y un LED. Tipo/circuito y
   adaptación para LED común pendientes; salida permanece deshabilitada.
 - Trabajo aislado en .school-work/REAKT desde 6e4eec6; original preservado.
-- [Detalle y pendientes](CONTINUACION-COLEGIO-2026-10-23.md).
+- [Detalle y pendientes](historial-entrega.md).
 
 ### Cierre de etapa software
 
@@ -128,11 +128,11 @@ Auth confirmado, RLS remoto y API pública probados; salida LED común implement
 y compilada, gateway compilado,17tests Flutter y analyze aprobados en copia local.
 MVP estimado60% por entregables (no por horas); hardware/cadena física no completados.
 Sigue armado por usuario, configuración real, carga, radio, Android y diez sesiones.
-[Criterio y evidencia](CIERRE-SOFTWARE-2026-10-23.md).
+[Criterio y evidencia](historial-entrega.md).
 
 ## 2026-10-30 — Tarjetas del equipo web V2
 
-DONE: tarjetas ampliadas en REAKT_webv2.html, fotografía local de Chirino Olmedo
+DONE: tarjetas ampliadas en index.html, fotografía local de Chirino Olmedo
 Constantino y rol indicado por el usuario. Diseño visual revisado en navegador
 a ancho de escritorio y móvil. Pendiente: fotografías y roles de los otros integrantes.
 
@@ -163,7 +163,7 @@ IN PROGRESS: Pages habilitado, workflow preparado; pendiente verificar despliegu
 público en https://cotyolmedo.github.io/REAKT/.
 
 Publicación completada: DONE. Workflow 41062712396 finalizó success, sitio público
-HTTP200 y HTML idéntico byte a byte a REAKT_webv2.html. URL estable:
+HTTP200 y HTML idéntico byte a byte a index.html. URL estable:
 https://cotyolmedo.github.io/REAKT/. Nueve imágenes referenciadas verificadas HTTP200.
 
 ### 2026-10-30 — APK actualizado
@@ -187,3 +187,10 @@ Se enlazan web pública/release y se distinguen implementación actual y planes.
 
 DONE: fotografía de Mendez Mia incorporada al carrusel web; los cuatro integrantes
 tienen fotografía aportada por el usuario.
+
+
+## 2026-11-06 — Organización
+
+DONE: índice principal simplificado, guías y planes históricos consolidados,
+Tests/tests unificados y binarios antiguos retirados del árbol actual.
+La limpieza no modifica los pendientes de validación física.

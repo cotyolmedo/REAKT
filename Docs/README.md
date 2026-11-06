@@ -1,83 +1,37 @@
 # Documentación REAKT
 
-Esta carpeta distingue requisitos, decisiones, implementación y evidencia de
-pruebas del proyecto.
+## Empezar
 
-## Empezar por el estado actual
+- [Puesta en marcha](PROBAR-HOY.md): herramientas, montaje, app y sincronización.
+- [Montaje de protoboard](MVP-PROTOBOARD.md) e [instalación](mvp-installation.md).
+- [APK vigente 0.3.1](android-release-2026-10-30.md) y
+  [evidencia de 0.3.0](android-release-2026-10-23.md).
+- [Pruebas físicas](mvp-physical-tests.md) y [planilla de banco](registro-pruebas-colegio.md).
 
-[PROBAR-HOY.md](PROBAR-HOY.md) reúne firmware, APK 0.3.0, montaje y pruebas en
-orden. [android-release-2026-10-23.md](android-release-2026-10-23.md) registra la
-publicación y configuración verificadas. Los documentos de entrega anteriores
-se conservan como historia y no sustituyen ese estado.
+## Referencias
 
-## Mapa documental
-
-| Archivo | Contenido |
+| Tema | Documentos |
 |---|---|
-| `requirements.md` | Requisitos escolares de referencia |
-| `requirements-addendum.md` | Verificación pendiente sobre el pulsador como sensor |
-| `architecture.md` | Arquitectura y responsabilidades |
-| `hardware.md` | Inventario, interfaces físicas y pendientes |
-| `firmware.md` | Convenciones y comportamiento embebido |
-| `packet-protocol.md` | Contrato MVP v1 implementado; máximo dos nodos |
-| `app.md` | Arquitectura Flutter y adaptación funcional 0.3.0 |
-| `backend.md` | Arquitectura Supabase/PostgreSQL y evidencia enlazada |
-| `development.md` | Flujo de desarrollo |
-| `testing.md` | Estrategia, evidencia y verificaciones realizadas |
-| `roadmap.md` | Fases y estado real |
-| `decisions.md` | Decisiones arquitectónicas (ADR) |
-| `diseno-mecanico.md` | Especificación conceptual de carcasa |
-| `pcb/README.md` | Índice de ingeniería PCB y puertas de decisión |
-| `cambios-2026-10-08.md` | Trazabilidad del cambio de nodos y entrada |
-| `glossary.md` | Términos del proyecto |
+| Requisitos escolares | [Requisitos](requirements.md), [pulsador como sensor](requirements-addendum.md) |
+| Arquitectura y protocolo | [Arquitectura](architecture.md), [protocolo](packet-protocol.md) |
+| Software | [Flutter](app.md), [backend](backend.md), [firmware](firmware.md) |
+| Hardware | [Inventario](hardware.md), [mecánica](diseno-mecanico.md), [PCB](pcb/README.md) |
+| Desarrollo | [Flujo](development.md), [glosario](glossary.md), [sitio web](web-publication.md) |
+| Decisiones y avance | [Decisiones](decisions.md), [roadmap](roadmap.md), [bitácora](implementation-log.md) |
+| Evidencia | [Verificaciones](testing.md), [banco del 23/10](banco-2026-10-23.md) |
+| Entrega escolar | [Informe](mvp-school-report.md) |
+| Antecedentes | [Entregas y notas consolidadas](historial-entrega.md), [cambio de hardware](cambios-2026-10-08.md), [sitio anterior](historial-web.md) |
 
-## Fuentes de verdad
+## Cómo interpretar el estado
 
-- El código describe lo implementado.
-- Esta documentación describe requisitos y decisiones acordadas.
-- `Docs/testing.md` describe únicamente verificaciones con evidencia.
-- Los sketches en `Tests/` pueden ser históricos y no representan el diseño
-  vigente.
+El código describe lo implementado; requisitos y decisiones describen lo acordado.
+Las pruebas solo se consideran hechas cuando tienen evidencia. Los ensayos en
+`tests/historical/` y las notas consolidadas son antecedentes, con el estado de su
+fecha. No sustituyen la guía de puesta en marcha ni la evidencia posterior.
 
-Si código y documentación discrepan, determinar primero cuál refleja la última
-decisión intencional, actualizar la fuente obsoleta y registrar un ADR cuando
-exista un cambio de arquitectura.
+El MVP admite uno o dos nodos; cinco nodos es la ampliación prevista. El banco
+probado usa un nodo con pulsador y LED común en GPIO18/23. WS2812B y alimentación
+recargable siguen pendientes de validación física.
 
-## Estados
-
-- `TBD`: por definir.
-- `TODO`: decidido, no implementado.
-- `IN PROGRESS`: en desarrollo.
-- `DONE`: implementado y verificado.
-- `BLOCKED`: depende de una decisión, pieza o validación externa.
-
-No marcar elementos como `DONE` sin evidencia verificable.
-
-## MVP de entrega 2026-11-06
-
-La especificación posterior del usuario concreta WebSocket local, WROOM-32 y uno
-o dos nodos en el primer MVP. Consultar primero:
-
-- [Instalación y pinout propuesto](mvp-installation.md).
-- [Bitácora de implementación y aprobaciones](implementation-log.md).
-- [Pruebas físicas pendientes](mvp-physical-tests.md).
-- [Informe técnico escolar](mvp-school-report.md).
-
-Las referencias a cinco nodos son la ampliación prevista. El banco actual tiene
-un nodo con pulsador y LED común enGPIO18/23, probado desde Android. WS2812B y
-alimentación recargable siguen sin validación física.
-
-## Entrega para el colegio
-
-- [Estado final](ESTADO-FINAL-MVP.md).
-- [Guía del viernes 23/10/2026](GUIA-COLEGIO-2026-10-23.md).
-- [Planilla de resultados del banco](registro-pruebas-colegio.md).
-
-La publicación posterior usa Flutter3.47.4 y aprueba21tests. Los bloqueos de SDK
-descriptos en entradas previas son históricos. PROBAR-HOY y android-release son
-las referencias actuales para APK/acceso remoto y límites de validación física.
-
-- [Resumen de entrega y referencia Git](RESUMEN-ENTREGA.md).
-- [Prompt para retomar desde la computadora del colegio](PROMPT-PARA-MANANA.md).
-- [Cierre software del23/10, verificación Supabase y estimación MVP](CIERRE-SOFTWARE-2026-10-23.md).
-- [Próximo armado en protoboard con LED común](MVP-PROTOBOARD.md).
+`TBD`: por definir · `TODO`: pendiente · `IN PROGRESS`: en desarrollo ·
+`DONE`: implementado y verificado · `BLOCKED`: dependencia externa.

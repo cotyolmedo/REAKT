@@ -13,5 +13,5 @@ configuración local y comprobación de su circuito. WS2812B y matriz extendida 
 Ver [instalación, pinout y herramientas](../Docs/mvp-installation.md) y
 [protocolo](../Docs/packet-protocol.md).
 
-Los ensayos históricos en Tests/ no representan el nuevo protocolo. Las simulaciones
+Los ensayos históricos en tests/historical/ no representan el nuevo protocolo. Las simulaciones
 C++ no verifican radio ni hardware. No hay delay() en los sketches ni núcleo propio.
